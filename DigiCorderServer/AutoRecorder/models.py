@@ -20,21 +20,22 @@ class Active_T6(models.Model):
     natureOfEmergency = models.CharField('Nature of Emergency:', max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return self.callSign
+        return "Tail " + str(self.tailNumber)
 
 class Completed_T6_Sortie(models.Model):
     tailNumber = models.IntegerField('Tail Number')
-    callSign = models.CharField('Callsign', max_length=12)
-    takeoffTime = models.DateTimeField('Takeoff Time')
-    landTime = models.DateTimeField('Final Landing Time')
-    three55 = models.CharField('355 Comments', max_length=100, default='none')
+    callSign = models.CharField('Callsign', max_length=12, blank=True, null=True)
+    takeoffTime = models.DateTimeField('Takeoff Time', blank=True, null=True)
+    three55Code = models.CharField('355 Code', max_length=5, default='none')
+    Comments = models.CharField('Comments', max_length=200, default='none')
+    landTime = models.DateTimeField('Final Landing Time', blank=True, null=True)
     solo = models.BooleanField('Solo', default=False)
     formation = models.BooleanField('Formation', default=False)
     crossCountry = models.BooleanField('X-Country', default=False)
     localFlight = models.BooleanField('LocalFlight', default=True)
-    inEastsidePattern = models.BooleanField('Currently in Eastside Pattern', default=True)
+    inEastsidePattern = models.BooleanField('Eastside Pattern', default=True)
     emergency = models.BooleanField('Emergency', default=False)
-    natureOfEmergency = models.CharField('Nature of Emergency:', max_length=200)
+    natureOfEmergency = models.CharField('Nature of Emergency:', max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return self.callSign
+        return "Tail " + str(self.tailNumber)
