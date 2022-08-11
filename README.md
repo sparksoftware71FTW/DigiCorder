@@ -34,7 +34,7 @@
    > `python manage.py migrate`
    - This will actually create database tables for Django's builtin data as well as all of the installed apps' `models.py` classes.
    - from the `..\Digicorder\Digicorder\DigicorderServer\` directory, run the command below to create an admin account called `admin`:
-   > `python manage.py createsuperuser admin`
+   > `python manage.py createsuperuser`
    - Follow the instructions that populate. Email and other fields are not strictly necessary.
 
 4.  Run the server!
