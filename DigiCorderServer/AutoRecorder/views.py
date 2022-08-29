@@ -15,6 +15,9 @@ from .models import Active_T6
 def index(request):
     return HttpResponse("Hello, world. AutoRecorder Temp Index is here!")
 
+def dashboard(request):
+    return render(request, 'AutoRecorder/dashboard.html')
+
 # class IndexView(generic.ListView):
 #     template_name = 'AutoRecorder/index.html'
 #     context_object_name = 'latest_active_t6_list'

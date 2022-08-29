@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'AutoRecorder.apps.AutoRecorderConfig',
     #'polls.apps.PollsConfig',
     'django.contrib.admin',
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+ASGI_APPLICATION = 'DigiCorderServer.asgi.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
