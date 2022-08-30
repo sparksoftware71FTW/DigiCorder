@@ -7,7 +7,16 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 </head>
 <body>
-    <h1>Active T-6's are below:</h1>
+    <h1>Active T-6s:</h1>
+
+    <form id="form1">
+        <input type="text" name="message">
+    </form>
+
+    <div id="messages"></div>
+
+    <div id="T6s"></div>
+
 
 <script type="text/javascript">
     let url = `ws://${window.location.host}/ws/socket-server/`
@@ -17,7 +26,40 @@
     chatSocket.onmessage = function(e){
         let data = JSON.parse(e.data)
         console.log('Data: ', data)
+        console.log('Data.type: ', data.type)
+
+        if(data.type === 'lolmessage'){
+            let messages = document.getElementById('messages')
+            removeAllChildNodes(messages)
+            messages.insertAdjacentHTML('beforeend', `<div>
+                                        <p>${data.message}</p>
+                                    </div>`)
+        }
+
+        if(data.type === 't6Update'){
+            let T6s = document.getElementById('T6s')
+            removeAllChildNodes(T6s)
+            T6s.insertAdjacentHTML('beforeend', `<div>
+                                        <p>${data.message}</p>
+                                    </div>`)
+        }
     }
+
+    let form = document.getElementById('form1')
+    form.addEventListener('submit', (e)=> {
+        e.preventDefault()
+        let message = e.target.message.value
+        chatSocket.send(JSON.stringify({
+            'lolmessage':message
+        }))
+    form.reset()
+    })
+
+    function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
 
 </script>
 

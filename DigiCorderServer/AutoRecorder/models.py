@@ -1,3 +1,4 @@
+from email import message
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -39,3 +40,6 @@ class Completed_T6_Sortie(models.Model):
 
     def __str__(self):
         return "Tail " + str(self.tailNumber)
+
+class Message(models.Model):
+    message = models.CharField('message', max_length=150, blank=True, null=True)
