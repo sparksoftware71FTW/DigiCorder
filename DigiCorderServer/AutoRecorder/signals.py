@@ -1,6 +1,5 @@
 import json
 from channels import layers
-from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -8,7 +7,7 @@ from django.utils import timezone
 
 from .models import Active_T6, Completed_T6_Sortie, Message
 
-@receiver(post_save, sender=Active_T6)
+@receiver(post_save, sender=Active_T6, dispatch_uid="noDuplicates")
 def log_completed_flight(sender, instance, created, **kwargs):
     if isinstance(instance.landTime, timezone.datetime):
         #Active_T6.objects.get(pk=instance.tailNumber)
@@ -30,7 +29,7 @@ def log_completed_flight(sender, instance, created, **kwargs):
         justLandedT6.save()
         instance.delete()
 
-@receiver(post_save, sender=Active_T6)
+@receiver(post_save, sender=Active_T6, dispatch_uid="noDuplicates")
 def displayActiveT6s(sender, instance, created, **kwargs):
     activeT6s = get_T6_queryset()
     message = ""
@@ -47,7 +46,7 @@ def displayActiveT6s(sender, instance, created, **kwargs):
     )
     print("Signal received. Message value is: ", message)
 
-@receiver(post_save, sender=Message)
+@receiver(post_save, sender=Message, dispatch_uid="noDuplicates")
 def newMessage(sender, instance, created, **kwargs):
     channel_layer = layers.get_channel_layer()
     async_to_sync(channel_layer.group_send)(
