@@ -1,5 +1,3 @@
-from ast import Delete
-from concurrent.futures import thread
 import os
 import threading
 import asyncio
@@ -63,20 +61,3 @@ def task1(parentThreadName):
             continue
         else:
             return
-
-
-# import http.client
-
-# conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
-
-# headers = {
-#     'X-RapidAPI-Key': "e7a36b9597msh0954cc7e057677dp160f6fjsn5e333eceedc4",
-#     'X-RapidAPI-Host': "adsbexchange-com1.p.rapidapi.com"
-#     }
-
-# conn.request("GET", "/v2/lat/51.46888/lon/-0.45536/dist/50/", headers=headers)
-
-# res = conn.getresponse()
-# data = res.read()
-
-# print(data.decode("utf-8"))
