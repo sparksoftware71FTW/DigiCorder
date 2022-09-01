@@ -25,6 +25,16 @@ def log_completed_flight(sender, instance, created, **kwargs):
         inEastsidePattern=instance.inEastsidePattern,
         emergency=instance.emergency,
         natureOfEmergency=instance.natureOfEmergency,
+        groundSpeed=instance.groundSpeed,
+        latitude=instance.latitude,
+        longitude=instance.longitude,
+        alt_baro=instance.alt_baro,
+        alt_geom=instance.alt_geom,
+        track=instance.track,
+        squawk=instance.squawk,
+        seen=instance.seen,
+        rssi=instance.rssi,
+        state=instance.state
         )
         justLandedT6.save()
         instance.delete()
