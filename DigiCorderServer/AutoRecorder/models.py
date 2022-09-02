@@ -61,7 +61,7 @@ class Completed_T6_Sortie(models.Model):
     state = models.CharField('State', max_length=20, blank=True, null=True)
 
     def __str__(self):
-        return "Tail " + str(self.tailNumber)
+        return "id " + str(self.id)
 
 class Message(models.Model):
     message = models.CharField('message', max_length=150, blank=True, null=True)
