@@ -7,6 +7,9 @@ from django.utils import timezone
 
 from .models import Active_T6, Completed_T6_Sortie, Message
 
+import logging
+logger = logging.getLogger(__name__)
+
 @receiver(post_save, sender=Active_T6, dispatch_uid="noDuplicates")
 def log_completed_flight(sender, instance, created, **kwargs):
     if isinstance(instance.landTime, timezone.datetime):
@@ -54,7 +57,7 @@ def displayActiveT6s(sender, instance, created, **kwargs):
             'message':message
         }
     )
-    print("Signal received. Message value is: ", message)
+    logger.info("Signal received. Message value is: " + str(message))
 
 @receiver(post_save, sender=Message, dispatch_uid="noDuplicates")
 def newMessage(sender, instance, created, **kwargs):
@@ -66,7 +69,7 @@ def newMessage(sender, instance, created, **kwargs):
             'message':instance.message
         }
     )
-    print("Signal received. Message db value is: ", instance.message)
+    logger.info("Signal received. Message db value is: " + str(instance.message))
  
 # def chat_message(self, event):
 #     message = event['message']

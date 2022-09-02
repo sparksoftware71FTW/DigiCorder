@@ -9,10 +9,12 @@ from channels.db import database_sync_to_async
 
 from .models import Active_T6, Completed_T6_Sortie, Message
 
+import logging
+logger = logging.getLogger(__name__)
+
 class DashboardConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_group_name = 'test'
-
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
@@ -29,7 +31,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                 'message':message
             }
         )
-        print("Sending initial Active_T6 list. Message value is: ", message)
+        logger.debug("Sending initial Active_T6 list. Message value is: ", message)
         
 
     # def disconnect(self, code):
@@ -39,7 +41,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         txmessage = text_data_json['lolmessage']
         await database_sync_to_async(self.saveMessage)(txmessage)
-        print(text_data_json)
+        logger.debug(text_data_json)
 
     #     async_to_sync(self.channel_layer.group_send)(
     #         self.room_group_name,

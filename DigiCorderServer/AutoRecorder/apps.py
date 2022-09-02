@@ -1,5 +1,4 @@
 import os
-from ssl import create_default_context
 import threading
 import asyncio
 import time
@@ -7,11 +6,15 @@ from django.apps import AppConfig
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 
+import logging
+logger = logging.getLogger(__name__)
+
 class AutoRecorderConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'AutoRecorder'
 
     def ready(self):
+
         from AutoRecorder import signals
         #This is where the background thread will kick off...
         #Make sure to add a is_running database model and a corresponding check 
@@ -22,7 +25,7 @@ class AutoRecorderConfig(AppConfig):
         if run_once == 'True':
             return
         os.environ['RUN_ONCE'] = 'True'
-        print("ready() thread is: " + threading.current_thread().name)
+        logger.debug("ready() thread is: " + threading.current_thread().name)
         t1 = threading.Thread(target=task1, args=(threading.current_thread().name,), name='t1')
         t1.start()
             
@@ -30,8 +33,8 @@ def task1(parentThreadName):
     import http.client
     import json
     from AutoRecorder.models import Active_T6
-    print("Task 1 assigned to thread: {}".format(threading.current_thread().name))
-    print("ID of process running task 1: {}".format(os.getpid()))
+    logger.debug("Task 1 assigned to thread: {}".format(threading.current_thread().name))
+    logger.debug("ID of process running task 1: {}".format(os.getpid()))
 
     conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
 
@@ -45,16 +48,16 @@ def task1(parentThreadName):
         res = conn.getresponse()
         data = res.read()
         jsondata = json.loads(data)
-        # print("json data is:", jsondata)
-        #print(jsondata['ac'])
+        # logger.debug("json data is:", jsondata)
+        #logger.debug(jsondata['ac'])
         for aircraft in jsondata['ac']:
             try:
                 
-                # print(str(aircraft['t']) + " is its type...")
-                # print(str(aircraft['alt_baro']) + " is its alt_baro...")
+                # logger.debug(str(aircraft['t']) + " is its type...")
+                # logger.debug(str(aircraft['alt_baro']) + " is its alt_baro...")
 
                 if str(aircraft["t"]) == "TEX2" and str(aircraft["alt_baro"]) != "ground":
-                    print(aircraft['r'] + " is about to be added to the database...")
+                    logger.debug(aircraft['r'] + " is about to be added to the database...")
                     T6, created = Active_T6.objects.get_or_create(
                         tailNumber=aircraft["r"][-3:] #,
                     )
@@ -76,7 +79,7 @@ def task1(parentThreadName):
                     T6.rssi=aircraft['rssi']
                     T6.state="Airborne"
                     T6.save()
-                    print("Success!")   
+                    logger.debug("Success!")   
 
                 # either initial takeoff, touch and go, or final landing
                 # if aircraft["t"] is "TEX2" and aircraft["alt_baro"] is "ground":
@@ -93,14 +96,14 @@ def task1(parentThreadName):
                 #         emergency=False if aircraft["emergency"] is "none" else True,
                 #     )
             except KeyError as e:
-                print('KeyError in aircraft ' + str(e) + "; however, this is ok.")
+                logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
         
         killSignal = True
         threads_list = threading.enumerate()
         
         for thread in threads_list:
-            print("thread.name is " + thread.name)
-            print("thread.is_alive() returns: ", thread.is_alive())
+            logger.debug("thread.name is " + thread.name)
+            logger.debug("thread.is_alive() returns: " + str(thread.is_alive()))
             if thread.name is parentThreadName and thread.is_alive() is True:
                 killSignal = False
         

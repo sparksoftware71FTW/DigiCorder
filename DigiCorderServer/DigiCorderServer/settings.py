@@ -25,6 +25,77 @@ SECRET_KEY = 'django-insecure-bpx%t#w_(^_h0yt#xqbit0(p%9!5bctf2ai4@-kryin+x0%=@5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# import logging
+# logger.setLevel(logging.DEBUG)
+# formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+# fileHandler = logging.handlers.RotatingFileHandler(
+#     LOGFILE, maxBytes=(1048576*5), backupCount=7
+# )
+# fileHandler.setFormatter(formatter)
+# logger.addHandler(fileHandler)
+
+# consoleHandler = logging.StreamHandler()
+# consoleHandler.setFormatter(formatter)
+# logger.addHandler(consoleHandler)
+
+LOGGING = {
+    'version': 1,                       # the dictConfig format version
+    'disable_existing_loggers': False,  # retain the default loggers
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        },
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {threadName:s} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message} {threadName:s} {module}',
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'projectRootFile': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'server.log',
+            'maxBytes': 1048576*5,
+            'backupCount': 7,
+            'formatter': 'verbose',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'level': 'DEBUG',
+        }
+    },
+    'loggers': {
+        'AutoRecorder.consumers': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'AutoRecorder.apps': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'AutoRecorder.signals': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'AutoRecorder.views': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'AutoRecorder.tests': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },                
+    }
+}
+
+
 ALLOWED_HOSTS = []
 
 
