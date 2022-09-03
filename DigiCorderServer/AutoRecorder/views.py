@@ -8,7 +8,7 @@ from django.db.models import F
 from django.views import generic
 from django.utils import timezone
 
-from .models import Active_T6
+from .models import Active_T6, Completed_T6_Sortie
 
 # Create your views here.
 
@@ -17,6 +17,10 @@ def index(request):
 
 def dashboard(request):
     return render(request, 'AutoRecorder/dashboard.html')
+
+def form355(request):
+    landedAircraft = Completed_T6_Sortie.objects.all()
+    return render(request, 'AutoRecorder/form355.django-html', {"landedAircraft": landedAircraft})
 
 # class IndexView(generic.ListView):
 #     template_name = 'AutoRecorder/index.html'

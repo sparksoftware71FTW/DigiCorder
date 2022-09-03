@@ -31,7 +31,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                 'message':message
             }
         )
-        logger.debug("Sending initial Active_T6 list. Message value is: ", message)
+        logger.debug("Sending initial Active_T6 list. Message value is: " + str(message))
         
 
     # def disconnect(self, code):

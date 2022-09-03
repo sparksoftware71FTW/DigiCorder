@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Cool Title{% endblock %}</title>
+    {% load static %}
+    <link href= {% static "AutoRecorder/bootstrap-5.2.0/dist/css/bootstrap.css"%} rel="stylesheet">
+    {% load static %}
+    <script src= {% static "AutoRecorder/bootstrap-5.2.0/dist/js/bootstrap.bundle.js" %}></script>
+
+    <style type="text/css">
+        .topnav {
+            height:100px ;
+            width:100% ;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-y: visible;
+            padding-top: 20px ;
+
+        }
+
+        .topnav a {
+            padding:10px 10px 10px 10px 10px ;
+            text-decoration: none;
+            font-size: 20px;
+            display: inline-block;
+        }
+
+        .stuff {
+            margin-top: 120px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+      <div class="topnav">
+        <div class="dropdown">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Menu
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/AutoRecorder/dashboard">Dashboard</a></li>
+              <li><a class="dropdown-item" href="/AutoRecorder/form355">Form 355</a></li>
+              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+              <li><a class="dropdown-item" href="/passwordManagement">PasswordManagement</a></li>
+            </ul>
+          </div>
+      </div>
+    {% comment %} <div class="topnav">
+        <a href="/AutoRecorder/dashboard">Dashboard</a>
+        <a href="/AutoRecorder/form355">Form 355</a>
+        <a href="/profile">Profile</a>
+        <a href="/passwordManagement">PasswordManagement</a>
+    </div> {% endcomment %}
+
+    <div id="content", name="content", class="stuff">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+
+</html>

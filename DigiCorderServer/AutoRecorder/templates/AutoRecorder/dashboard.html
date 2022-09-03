@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Dashboard</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-</head>
-<body>
-    <h1>Active T-6s:</h1>
+
+{% extends 'AutoRecorder/base.html' %}
+
+{% block title %}Recorder Dashboard{% endblock %}
+
+{% block content %}
+
+    <p>Active T-6s:</p>
+
 
     <form id="form1">
         <input type="text" name="message">
@@ -63,6 +63,4 @@
 }
 
 </script>
-
-</body>
-</html>
+{% endblock %}

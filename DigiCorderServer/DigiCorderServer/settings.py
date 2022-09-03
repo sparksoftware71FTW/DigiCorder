@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,20 +26,6 @@ SECRET_KEY = 'django-insecure-bpx%t#w_(^_h0yt#xqbit0(p%9!5bctf2ai4@-kryin+x0%=@5
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-# import logging
-# logger.setLevel(logging.DEBUG)
-# formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-
-# fileHandler = logging.handlers.RotatingFileHandler(
-#     LOGFILE, maxBytes=(1048576*5), backupCount=7
-# )
-# fileHandler.setFormatter(formatter)
-# logger.addHandler(fileHandler)
-
-# consoleHandler = logging.StreamHandler()
-# consoleHandler.setFormatter(formatter)
-# logger.addHandler(consoleHandler)
 
 LOGGING = {
     'version': 1,                       # the dictConfig format version
@@ -104,7 +92,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'channels',
     'AutoRecorder.apps.AutoRecorderConfig',
-    #'polls.apps.PollsConfig',
+    'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -208,6 +196,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+#PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static"
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

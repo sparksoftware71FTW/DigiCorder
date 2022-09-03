@@ -1,6 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    {% load static %}
+    <link href= {% static "polls/bootstrap-5.2.0/dist/css/bootstrap.css"%} rel="stylesheet">
+    {% load static %}
+    <script src= {% static "polls/polls/bootstrap-5.2.0/dist/js/bootstrap.bundle.js" %}></script>
+</head>
+
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
-{% if latest_active_t6_list %}
+<link rel="stylesheet" type="text/css" href="{% static 'polls/css/style.css' %}">
+  <body>
+    <h1>Hello, world!</h1>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Dropdown button
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#">Action</a></li>
+          <li><a class="dropdown-item" href="#">Another action</a></li>
+          <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
+      </div>
+  </body>
+</html>
+
+{% comment %} {% if latest_active_t6_list %}
     <ul>
     {% for t6 in latest_active_t6_list %}
         <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
@@ -8,4 +35,4 @@
     </ul>
 {% else %}
     <p>No polls are available.</p>
-{% endif %}
+{% endif %} {% endcomment %}
