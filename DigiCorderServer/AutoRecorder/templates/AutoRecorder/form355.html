@@ -1,0 +1,147 @@
+{% extends 'AutoRecorder/bootbase.html' %}
+
+{% block title %}Form 355{% endblock %}
+
+{% block content %}
+    <h1>Completed Sorties:</h1>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">Tail</th>
+          <th scope="col">Callsign</th>
+          <th scope="col">Takeoff Time</th>
+          <th scope="col">355 Code</th>
+          <th scope="col">Comments</th>
+          <th scope="col">Final Land Time</th>
+          <th scope="col">Solo</th>
+          <th scope="col">Form</th>
+          <th scope="col">X-Country</th>
+          <th scope="col">Local</th>
+          <th scope="col">In Pattern</th>
+          <th scope="col">Emergency</th>
+          <th scope="col">Nature of Emergency</th>
+          <th scope="col">Ground Speed</th>
+          <th scope="col">Lat</th>
+          <th scope="col">Lon</th>
+          <th scope="col">Altitude</th>
+          <th scope="col">Altitude-Geometric</th>
+          <th scope="col">Track</th>
+          <th scope="col">Sqawk</th>
+          <th scope="col">seen</th>
+          <th scope="col">rssi</th>
+          <th scope="col">state</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        {% for aircraft in landedAircraft %}
+            <tr>
+                <th scope="row">{{aircraft.id}}</th>
+                <td>{{aircraft.tailNumber}}</td>
+                <td>{{aircraft.callSign}}</td>
+                <td>{{aircraft.takeoffTime}}</td>
+                <td>{{aircraft.three55Code}}</td>
+                <td>{{aircraft.Comments}}</td>
+                <td>{{aircraft.landTime}}</td>
+                <td>{{aircraft.solo}}</td>
+                <td>{{aircraft.formation}}</td>
+                <td>{{aircraft.crossCountry}}</td>
+                <td>{{aircraft.localFlight}}</td>
+                <td>{{aircraft.inEastsidePattern}}</td>
+                <td>{{aircraft.emergency}}</td>
+                <td>{{aircraft.natureOfEmergency}}</td>
+                <td>{{aircraft.groundSpeed}}</td>
+                <td>{{aircraft.latitude}}</td>     
+                <td>{{aircraft.longitude}}</td>
+                <td>{{aircraft.alt_baro}}</td>
+                <td>{{aircraft.alt_geom}}</td>
+                <td>{{aircraft.track}}</td>
+                <td>{{aircraft.squawk}}</td>
+                <td>{{aircraft.seen}}</td>
+                <td>{{aircraft.rssi}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <ul>
+      {% for aircraft in landedAircraft %}
+          {% if True %}
+              <li>{{aircraft.callSign}}</li>
+          {% else %}
+              <li>boom</li>
+          {% endif %}    
+      {% endfor %}
+      </ul>
+{% endblock %}
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Dashboard</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    <h1>Active T-6s:</h1>
+
+    <form id="form1">
+        <input type="text" name="message">
+    </form>
+
+    <div id="messages"></div>
+
+    <div id="T6s"></div>
+
+
+<script type="text/javascript">
+    let url = `ws://${window.location.host}/ws/socket-server/`
+    console.log(url)
+    
+    const chatSocket = new WebSocket(url)
+
+    chatSocket.onmessage = function(e){
+        let data = JSON.parse(e.data)
+        console.log('Data: ', data)
+        console.log('Data.type: ', data.type)
+
+        if(data.type === 'lolmessage'){
+            let messages = document.getElementById('messages')
+            removeAllChildNodes(messages)
+            messages.insertAdjacentHTML('beforeend', `<div>
+                                        <p>${data.message}</p>
+                                    </div>`)
+        }
+
+        if(data.type === 't6Update'){
+            let T6s = document.getElementById('T6s')
+            removeAllChildNodes(T6s)
+            T6s.insertAdjacentHTML('beforeend', `<div>
+                                        <p>${data.message}</p>
+                                    </div>`)
+        }
+    }
+
+    let form = document.getElementById('form1')
+    form.addEventListener('submit', (e)=> {
+        e.preventDefault()
+        let message = e.target.message.value
+        chatSocket.send(JSON.stringify({
+            'lolmessage':message
+        }))
+    form.reset()
+    })
+
+    function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+
+</script>
+
+</body>
+</html> -->
