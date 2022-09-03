@@ -8,7 +8,7 @@ from django.db.models import F
 from django.views import generic
 from django.utils import timezone
 
-from .models import Active_T6, Completed_T6_Sortie
+from .models import ActiveAircraft, CompletedSortie
 
 # Create your views here.
 
@@ -19,17 +19,17 @@ def dashboard(request):
     return render(request, 'AutoRecorder/dashboard.html')
 
 def form355(request):
-    landedAircraft = Completed_T6_Sortie.objects.all()
+    landedAircraft = CompletedSortie.objects.all()
     return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft})
 
 # class IndexView(generic.ListView):
 #     template_name = 'AutoRecorder/index.html'
-#     context_object_name = 'latest_active_t6_list'
+#     context_object_name = 'latest_ActiveAircraft_list'
 
 #     def get_queryset(self):
 #         """
 #         Return all active T-6s
 #         """
 #         #Question.objects.filter(pub_date__lte=timezone.now())
-#         return Active_T6.objects.filter(takeoffTime__lte=timezone.now()).order_by(
+#         return ActiveAircraft.objects.filter(takeoffTime__lte=timezone.now()).order_by(
 #        '-takeoffTime')[:]

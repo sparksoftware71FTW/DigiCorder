@@ -32,7 +32,7 @@ class AutoRecorderConfig(AppConfig):
 def task1(parentThreadName):
     import http.client
     import json
-    from AutoRecorder.models import Active_T6
+    from AutoRecorder.models import ActiveAircraft
     logger.debug("Task 1 assigned to thread: {}".format(threading.current_thread().name))
     logger.debug("ID of process running task 1: {}".format(os.getpid()))
 
@@ -58,7 +58,7 @@ def task1(parentThreadName):
 
                 if str(aircraft["t"]) == "TEX2" and str(aircraft["alt_baro"]) != "ground":
                     logger.debug(aircraft['r'] + " is about to be added to the database...")
-                    T6, created = Active_T6.objects.get_or_create(
+                    T6, created = ActiveAircraft.objects.get_or_create(
                         tailNumber=aircraft["r"][-3:] #,
                     )
 
@@ -83,7 +83,7 @@ def task1(parentThreadName):
 
                 # either initial takeoff, touch and go, or final landing
                 # if aircraft["t"] is "TEX2" and aircraft["alt_baro"] is "ground":
-                #     T6, created = Active_T6.objects.get_or_create(
+                #     T6, created = ActiveAircraft.objects.get_or_create(
                 #         tailNumber=aircraft["r"][-3:],
                 #         callSign=aircraft["flight"],
                 #         takeoffTime=aircraft["takeoffTime"],

@@ -7,7 +7,7 @@ from asgiref.sync import async_to_sync
 from channels import layers
 from channels.db import database_sync_to_async
 
-from .models import Active_T6, Completed_T6_Sortie, Message
+from .models import ActiveAircraft, CompletedSortie, Message
 
 import logging
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                 'message':message
             }
         )
-        logger.debug("Sending initial Active_T6 list. Message value is: " + str(message))
+        logger.debug("Sending initial ActiveAircraft list. Message value is: " + str(message))
         
 
     # def disconnect(self, code):
@@ -59,7 +59,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         Return all active T-6s
         """
         #Question.objects.filter(pub_date__lte=timezone.now())
-        activeT6s = Active_T6.objects.all().order_by(
+        activeT6s = ActiveAircraft.objects.all().order_by(
         '-takeoffTime')[:]
         message = ""
         for t6 in activeT6s:

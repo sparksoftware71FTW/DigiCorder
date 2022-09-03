@@ -5,16 +5,16 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 
-from .models import Active_T6, Completed_T6_Sortie, Message
+from .models import ActiveAircraft, CompletedSortie, Message
 
 import logging
 logger = logging.getLogger(__name__)
 
-@receiver(post_save, sender=Active_T6, dispatch_uid="noDuplicates")
+@receiver(post_save, sender=ActiveAircraft, dispatch_uid="noDuplicates")
 def log_completed_flight(sender, instance, created, **kwargs):
     if isinstance(instance.landTime, timezone.datetime):
-        #Active_T6.objects.get(pk=instance.tailNumber)
-        justLandedT6 = Completed_T6_Sortie(
+        #ActiveAircraft.objects.get(pk=instance.tailNumber)
+        justLandedT6 = CompletedSortie(
         tailNumber=instance.tailNumber,
         callSign=instance.callSign,
         takeoffTime=instance.takeoffTime,
@@ -42,7 +42,7 @@ def log_completed_flight(sender, instance, created, **kwargs):
         justLandedT6.save()
         instance.delete()
 
-@receiver(post_save, sender=Active_T6, dispatch_uid="noDuplicates")
+@receiver(post_save, sender=ActiveAircraft, dispatch_uid="noDuplicates")
 def displayActiveT6s(sender, instance, created, **kwargs):
     activeT6s = get_T6_queryset()
     message = ""
@@ -84,7 +84,7 @@ def get_T6_queryset():
     Return all active T-6s
     """
     #Question.objects.filter(pub_date__lte=timezone.now())
-    return Active_T6.objects.all().order_by(
+    return ActiveAircraft.objects.all().order_by(
     '-takeoffTime')[:]
 
 def get_Message_queryset():

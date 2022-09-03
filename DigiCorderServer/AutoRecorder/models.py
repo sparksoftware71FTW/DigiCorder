@@ -51,7 +51,7 @@ class Pattern(models.Model):
     def __str__(self):
         return "pattern point (lat,lon,alt): " + str(self.lat) + ", " + str(self.lon) + "," + str(self.alt)
 
-class Active_T6(models.Model):
+class ActiveAircraft(models.Model):
     tailNumber = models.CharField('Tail', primary_key=True, max_length=15)
     aircraftType = models.CharField('Type', max_length=20, blank=True, null=True)
     callSign = models.CharField('Callsign', max_length=12, blank=True, null=True)
@@ -82,7 +82,8 @@ class Active_T6(models.Model):
     def __str__(self):
         return "Tail " + str(self.tailNumber)
 
-class Completed_T6_Sortie(models.Model):
+class CompletedSortie(models.Model):
+    aircraftType = models.CharField('Type', max_length=20, blank=True, null=True)
     tailNumber = models.IntegerField('Tail Number')
     callSign = models.CharField('Callsign', max_length=12, blank=True, null=True)
     takeoffTime = models.DateTimeField('Takeoff Time', blank=True, null=True)
