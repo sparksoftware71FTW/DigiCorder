@@ -76,7 +76,7 @@ class ActiveAircraft(models.Model):
     seen = models.DecimalField('seen', blank=True, null=True, decimal_places=2, max_digits=6)
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
     state = models.CharField('State', max_length=20, blank=True, null=True)
-    runway = models.ForeignKey(Runway, on_delete=models.CASCADE, blank=True, null=True)
+    runway = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
 
 
     def __str__(self):
@@ -107,7 +107,7 @@ class CompletedSortie(models.Model):
     seen = models.DecimalField('seen', blank=True, null=True, decimal_places=2, max_digits=6)
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
     state = models.CharField('State', max_length=20, blank=True, null=True)
-    runway = models.ForeignKey(Runway, on_delete=models.CASCADE, blank=True, null=True)
+    runway = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return "id " + str(self.id)
