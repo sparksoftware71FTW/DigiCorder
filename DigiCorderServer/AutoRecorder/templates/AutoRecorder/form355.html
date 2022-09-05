@@ -9,6 +9,7 @@
         <thead>
         <tr>
           <th scope="col">id</th>
+          <th scope="col">Type</th>
           <th scope="col">Tail</th>
           <th scope="col">Callsign</th>
           <th scope="col">Takeoff Time</th>
@@ -39,6 +40,7 @@
         {% for aircraft in landedAircraft %}
             <tr>
                 <th scope="row">{{aircraft.id}}</th>
+                <td>{{aircraft.aircraftType}}</th>
                 <td>{{aircraft.tailNumber}}</td>
                 <td>{{aircraft.callSign}}</td>
                 <td>{{aircraft.takeoffTime}}</td>
@@ -66,7 +68,7 @@
         </tbody>
       </table>
 
-      <ul>
+      {% comment %} <ul>
       {% for aircraft in landedAircraft %}
           {% if True %}
               <li>{{aircraft.callSign}}</li>
@@ -74,7 +76,7 @@
               <li>boom</li>
           {% endif %}    
       {% endfor %}
-      </ul>
+      </ul> {% endcomment %}
 {% endblock %}
 
 <!-- <!DOCTYPE html>
