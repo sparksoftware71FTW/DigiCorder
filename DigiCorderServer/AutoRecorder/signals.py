@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.core import serializers
 
 from .models import ActiveAircraft, CompletedSortie, Message
 
@@ -44,20 +45,17 @@ def log_completed_flight(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=ActiveAircraft, dispatch_uid="noDuplicates")
 def displayActiveT6s(sender, instance, created, **kwargs):
-    activeT6s = get_T6_queryset()
-    message = ""
-    for t6 in activeT6s:
-        message = message + t6.callSign + "\n"
-
+    activeT6s = serializers.serialize('json', get_T6_queryset())
     channel_layer = layers.get_channel_layer()
     async_to_sync(channel_layer.group_send)(
     'test',
         {
             'type':'t6Update',
-            'message':message
+            'message':activeT6s
         }
     )
-    logger.info("Signal received. Message value is: " + str(message))
+    print(activeT6s)
+    logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 @receiver(post_save, sender=Message, dispatch_uid="noDuplicates")
 def newMessage(sender, instance, created, **kwargs):
@@ -85,7 +83,7 @@ def get_T6_queryset():
     """
     #Question.objects.filter(pub_date__lte=timezone.now())
     return ActiveAircraft.objects.all().order_by(
-    '-takeoffTime')[:]
+    '-takeoffTime')
 
 def get_Message_queryset():
     """
