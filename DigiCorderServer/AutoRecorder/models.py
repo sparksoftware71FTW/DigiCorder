@@ -37,7 +37,7 @@ class Tails(models.Model):
 class Runway(models.Model):
     name = models.CharField('Name', max_length=4, primary_key=True)
     primaryAircraftType = models.CharField('Primary Aircraft Type', max_length=20, blank=True, null=True)
-    airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE)
+    airfield = models.OneToOneField(Airfield, on_delete=models.CASCADE)
 
     def __str__(self):
         return "name " + str(self.name) 
@@ -46,7 +46,7 @@ class Pattern(models.Model):
     lat = models.DecimalField("lat", decimal_places=10, max_digits=13)
     lon = models.DecimalField("lon", decimal_places=10, max_digits=13)
     alt = models.DecimalField("altitude", decimal_places=2, max_digits=7)
-    runway = models.ForeignKey(Runway, on_delete=models.CASCADE)
+    runway = models.OneToOneField(Runway, on_delete=models.CASCADE)
 
     def __str__(self):
         return "pattern point (lat,lon,alt): " + str(self.lat) + ", " + str(self.lon) + "," + str(self.alt)
@@ -61,9 +61,6 @@ class ActiveAircraft(models.Model):
     landTime = models.DateTimeField('Final Landing Time', blank=True, null=True)
     solo = models.BooleanField('Solo', default=False)
     formation = models.BooleanField('Formation', default=False)
-    crossCountry = models.BooleanField('X-Country', default=False)
-    localFlight = models.BooleanField('LocalFlight', default=True)
-    inEastsidePattern = models.BooleanField('Eastside Pattern', default=True)
     emergency = models.BooleanField('Emergency', default=False)
     natureOfEmergency = models.CharField('Nature of Emergency:', max_length=200, blank=True, null=True)
     groundSpeed = models.DecimalField('Ground Speed', default=0.000, decimal_places=3, max_digits=7)
@@ -75,7 +72,8 @@ class ActiveAircraft(models.Model):
     squawk = models.CharField('Squawk', max_length=10, blank=True, null=True)
     seen = models.DecimalField('seen', blank=True, null=True, decimal_places=2, max_digits=6)
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
-    state = models.CharField('State', max_length=20, blank=True, null=True)
+    state = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
+    lastState = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
 
@@ -93,9 +91,6 @@ class CompletedSortie(models.Model):
     landTime = models.DateTimeField('Final Landing Time', blank=True, null=True)
     solo = models.BooleanField('Solo', default=False)
     formation = models.BooleanField('Formation', default=False)
-    crossCountry = models.BooleanField('X-Country', default=False)
-    localFlight = models.BooleanField('LocalFlight', default=True)
-    inEastsidePattern = models.BooleanField('Eastside Pattern', default=True)
     emergency = models.BooleanField('Emergency', default=False)
     natureOfEmergency = models.CharField('Nature of Emergency:', max_length=200, blank=True, null=True)
     groundSpeed = models.DecimalField('Ground Speed', default=0.000, decimal_places=3, max_digits=7)
@@ -107,7 +102,8 @@ class CompletedSortie(models.Model):
     squawk = models.CharField('Squawk', max_length=10, blank=True, null=True)
     seen = models.DecimalField('seen', blank=True, null=True, decimal_places=2, max_digits=6)
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
-    state = models.CharField('State', max_length=20, blank=True, null=True)
+    state = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
+    lastState = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
 

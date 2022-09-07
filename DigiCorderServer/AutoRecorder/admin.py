@@ -4,11 +4,11 @@ from django.contrib import admin
 from .models import ActiveAircraft, CompletedSortie
 
 class ActiveAircraftAdmin(admin.ModelAdmin):
-    list_display = ('aircraftType', 'tailNumber', 'callSign', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formation', 'crossCountry', 'inEastsidePattern', 'emergency', 'natureOfEmergency')
-    list_filter = ['inEastsidePattern', 'solo', 'emergency', 'takeoffTime']
+    list_display = ('aircraftType', 'tailNumber', 'callSign', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formation', 'emergency', 'natureOfEmergency')
+    list_filter = ['solo', 'emergency', 'takeoffTime']
 admin.site.register(ActiveAircraft, ActiveAircraftAdmin)
 
 class CompletedT6SortieAdmin(admin.ModelAdmin):
-    list_display = ('aircraftType', 'tailNumber', 'callSign', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formation', 'crossCountry', 'inEastsidePattern', 'emergency', 'natureOfEmergency')
-    list_filter = ['inEastsidePattern', 'solo', 'emergency', 'takeoffTime']
+    list_display = ('aircraftType', 'tailNumber', 'callSign', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formation', 'emergency', 'natureOfEmergency')
+    list_filter = ['solo', 'emergency', 'takeoffTime']
 admin.site.register(CompletedSortie, CompletedT6SortieAdmin)

@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=ActiveAircraft, dispatch_uid="log_completed_flight")
 def log_completed_flight(sender, instance, created, **kwargs):
-    if isinstance(instance.landTime, timezone.datetime):
+    if instance.state == "completed sortie":
         #ActiveAircraft.objects.get(pk=instance.tailNumber)
         justLandedT6 = CompletedSortie(
         tailNumber=instance.tailNumber,
@@ -24,9 +24,6 @@ def log_completed_flight(sender, instance, created, **kwargs):
         landTime=instance.landTime,
         solo=instance.solo,
         formation=instance.formation,
-        crossCountry=instance.crossCountry,
-        localFlight=instance.localFlight,
-        inEastsidePattern=instance.inEastsidePattern,
         emergency=instance.emergency,
         natureOfEmergency=instance.natureOfEmergency,
         groundSpeed=instance.groundSpeed,
@@ -38,7 +35,8 @@ def log_completed_flight(sender, instance, created, **kwargs):
         squawk=instance.squawk,
         seen=instance.seen,
         rssi=instance.rssi,
-        state=instance.state
+        state=instance.state,
+        lastState = instance.lastState
         )
         justLandedT6.save()
         instance.delete()
