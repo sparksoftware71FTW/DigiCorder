@@ -6,6 +6,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
 from channels import layers
 from channels.db import database_sync_to_async
+from django.core import serializers
 
 from .models import ActiveAircraft, CompletedSortie, Message
 
@@ -22,7 +23,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
         message = await database_sync_to_async(self.get_T6_queryset_update_message)()
-
+         
         channel_layer = layers.get_channel_layer()
         await channel_layer.group_send(
         'test',
@@ -56,15 +57,12 @@ class DashboardConsumer(AsyncWebsocketConsumer):
 
     def get_T6_queryset_update_message(self):
         """
-        Return all active T-6s
+        Return all active T-6s serialized
         """
-        #Question.objects.filter(pub_date__lte=timezone.now())
-        activeT6s = ActiveAircraft.objects.all().order_by(
-        '-takeoffTime')[:]
-        message = ""
-        for t6 in activeT6s:
-            message = message + str(t6.callSign) + "\n"
-        return message
+        activeT6s = serializers.serialize('json', ActiveAircraft.objects.all().filter(aircraftType='TEX2').order_by(
+        '-takeoffTime'))
+             
+        return activeT6s
  
     async def lolmessage(self, event):
         txmessage = event['message']

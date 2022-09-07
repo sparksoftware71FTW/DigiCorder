@@ -143,7 +143,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'DigiCorderServer.wsgi.application'
+#WSGI_APPLICATION = 'DigiCorderServer.wsgi.application'
 
 
 # Database

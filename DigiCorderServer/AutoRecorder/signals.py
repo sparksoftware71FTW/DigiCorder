@@ -11,7 +11,7 @@ from .models import ActiveAircraft, CompletedSortie, Message
 import logging
 logger = logging.getLogger(__name__)
 
-@receiver(post_save, sender=ActiveAircraft, dispatch_uid="noDuplicates")
+@receiver(post_save, sender=ActiveAircraft, dispatch_uid="log_completed_flight")
 def log_completed_flight(sender, instance, created, **kwargs):
     if isinstance(instance.landTime, timezone.datetime):
         #ActiveAircraft.objects.get(pk=instance.tailNumber)
@@ -43,9 +43,9 @@ def log_completed_flight(sender, instance, created, **kwargs):
         justLandedT6.save()
         instance.delete()
 
-@receiver(post_save, sender=ActiveAircraft, dispatch_uid="noDuplicates")
+@receiver(post_save, sender=ActiveAircraft, dispatch_uid="displayActiveT6s")
 def displayActiveT6s(sender, instance, created, **kwargs):
-    activeT6s = serializers.serialize('json', get_T6_queryset())
+    activeT6s = serializers.serialize('json', sender.objects.all().order_by('callSign'))
     channel_layer = layers.get_channel_layer()
     async_to_sync(channel_layer.group_send)(
     'test',

@@ -21,10 +21,10 @@ class AutoRecorderConfig(AppConfig):
         #to make sure you're not adding multiple threads...
         #Also! This thread WILL interact with the database specified in settings.py... NOT a testing db.
         #Make sure we've got only one background thread running...
-        run_once = os.environ.get('RUN_ONCE') 
-        if run_once == 'True':
+        enable_adsb = os.environ.get('ENABLE_ADSB') 
+        if enable_adsb == 'False':
             return
-        os.environ['RUN_ONCE'] = 'True'
+        os.environ['ENABLE_ADSB'] = 'False'
         logger.debug("ready() thread is: " + threading.current_thread().name)
         t1 = threading.Thread(target=task1, args=(threading.current_thread().name,), name='t1')
         t1.start()
@@ -33,8 +33,6 @@ def task1(parentThreadName):
     import http.client
     import json
     from AutoRecorder.models import ActiveAircraft
-    logger.debug("Task 1 assigned to thread: {}".format(threading.current_thread().name))
-    logger.debug("ID of process running task 1: {}".format(os.getpid()))
 
     conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
 
@@ -44,20 +42,15 @@ def task1(parentThreadName):
         }
     
     while True:
-        conn.request("GET", "/v2/lat/36.3393/lon/-97.9131/dist/250/", headers=headers)
+        conn.request("GET", "/v2/lat/36.3393/lon/-97.9131/dist/10/", headers=headers)
         res = conn.getresponse()
         data = res.read()
         jsondata = json.loads(data)
-        # logger.debug("json data is:", jsondata)
-        #logger.debug(jsondata['ac'])
         for aircraft in jsondata['ac']:
             try:
-                
-                # logger.debug(str(aircraft['t']) + " is its type...")
-                # logger.debug(str(aircraft['alt_baro']) + " is its alt_baro...")
 
                 if str(aircraft["t"]) == "TEX2" and str(aircraft["alt_baro"]) != "ground":
-                    logger.debug(aircraft['r'] + " is about to be added to the database...")
+                    logger.debug(aircraft['r'] + " is about to be updated or created...")
                     T6, created = ActiveAircraft.objects.get_or_create(
                         tailNumber=aircraft["r"][-3:] #,
                     )
@@ -79,6 +72,7 @@ def task1(parentThreadName):
                     T6.rssi=aircraft['rssi']
                     T6.state="Airborne"
                     T6.save()
+                    #signals.displayActiveT6s(ActiveAircraft, T6, created)
                     logger.debug("Success!")   
 
                 # either initial takeoff, touch and go, or final landing
@@ -97,19 +91,17 @@ def task1(parentThreadName):
                 #     )
             except KeyError as e:
                 logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
-        
+
         killSignal = True
         threads_list = threading.enumerate()
         
         for thread in threads_list:
-            logger.debug("thread.name is " + thread.name)
-            logger.debug("thread.is_alive() returns: " + str(thread.is_alive()))
             if thread.name is parentThreadName and thread.is_alive() is True:
                 killSignal = False
         
         if killSignal is False:
-            time.sleep(10)
+            time.sleep(1)
             continue
         else:
-            os.environ['RUN_ONCE'] = 'False'
+            os.environ['ENABLE_ADSB'] = 'True'
             return
