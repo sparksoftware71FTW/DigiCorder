@@ -14,7 +14,108 @@
                 </h4>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <strong>This is the first item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    <div class="card">
+                        <div class="card-header">
+                          In Pattern
+                        </div>
+                        <div class="card-body">
+                            <!-- <div class="container-fluid"> -->
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                  <th scope="col"></th>
+                                  <th scope="col">Tail</th>
+                                  <th scope="col">Callsign</th>
+                                  <th scope="col">T/O</th>
+                                  <th scope="col">Land</th>
+                                  <th scope="col">Form Solo</th>
+                                  <th scope="col">355</th> 
+                                </tr>
+                                </thead>
+                                <tbody id="KEND17L In Pattern">
+
+                                </tbody>
+                              </table>
+                          
+                        <!-- </div> -->
+                      </div>
+                    </div>
+
+                      <div class="card">
+                        <div class="card-header">
+                          Taxiing
+                        </div>
+                        <div class="card-body">
+                            <div class="container-fluid">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Tail</th>
+                                    <th scope="col">Callsign</th>
+                                    <th scope="col">T/O</th>
+                                    <th scope="col">Land</th>
+                                    <th scope="col">Form Solo</th>
+                                    <th scope="col">355</th> 
+                                </tr>
+                                </thead>
+                                <tbody id="KEND17L Taxiing">
+
+                                </tbody>
+                              </table>
+                              </div>
+                              </div>
+                        </div>
+                      <div class="card">
+                        <div class="card-header">
+                          Off Station
+                        </div>
+                        <div class="card-body">
+                            <div class="container-fluid">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Tail</th>
+                                    <th scope="col">Callsign</th>
+                                    <th scope="col">T/O</th>
+                                    <th scope="col">Land</th>
+                                    <th scope="col">Form Solo</th>
+                                    <th scope="col">355</th> 
+                                </tr>
+                                </thead>
+                                <tbody id="KEND17L Off Station">
+
+                                </tbody>
+                                </table>
+                                </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header">
+                          Lost Signal
+                        </div>
+                        <div class="card-body">
+                            <div class="container-fluid">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Tail</th>
+                                    <th scope="col">Callsign</th>
+                                    <th scope="col">T/O</th>
+                                    <th scope="col">Land</th>
+                                    <th scope="col">Form Solo</th>
+                                    <th scope="col">355</th> 
+                                </tr>
+                                </thead>
+                                <tbody id="KEND17L Lost Signal">
+
+                                </tbody>
+                              </table>
+                              </div>
+                        </div>
+                      </div>
                 </div>
                 </div>
             </div>
@@ -25,8 +126,8 @@
                 </button>
                 </h4>
                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                <div class="accordion-body" id="KEND 35R -- T-6s">
+
                 </div>
                 </div>
             </div>
@@ -38,7 +139,7 @@
                 </h4>
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    
                 </div>
                 </div>
             </div>
@@ -83,6 +184,87 @@
             }
 
             if(data.type === 't6Update'){
+
+                t6Update = JSON.parse(data.message)
+
+                let KEND17LPattern = document.getElementById('KEND17L In Pattern')
+                removeAllChildNodes(KEND17LPattern)
+                let KEND17LTaxiing = document.getElementById('KEND17L Taxiing')
+                removeAllChildNodes(KEND17LTaxiing)
+                let KEND17LOffStation = document.getElementById('KEND17L Off Station')
+                removeAllChildNodes(KEND17LOffStation)
+                let KEND17LLostSignal = document.getElementById('KEND17L Lost Signal')
+                removeAllChildNodes(KEND17LOffStation)
+
+
+
+                for (let i = 0; i < t6Update.length; i++) {
+
+                    if (t6Update[i].fields.state == "in pattern") {
+                        KEND17LPattern.insertAdjacentHTML('beforeend',       
+                                `<tr>
+                                <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                                <td>${t6Update[i].pk}</td>
+                                <td>${t6Update[i].fields.callSign}</td>
+                                <td>${t6Update[i].fields.takeoffTime}</td>
+                                <td>${t6Update[i].fields.landTime}</td>
+
+                                <td>  
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
+                                <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                </tr>`
+                                )
+                    }
+                    if (t6Update[i].fields.state == "taxiing") {
+                        KEND17LTaxiing.insertAdjacentHTML('beforeend',       
+                                `<tr>
+                                <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                                <td>${t6Update[i].pk}</td>
+                                <td>${t6Update[i].fields.callSign}</td>
+                                <td>${t6Update[i].fields.takeoffTime}</td>
+                                <td>${t6Update[i].fields.landTime}</td>
+
+                                <td>  
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
+                                <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                </tr>`
+                                )
+                    }
+                    if (t6Update[i].fields.state == "off station") {
+                        KEND17LOffStation.insertAdjacentHTML('beforeend',       
+                                `<tr>
+                                <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                                <td>${t6Update[i].pk}</td>
+                                <td>${t6Update[i].fields.callSign}</td>
+                                <td>${t6Update[i].fields.takeoffTime}</td>
+                                <td>${t6Update[i].fields.landTime}</td>
+
+                                <td>  
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
+                                <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                </tr>`
+                                )
+                    }
+                    if (t6Update[i].fields.state == "lost signal") {
+                        KEND17LLostSignal.insertAdjacentHTML('beforeend',       
+                                `<tr>
+                                <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                                <td>${t6Update[i].pk}</td>
+                                <td>${t6Update[i].fields.callSign}</td>
+                                <td>${t6Update[i].fields.takeoffTime}</td>
+                                <td>${t6Update[i].fields.landTime}</td>
+
+                                <td>  
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
+                                <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                </tr>`
+                                )
+                    }
+                }
                 let T6s = document.getElementById('T6s')
                 removeAllChildNodes(T6s)
                 T6s.insertAdjacentHTML('beforeend', `<div>

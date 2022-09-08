@@ -74,17 +74,17 @@ def task1(parentThreadName, aircraftType):
                     T6.seen=aircraft['seen']
                     T6.rssi=aircraft['rssi']
                     position = geometry.Point(T6.latitude, T6.longitude)
-                    if inPattern(position) and T6.groundSpeed > 40 and T6.alt_baro != "ground":
-                        T6.lastState = T6.state # if T6.state != "in pattern" ????????????????????????????????????
+                    if inPattern(position) and T6.groundSpeed > 40 and T6.alt_baro != "ground" and T6.state != "in pattern":
+                        T6.lastState = T6.state
                         T6.state="in pattern"
                         if T6.lastState == "taxiing":
                             T6.takeoffTime = datetime.now()
-                    elif inPattern(position) and T6.groundSpeed < 40 and T6.alt_baro == "ground":
+                    elif inPattern(position) and T6.groundSpeed < 40 and T6.alt_baro == "ground" and T6.state != "taxiing":
                         T6.lastState = T6.state
                         T6.state="taxiiing"
                         if T6.lastState == "in pattern":
                             T6.landTime = datetime.now()
-                    elif inPattern(position) == False:
+                    elif inPattern(position) == False and T6.lastState != "off station":
                         T6.lastState = T6.state
                         T6.state="off station" 
                     T6.timestamp=datetime.now()
@@ -96,6 +96,8 @@ def task1(parentThreadName, aircraftType):
                 logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
 
         aircraftNotUpdated = getAircraftNotUpdated(updatedAircraftList)
+
+# NEED TO THOROUGHLY TEST THE LOGIC ABOVE AND BELOW THIS LINE. STATE TRANSITIONS ARE CRITICAL TO GET RIGHT. 
 
         if aircraftNotUpdated is not None:
             for T6 in aircraftNotUpdated:
@@ -121,7 +123,7 @@ def task1(parentThreadName, aircraftType):
                 killSignal = False
         
         if killSignal is False:
-            time.sleep(10)
+            time.sleep(1)
             continue
         else:
             os.environ['ENABLE_ADSB'] = 'True'
