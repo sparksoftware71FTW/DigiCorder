@@ -126,7 +126,7 @@ def task1(parentThreadName):
                 killSignal = False
         
         if killSignal is False:
-            time.sleep(1)
+            time.sleep(10)
             continue
         else:
             logger.debug("Stopping ADSB Thread")

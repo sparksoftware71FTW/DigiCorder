@@ -45,8 +45,8 @@ def log_completed_flight(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=ActiveAircraft, dispatch_uid="displayActiveAircraft")
 def displayActiveAircraft(sender, instance, created, **kwargs):
-    activeT38s = serializers.serialize('json', sender.objects.filter(aircraftType='T38').order_by('state'))
-    activeT6s = serializers.serialize('json', sender.objects.filter(aircraftType='TEX2').order_by('state'))
+    activeT38s = serializers.serialize('json', sender.objects.filter(aircraftType='T38').order_by('tailNumber'))
+    activeT6s = serializers.serialize('json', sender.objects.filter(aircraftType='TEX2').order_by('tailNumber'))
     channel_layer = layers.get_channel_layer()
     async_to_sync(channel_layer.group_send)(
     'test',

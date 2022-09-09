@@ -24,6 +24,8 @@ function loadKEND35R(chatSocket) {
                             <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t6Update[i].pk}</td>
                             <td>${t6Update[i].fields.callSign}</td>
+                            <td>${t6Update[i].fields.alt_baro}</td>
+                            <td>${t6Update[i].fields.groundSpeed}</td>
                             <td>${t6Update[i].fields.takeoffTime}</td>
                             <td>${t6Update[i].fields.landTime}</td>
 
@@ -40,6 +42,8 @@ function loadKEND35R(chatSocket) {
                             <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t6Update[i].pk}</td>
                             <td>${t6Update[i].fields.callSign}</td>
+                            <td>${t6Update[i].fields.alt_baro}</td>
+                            <td>${t6Update[i].fields.groundSpeed}</td>
                             <td>${t6Update[i].fields.takeoffTime}</td>
                             <td>${t6Update[i].fields.landTime}</td>
 
@@ -56,6 +60,8 @@ function loadKEND35R(chatSocket) {
                             <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t6Update[i].pk}</td>
                             <td>${t6Update[i].fields.callSign}</td>
+                            <td>${t6Update[i].fields.alt_baro}</td>
+                            <td>${t6Update[i].fields.groundSpeed}</td>
                             <td>${t6Update[i].fields.takeoffTime}</td>
                             <td>${t6Update[i].fields.landTime}</td>
 
@@ -72,6 +78,8 @@ function loadKEND35R(chatSocket) {
                             <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t6Update[i].pk}</td>
                             <td>${t6Update[i].fields.callSign}</td>
+                            <td>${t6Update[i].fields.alt_baro}</td>
+                            <td>${t6Update[i].fields.groundSpeed}</td>
                             <td>${t6Update[i].fields.takeoffTime}</td>
                             <td>${t6Update[i].fields.landTime}</td>
 

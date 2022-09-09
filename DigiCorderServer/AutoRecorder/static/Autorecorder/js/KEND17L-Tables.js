@@ -1,16 +1,11 @@
 function loadKEND17L(chatSocket) {
-    console.log('Hello from KEND17L-Table.js!!!!!')
 
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
-        console.log('Data: ', data)
 
-        console.log('about to check data.type t6Update variable...')
         if(data.type == 't6Update'){
 
-            console.log('about to assign t6Update variable...')
             t6Update = JSON.parse(data.message)
-            console.log('t6Update.length is: ', t6Update.length)
 
             let KEND17LPattern = document.getElementById('KEND17L In Pattern')
             removeAllChildNodes(KEND17LPattern)
@@ -22,7 +17,7 @@ function loadKEND17L(chatSocket) {
             removeAllChildNodes(KEND17LLostSignal)
 
             for (let i = 0; i < t6Update.length; i++) {
-                console.log('T6: ', t6Update[i].fields.callSign)
+
                 if (t6Update[i].fields.state == "in pattern") {
                     KEND17LPattern.insertAdjacentHTML('beforeend',       
                             `<tr>

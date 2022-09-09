@@ -2,10 +2,7 @@ function loadKEND17R(chatSocket) {
 
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
-        console.log('Data: ', data)
-        console.log('Data.type: ', data.type)
 
-        console.log('about to check data.type t38Update variable...')
         if(data.type == 't38Update'){
 
             let t38Update = JSON.parse(data.message)
