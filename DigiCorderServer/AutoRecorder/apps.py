@@ -30,11 +30,13 @@ class AutoRecorderConfig(AppConfig):
         if enable_adsb == 'False':
             return
         os.environ['ENABLE_ADSB'] = 'False'
-        logger.debug("ready() thread is: " + threading.current_thread().name)
-        t6 = threading.Thread(target=task1, args=(threading.current_thread().name, "TEX2"), name='T6Thread')
-        t6.start()
+        threadName = threading.current_thread().name
+        logger.debug("ready() thread is: " + threadName)
+        ADSBThread = threading.Thread(target=task1, args=(threadName,), name='ADSBThread')
+        ADSBThread.start()
             
-def task1(parentThreadName, aircraftType):
+def task1(parentThreadName):
+    logger.debug("Starting ADSB Thread")
     import http.client
     import json
     from AutoRecorder.models import ActiveAircraft
@@ -47,50 +49,51 @@ def task1(parentThreadName, aircraftType):
         }
     
     while True:
-        conn.request("GET", "/v2/lat/36.3393/lon/-97.9131/dist/50/", headers=headers)
+        logger.debug("Requesting ADSB Data...")
+        conn.request("GET", "/v2/lat/36.3393/lon/-97.9131/dist/250/", headers=headers)
         res = conn.getresponse()
         data = res.read()
         jsondata = json.loads(data)
         updatedAircraftList = []
         for aircraft in jsondata['ac']:
             try:
-
-                if str(aircraft["t"]) == aircraftType and str(aircraft["alt_baro"]) != "ground":
+                if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' and str(aircraft["alt_baro"]) != "ground":
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
-                    T6, created = ActiveAircraft.objects.get_or_create(
+                    Acft, created = ActiveAircraft.objects.get_or_create(
                         tailNumber=aircraft["r"][-3:] #,
                     )
 
-                    T6.callSign=aircraft["flight"]
-                    T6.aircraftType=aircraft['t']
+                    Acft.callSign=aircraft["flight"]
+                    Acft.aircraftType=aircraft['t']
                     #solo=aircraft["solo"],                 need solo callsign db
                     #formation=aircraft[""],                need form callsign db
-                    T6.emergency=False if aircraft["emergency"] == "none" else True
-                    T6.groundSpeed=aircraft['gs']
-                    T6.latitude=aircraft['lat']
-                    T6.longitude=aircraft['lon']
-                    T6.track=aircraft['track']
-                    T6.squawk=aircraft['squawk']
-                    T6.seen=aircraft['seen']
-                    T6.rssi=aircraft['rssi']
-                    position = geometry.Point(T6.latitude, T6.longitude)
-                    if inPattern(position) and T6.groundSpeed > 40 and T6.alt_baro != "ground" and T6.state != "in pattern":
-                        T6.lastState = T6.state
-                        T6.state="in pattern"
-                        if T6.lastState == "taxiing":
-                            T6.takeoffTime = datetime.now()
-                    elif inPattern(position) and T6.groundSpeed < 40 and T6.alt_baro == "ground" and T6.state != "taxiing":
-                        T6.lastState = T6.state
-                        T6.state="taxiiing"
-                        if T6.lastState == "in pattern":
-                            T6.landTime = datetime.now()
-                    elif inPattern(position) == False and T6.lastState != "off station":
-                        T6.lastState = T6.state
-                        T6.state="off station" 
-                    T6.timestamp=datetime.now()
-                    T6.save()
+                    Acft.emergency=False if aircraft["emergency"] == "none" else True
+                    Acft.alt_baro=aircraft['alt_baro']
+                    Acft.groundSpeed=aircraft['gs']
+                    Acft.latitude=aircraft['lat']
+                    Acft.longitude=aircraft['lon']
+                    Acft.track=aircraft['track']
+                    Acft.squawk=aircraft['squawk']
+                    Acft.seen=aircraft['seen']
+                    Acft.rssi=aircraft['rssi']
+                    position = geometry.Point(Acft.latitude, Acft.longitude)
+                    if inPattern(position) and Acft.groundSpeed > 40 and Acft.alt_baro != "ground" and Acft.state != "in pattern":
+                        Acft.lastState = Acft.state
+                        Acft.state="in pattern"
+                        if Acft.lastState == "taxiing":
+                            Acft.takeoffTime = datetime.now()
+                    elif inPattern(position) and Acft.groundSpeed < 40 and Acft.alt_baro == "ground" and Acft.state != "taxiing":
+                        Acft.lastState = Acft.state
+                        Acft.state="taxiiing"
+                        if Acft.lastState == "in pattern":
+                            Acft.landTime = datetime.now()
+                    elif inPattern(position) == False and Acft.lastState != "off station":
+                        Acft.lastState = Acft.state
+                        Acft.state="off station" 
+                    Acft.timestamp=datetime.now()
+                    Acft.save()
                     logger.debug("Success!")   
-                    updatedAircraftList.append(T6.tailNumber)         
+                    updatedAircraftList.append(Acft.tailNumber)         
 
             except KeyError as e:
                 logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
@@ -100,20 +103,20 @@ def task1(parentThreadName, aircraftType):
 # NEED TO THOROUGHLY TEST THE LOGIC ABOVE AND BELOW THIS LINE. STATE TRANSITIONS ARE CRITICAL TO GET RIGHT. 
 
         if aircraftNotUpdated is not None:
-            for T6 in aircraftNotUpdated:
-                if T6.timestamp or T6.landTime or T6.state or T6.lastState is None:
+            for Acft in aircraftNotUpdated:
+                if Acft.timestamp or Acft.landTime or Acft.state or Acft.lastState is None:
                     continue
-                if (T6.timestamp - datetime.now()).total_seconds() > 120: 
-                    if T6.landTime == None:
-                        T6.lastState = T6.state
-                        T6.state = "lost signal"
+                if (Acft.timestamp - datetime.now()).total_seconds() > 120: 
+                    if Acft.landTime == None:
+                        Acft.lastState = Acft.state
+                        Acft.state = "lost signal"
                     else:
-                        T6.lastState = T6.state
-                        T6.state = "completed sortie"
-                if(T6.timestamp - datetime.now()).total_hours() > 4:
-                    T6.lastState = T6.state
-                    T6.state = "completed sortie"
-                T6.save()
+                        Acft.lastState = Acft.state
+                        Acft.state = "completed sortie"
+                if(Acft.timestamp - datetime.now()).total_hours() > 4:
+                    Acft.lastState = Acft.state
+                    Acft.state = "completed sortie"
+                Acft.save()
 
         killSignal = True
         threads_list = threading.enumerate()
@@ -126,6 +129,7 @@ def task1(parentThreadName, aircraftType):
             time.sleep(1)
             continue
         else:
+            logger.debug("Stopping ADSB Thread")
             os.environ['ENABLE_ADSB'] = 'True'
             return
 

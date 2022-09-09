@@ -40,10 +40,13 @@ def log_completed_flight(sender, instance, created, **kwargs):
         )
         justLandedT6.save()
         instance.delete()
+        logger.warning("!!!!!!!!!!!Active -> Completed Transition Occured!!!!!!!!!!!!")
 
-@receiver(post_save, sender=ActiveAircraft, dispatch_uid="displayActiveT6s")
-def displayActiveT6s(sender, instance, created, **kwargs):
-    activeT6s = serializers.serialize('json', sender.objects.all().order_by('callSign'))
+
+@receiver(post_save, sender=ActiveAircraft, dispatch_uid="displayActiveAircraft")
+def displayActiveAircraft(sender, instance, created, **kwargs):
+    activeT38s = serializers.serialize('json', sender.objects.filter(aircraftType='T38').order_by('state'))
+    activeT6s = serializers.serialize('json', sender.objects.filter(aircraftType='TEX2').order_by('state'))
     channel_layer = layers.get_channel_layer()
     async_to_sync(channel_layer.group_send)(
     'test',
@@ -52,32 +55,18 @@ def displayActiveT6s(sender, instance, created, **kwargs):
             'message':activeT6s
         }
     )
-    print(activeT6s)
-    logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-@receiver(post_save, sender=Message, dispatch_uid="noDuplicates")
-def newMessage(sender, instance, created, **kwargs):
-    channel_layer = layers.get_channel_layer()
     async_to_sync(channel_layer.group_send)(
     'test',
         {
-            'type':'lolmessage',
-            'message':instance.message
+            'type':'t38Update',
+            'message':activeT38s
         }
     )
-    logger.info("Signal received. Message db value is: " + str(instance.message))
- 
-# def chat_message(self, event):
-#     message = event['message']
-#     channel_layer = layers.get_channel_layer()
+    logger.warning("!!!!!!!!!!!Active Aircraft Signal Triggered!!!!!!!!!!!!")
 
-#     async_to_sync(channel_layer.send)(text_data=json.dumps(
-#         message
-#     ))
-
-def get_T6_queryset():
+def get_ActiveAircraft_queryset():
     """
-    Return all active T-6s
+    Return all active aircraft
     """
     #Question.objects.filter(pub_date__lte=timezone.now())
     return ActiveAircraft.objects.all().order_by(

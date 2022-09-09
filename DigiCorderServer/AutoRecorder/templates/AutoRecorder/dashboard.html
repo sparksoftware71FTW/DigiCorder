@@ -5,6 +5,38 @@
 {% block title %}Recorder Dashboard{% endblock %}
 
 {% block content %}
+
+<script type="text/javascript">
+    var url = `ws://${window.location.host}/ws/socket-server/`
+    console.log(url)
+    
+    const chatSocket = new WebSocket(url)
+
+    // chatSocket.onmessage = function(e){
+    //     let data = JSON.parse(e.data)
+    //     console.log('Data: ', data)
+
+    //     if(data.type === 't6Update'){
+
+    //     let T6s = document.getElementById('T6s')
+    //         removeAllChildNodes(T6s)
+    //         T6s.insertAdjacentHTML('beforeend', `<div>
+    //                                     <p>${data.message}</p>
+    //                                 </div>`)
+    //     }
+    // }
+
+    function removeAllChildNodes(parent) {
+        if(parent != null) {
+            if(parent.firstChild != null){
+                while (parent.firstChild) {
+                    parent.removeChild(parent.firstChild);
+                }
+            }
+        }
+    }
+
+</script>
         <div class="accordion" id="accordionExample">
             <div class="accordion-item">
                 <h4 class="accordion-header" id="headingOne">
@@ -14,108 +46,10 @@
                 </h4>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <div class="card">
-                        <div class="card-header">
-                          In Pattern
-                        </div>
-                        <div class="card-body">
-                            <!-- <div class="container-fluid"> -->
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                  <th scope="col"></th>
-                                  <th scope="col">Tail</th>
-                                  <th scope="col">Callsign</th>
-                                  <th scope="col">T/O</th>
-                                  <th scope="col">Land</th>
-                                  <th scope="col">Form Solo</th>
-                                  <th scope="col">355</th> 
-                                </tr>
-                                </thead>
-                                <tbody id="KEND17L In Pattern">
-
-                                </tbody>
-                              </table>
-                          
-                        <!-- </div> -->
-                      </div>
-                    </div>
-
-                      <div class="card">
-                        <div class="card-header">
-                          Taxiing
-                        </div>
-                        <div class="card-body">
-                            <div class="container-fluid">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th scope="col"></th>
-                                    <th scope="col">Tail</th>
-                                    <th scope="col">Callsign</th>
-                                    <th scope="col">T/O</th>
-                                    <th scope="col">Land</th>
-                                    <th scope="col">Form Solo</th>
-                                    <th scope="col">355</th> 
-                                </tr>
-                                </thead>
-                                <tbody id="KEND17L Taxiing">
-
-                                </tbody>
-                              </table>
-                              </div>
-                              </div>
-                        </div>
-                      <div class="card">
-                        <div class="card-header">
-                          Off Station
-                        </div>
-                        <div class="card-body">
-                            <div class="container-fluid">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th scope="col"></th>
-                                    <th scope="col">Tail</th>
-                                    <th scope="col">Callsign</th>
-                                    <th scope="col">T/O</th>
-                                    <th scope="col">Land</th>
-                                    <th scope="col">Form Solo</th>
-                                    <th scope="col">355</th> 
-                                </tr>
-                                </thead>
-                                <tbody id="KEND17L Off Station">
-
-                                </tbody>
-                                </table>
-                                </div>
-                        </div>
-                      </div>
-                      <div class="card">
-                        <div class="card-header">
-                          Lost Signal
-                        </div>
-                        <div class="card-body">
-                            <div class="container-fluid">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th scope="col"></th>
-                                    <th scope="col">Tail</th>
-                                    <th scope="col">Callsign</th>
-                                    <th scope="col">T/O</th>
-                                    <th scope="col">Land</th>
-                                    <th scope="col">Form Solo</th>
-                                    <th scope="col">355</th> 
-                                </tr>
-                                </thead>
-                                <tbody id="KEND17L Lost Signal">
-
-                                </tbody>
-                              </table>
-                              </div>
-                        </div>
-                      </div>
+                    {% if True %}
+                        {% include 'AutoRecorder/KEND17L-Tables.html' %}
+                        <script> loadKEND17L(chatSocket) </script>
+                    {% endif %}
                 </div>
                 </div>
             </div>
@@ -127,7 +61,10 @@
                 </h4>
                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                 <div class="accordion-body" id="KEND 35R -- T-6s">
-
+                    {% if True %}
+                        {% include 'AutoRecorder/KEND35R-Tables.html' %}
+                        <script> loadKEND35R(chatSocket) </script>
+                    {% endif %}
                 </div>
                 </div>
             </div>
@@ -139,156 +76,32 @@
                 </h4>
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    
+                {% if True %}
+                    {% include 'AutoRecorder/KEND35L-Tables.html' %}
+                    <script> loadKEND35L(chatSocket) </script>
+                {% endif %}
                 </div>
                 </div>
             </div>
             <div class="accordion-item">
-                <h4 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <h4 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                     KEND 17R -- T-38s
                 </button>
                 </h4>
-                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    {% if True %}
+                        {% include 'AutoRecorder/KEND17R-Tables.html' %}
+                        <script> loadKEND17R(chatSocket) </script>
+                    {% endif %}
                 </div>
                 </div>
             </div>
         </div>
 
-        <p>Active T-6s:</p>
-        <form id="form1">
-            <input type="text" name="message">
-        </form>
         <div id="messages"></div>
         <div id="T6s"></div>
 
-    <script type="text/javascript">
-        let url = `ws://${window.location.host}/ws/socket-server/`
-        console.log(url)
-        
-        const chatSocket = new WebSocket(url)
-
-        chatSocket.onmessage = function(e){
-            let data = JSON.parse(e.data)
-            console.log('Data: ', data)
-            console.log('Data.type: ', data.type)
-
-            if(data.type === 'lolmessage'){
-                let messages = document.getElementById('messages')
-                removeAllChildNodes(messages)
-                messages.insertAdjacentHTML('beforeend', `<div>
-                                            <p>${data.message}</p>
-                                        </div>`)
-            }
-
-            if(data.type === 't6Update'){
-
-                t6Update = JSON.parse(data.message)
-
-                let KEND17LPattern = document.getElementById('KEND17L In Pattern')
-                removeAllChildNodes(KEND17LPattern)
-                let KEND17LTaxiing = document.getElementById('KEND17L Taxiing')
-                removeAllChildNodes(KEND17LTaxiing)
-                let KEND17LOffStation = document.getElementById('KEND17L Off Station')
-                removeAllChildNodes(KEND17LOffStation)
-                let KEND17LLostSignal = document.getElementById('KEND17L Lost Signal')
-                removeAllChildNodes(KEND17LOffStation)
-
-
-
-                for (let i = 0; i < t6Update.length; i++) {
-
-                    if (t6Update[i].fields.state == "in pattern") {
-                        KEND17LPattern.insertAdjacentHTML('beforeend',       
-                                `<tr>
-                                <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
-                                <td>${t6Update[i].pk}</td>
-                                <td>${t6Update[i].fields.callSign}</td>
-                                <td>${t6Update[i].fields.takeoffTime}</td>
-                                <td>${t6Update[i].fields.landTime}</td>
-
-                                <td>  
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
-                                </tr>`
-                                )
-                    }
-                    if (t6Update[i].fields.state == "taxiing") {
-                        KEND17LTaxiing.insertAdjacentHTML('beforeend',       
-                                `<tr>
-                                <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
-                                <td>${t6Update[i].pk}</td>
-                                <td>${t6Update[i].fields.callSign}</td>
-                                <td>${t6Update[i].fields.takeoffTime}</td>
-                                <td>${t6Update[i].fields.landTime}</td>
-
-                                <td>  
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
-                                </tr>`
-                                )
-                    }
-                    if (t6Update[i].fields.state == "off station") {
-                        KEND17LOffStation.insertAdjacentHTML('beforeend',       
-                                `<tr>
-                                <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
-                                <td>${t6Update[i].pk}</td>
-                                <td>${t6Update[i].fields.callSign}</td>
-                                <td>${t6Update[i].fields.takeoffTime}</td>
-                                <td>${t6Update[i].fields.landTime}</td>
-
-                                <td>  
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
-                                </tr>`
-                                )
-                    }
-                    if (t6Update[i].fields.state == "lost signal") {
-                        KEND17LLostSignal.insertAdjacentHTML('beforeend',       
-                                `<tr>
-                                <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
-                                <td>${t6Update[i].pk}</td>
-                                <td>${t6Update[i].fields.callSign}</td>
-                                <td>${t6Update[i].fields.takeoffTime}</td>
-                                <td>${t6Update[i].fields.landTime}</td>
-
-                                <td>  
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
-                                </tr>`
-                                )
-                    }
-                }
-                let T6s = document.getElementById('T6s')
-                removeAllChildNodes(T6s)
-                T6s.insertAdjacentHTML('beforeend', `<div>
-                                            <p>${data.message}</p>
-                                        </div>`)
-            }
-        }
-
-        let form = document.getElementById('form1')
-        form.addEventListener('submit', (e)=> {
-            e.preventDefault()
-            let message = e.target.message.value
-            chatSocket.send(JSON.stringify({
-                'lolmessage':message
-            }))
-        form.reset()
-        })
-
-        function removeAllChildNodes(parent) {
-        while (parent.firstChild) {
-            parent.removeChild(parent.firstChild);
-        }
-    }
-
-    </script>
 {% endblock %}
 

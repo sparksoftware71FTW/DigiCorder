@@ -73,7 +73,7 @@ class ActiveAircraft(models.Model):
     seen = models.DecimalField('seen', blank=True, null=True, decimal_places=2, max_digits=6)
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
     state = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
-    lastState = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
+    lastState = models.CharField('Last State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
 
@@ -103,7 +103,7 @@ class CompletedSortie(models.Model):
     seen = models.DecimalField('seen', blank=True, null=True, decimal_places=2, max_digits=6)
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
     state = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
-    lastState = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
+    lastState = models.CharField('Last State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
 

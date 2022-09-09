@@ -22,17 +22,25 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
 
-        message = await database_sync_to_async(self.get_T6_queryset_update_message)()
+        t6message = await database_sync_to_async(self.get_T6_queryset_update_message)()
+        t38message = await database_sync_to_async(self.get_T38_queryset_update_message)()
          
         channel_layer = layers.get_channel_layer()
         await channel_layer.group_send(
         'test',
             {
                 'type':'t6Update',
-                'message':message
+                'message':t6message
             }
         )
-        logger.debug("Sending initial ActiveAircraft list. Message value is: " + str(message))
+        await channel_layer.group_send(
+        'test',
+            {
+                'type':'t38Update',
+                'message':t38message
+            }
+        )
+        logger.debug("Sending initial ActiveAircraft list. Message value is: " + str(t38message))
         
 
     # def disconnect(self, code):
@@ -63,6 +71,15 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         '-takeoffTime'))
              
         return activeT6s
+
+    def get_T38_queryset_update_message(self):
+        """
+        Return all active T-6s serialized
+        """
+        activeT38s = serializers.serialize('json', ActiveAircraft.objects.all().filter(aircraftType='T38').order_by(
+        '-takeoffTime'))
+             
+        return activeT38s
  
     async def lolmessage(self, event):
         txmessage = event['message']
@@ -78,4 +95,12 @@ class DashboardConsumer(AsyncWebsocketConsumer):
             'type':'t6Update',
             'message':txmessage
         }))
+
+    async def t38Update(self, event):
+        txmessage = event['message']
+        await self.send(text_data=json.dumps({
+            'type':'t38Update',
+            'message':txmessage
+        }))
+        logger.debug('!!!!!!! t38Update' + str(txmessage))
 
