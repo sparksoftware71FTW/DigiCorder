@@ -1,113 +1,167 @@
-  <div class="card">
-    <div class="card-header">
-      In Pattern
+<div class="card">
+  <div class="row g-0">
+    <div class="col-md-6">
+      <svg class="bd-placeholder-img" width="100%" height="350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Map</text></svg>
     </div>
-      <div class="card-body" style="overflow-x: scroll;">
-           <div class="container-fluid"> 
-          <table class="table table-striped" style="overflow-x: scroll;">
-              <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Tail</th>
-                <th scope="col">Callsign</th>
-                <th scope="col">alt</th>
-                <th scope="col">gnd spd</th>
-                <th scope="col">T/O</th>
-                <th scope="col">Land</th>
-                <th scope="col">Form Solo</th>
-                <th scope="col">355</th> 
-              </tr>
-              </thead>
-              <tbody id="KEND17R In Pattern">
-
-              </tbody>
-            </table>
-        
+    <div class="col-md-6">
+      <div class="card-body">
+        <h5 class="card-title">Recorder Summary</h5>
+        <ol class="list-group list-group-numbered">
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto" >
+              <div class="fw-bold" >Dual Aircraft Outside the Pattern > 1+45: </div>
+              <div id="KEND17R Dual Aircraft Outside the Pattern > 1+45">
+              </div>
+              <!-- Callsigns here -->
+            </div>
+            <span id="numKEND17R Dual Aircraft Outside the Pattern > 1+45"></span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto" >
+              <div class="fw-bold">Solo Aircraft Outside the Pattern > 1+20:</div>
+              <div id="KEND17R Solo Aircraft Outside the Pattern > 1+20">
+              </div>
+            </div>
+            <span id="numKEND17R Solo Aircraft Outside the Pattern > 1+20"></span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+              <div class="fw-bold">Solos Off Station:</div>
+              <div id="KEND17R Solos Off Station">
+              </div>
+              <!-- Callsigns here -->
+            </div>
+            <span id="numKEND17R Solos Off Station"></span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+              <div class="fw-bold">Solos in the Pattern:</div>
+              <div id="KEND17R Solos in the Pattern">
+              </div>
+              <!-- Callsigns here -->
+            </div>
+            <span id="numKEND17R Solos in the Pattern"></span>
+          </li>
+        </ol>
       </div>
     </div>
   </div>
+</div>
+<div class="card">
+    <div class="card-header">
+      In Pattern
+      <span id="numKEND17R In Pattern"><!-- NUMBER of callsigns here --></span>
+    </div>
 
-    <div class="card">
-      <div class="card-header">
-        Taxiing
-      </div>
-      <div class="card-body" style="overflow-x: scroll;">
-          <div class="container-fluid">
-          <table class="table table-striped">
-              <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Tail</th>
-                <th scope="col">Callsign</th>
-                <th scope="col">alt</th>
-                <th scope="col">gnd spd</th>
-                <th scope="col">T/O</th>
-                <th scope="col">Land</th>
-                <th scope="col">Form Solo</th>
-                <th scope="col">355</th> 
-              </tr>
-              </thead>
-              <tbody id="KEND17R Taxiing">
+    <div class="card-body" style="overflow-x: scroll;">
+      <div class="container-fluid">
+        <table class="table table-striped" style="overflow-x: scroll;">
+            <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Tail</th>
+              <th scope="col">Callsign</th>
+              <th scope="col">alt</th>
+              <th scope="col">gnd spd</th>
+              <th scope="col">T/O</th>
+              <th scope="col">Land</th>
+              <th scope="col">Form Solo</th>
+              <th scope="col">355</th> 
+            </tr>
+            </thead>
+            <tbody id="KEND17R In Pattern">
 
-              </tbody>
+            </tbody>
+          </table>
+  </div>
+</div>
+</div>
+
+  <div class="card">
+    <div class="card-header" >
+      Taxiing
+      <span id="numKEND17R Taxiing"><!-- NUMBER of callsigns here --></span>
+    </div>
+    <div class="card-body" style="overflow-x: scroll;">
+        <div class="container-fluid">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Tail</th>
+              <th scope="col">Callsign</th>
+              <th scope="col">alt</th>
+              <th scope="col">gnd spd</th>
+              <th scope="col">T/O</th>
+              <th scope="col">Land</th>
+              <th scope="col">Form Solo</th>
+              <th scope="col">355</th> 
+            </tr>
+            </thead>
+            <tbody id="KEND17R Taxiing">
+
+            </tbody>
+          </table>
+          </div>
+          </div>
+    </div>
+  <div class="card">
+    <div class="card-header">
+      Off Station
+      <span id="numKEND17R Off Station"><!-- NUMBER of callsigns here --></span>
+    </div>
+    <div class="card-body" style="overflow-x: scroll;">
+        <div class="container-fluid">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Tail</th>
+              <th scope="col">Callsign</th>
+              <th scope="col">alt</th>
+              <th scope="col">gnd spd</th>
+              <th scope="col">T/O</th>
+              <th scope="col">Land</th>
+              <th scope="col">Form Solo</th>
+              <th scope="col">355</th> 
+            </tr>
+            </thead>
+            <tbody id="KEND17R Off Station">
+
+            </tbody>
             </table>
             </div>
-            </div>
-      </div>
-    <div class="card">
-      <div class="card-header">
-        Off Station
-      </div>
-      <div class="card-body" style="overflow-x: scroll;">
-          <div class="container-fluid">
-          <table class="table table-striped">
-              <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Tail</th>
-                <th scope="col">Callsign</th>
-                <th scope="col">alt</th>
-                <th scope="col">gnd spd</th>
-                <th scope="col">T/O</th>
-                <th scope="col">Land</th>
-                <th scope="col">Form Solo</th>
-                <th scope="col">355</th> 
-              </tr>
-              </thead>
-              <tbody id="KEND17R Off Station">
-
-              </tbody>
-              </table>
-              </div>
-      </div>
     </div>
-    <div class="card">
-      <div class="card-header">
-        Lost Signal
-      </div>
-      <div class="card-body" style="overflow-x: scroll;">
-          <div class="container-fluid">
-          <table class="table table-striped">
-              <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Tail</th>
-                <th scope="col">Callsign</th>
-                <th scope="col">alt</th>
-                <th scope="col">gnd spd</th>
-                <th scope="col">T/O</th>
-                <th scope="col">Land</th>
-                <th scope="col">Form Solo</th>
-                <th scope="col">355</th> 
-              </tr>
-              </thead>
-              <tbody id="KEND17R Lost Signal">
-
-              </tbody>
-            </table>
-            </div>
-      </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      Lost Signal
+      <span id="numKEND17R Lost Signal"><!-- NUMBER of callsigns here --></span>
     </div>
-    
-    {% load static %}
-    <script src={% static "AutoRecorder/js/KEND17R-Tables.js"%} type="text/javascript"></script> 
+    <div class="card-body" style="overflow-x: scroll;">
+        <div class="container-fluid">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Tail</th>
+              <th scope="col">Callsign</th>
+              <th scope="col">alt</th>
+              <th scope="col">gnd spd</th>
+              <th scope="col">T/O</th>
+              <th scope="col">Land</th>
+              <th scope="col">Form Solo</th>
+              <th scope="col">355</th> 
+            </tr>
+            </thead>
+            <tbody id="KEND17R Lost Signal">
+
+            </tbody>
+          </table>
+          </div>
+    </div>
+  </div>
+
+  {% load static %}
+  <script src={% static "AutoRecorder/js/KEND17R-Tables.js"%} type="text/javascript"></script> 
+

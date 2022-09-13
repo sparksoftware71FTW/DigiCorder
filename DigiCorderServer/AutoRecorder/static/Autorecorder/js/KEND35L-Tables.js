@@ -6,6 +6,9 @@ function loadKEND35L(chatSocket) {
         if(data.type == 't38Update'){
 
             let t38Update = JSON.parse(data.message)
+            let t38Meta = JSON.parse(data.meta)
+            console.log("HELLLOOOOOOOOOOOOOO")
+
 
             let KEND35LPattern = document.getElementById('KEND35L In Pattern')
             removeAllChildNodes(KEND35LPattern)
@@ -15,9 +18,108 @@ function loadKEND35L(chatSocket) {
             removeAllChildNodes(KEND35LOffStation)
             let KEND35LLostSignal = document.getElementById('KEND35L Lost Signal')
             removeAllChildNodes(KEND35LLostSignal)
+            let numKEND35LPattern = document.getElementById('numKEND35L In Pattern')
+            removeAllChildNodes(numKEND35LPattern)
+            let numKEND35LTaxiing = document.getElementById('numKEND35L Taxiing')
+            removeAllChildNodes(numKEND35LTaxiing)
+            let numKEND35LOffStation = document.getElementById('numKEND35L Off Station')
+            removeAllChildNodes(numKEND35LOffStation)
+            let numKEND35LLostSignal = document.getElementById('numKEND35L Lost Signal')
+            removeAllChildNodes(numKEND35LLostSignal)
 
 
+            let KEND35Ldual145 = document.getElementById('KEND35L Dual Aircraft Outside the Pattern > 1+45')
+            removeAllChildNodes(KEND35Ldual145)
+            let KEND35Lsolo120 = document.getElementById('KEND35L Solo Aircraft Outside the Pattern > 1+20')
+            removeAllChildNodes(KEND35Lsolo120)
+            let KEND35LsolosOffStation = document.getElementById('KEND35L Solos Off Station')
+            removeAllChildNodes(KEND35LsolosOffStation)
+            let KEND35LsolosInPattern = document.getElementById('KEND35L Solos in the Pattern')
+            removeAllChildNodes(KEND35LsolosInPattern)
 
+            let numKEND35Ldual145 = document.getElementById('numKEND35L Dual Aircraft Outside the Pattern > 1+45')
+            removeAllChildNodes(numKEND35Ldual145)
+            let numKEND35Lsolo120 = document.getElementById('numKEND35L Solo Aircraft Outside the Pattern > 1+20')
+            removeAllChildNodes(numKEND35Lsolo120)
+            let numKEND35LsolosOffStation = document.getElementById('numKEND35L Solos Off Station')
+            removeAllChildNodes(numKEND35LsolosOffStation)
+            let numKEND35LsolosInPattern = document.getElementById('numKEND35L Solos in the Pattern')
+            removeAllChildNodes(numKEND35LsolosInPattern)
+
+            numKEND35Ldual145.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.dual145.length}</span>
+            `)
+            
+            numKEND35Lsolo120.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.solo120.length}</span>
+            `)
+            
+            numKEND35LsolosOffStation.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.solosOffStation.length}</span>
+            `)
+            
+            numKEND35LsolosInPattern.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.solosInPattern.length}</span>
+            `)
+
+            //update the badge displaying the number of aircraft in each major state
+            if(t38Meta.In_Pattern < 8) { //blue background
+                numKEND35LPattern.insertAdjacentHTML('beforeend', `
+                <span class="badge bg-primary rounded-pill">${t38Meta.In_Pattern}</span>
+                `)
+            }
+            else if (t38Meta.In_Pattern >= 12) { //red background
+                numKEND35LPattern.insertAdjacentHTML('beforeend', `
+                <span class="badge bg-danger rounded-pill">${t38Meta.In_Pattern}</span>
+                `)
+            }
+            else { //yellow background
+                numKEND35LPattern.insertAdjacentHTML('beforeend', `
+                <span class="badge bg-warning rounded-pill">${t38Meta.In_Pattern}</span>
+                `)
+            }
+
+            numKEND35LTaxiing.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.Taxiing}</span>
+            `)
+
+            numKEND35LOffStation.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.Off_Station}</span>
+            `)
+
+            numKEND35LLostSignal.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.Lost_Signal}</span>
+            `)
+
+            for (let i = 0; i < t38Meta.dual145.length; i++) {
+                KEND35Ldual145.insertAdjacentHTML('beforeend', `
+                <span class="badge text-bg-secondary">${t38Meta.dual145[i]}</span>
+                `
+                )   
+            }
+
+            for (let i = 0; i < t38Meta.solo120.length; i++) {
+                KEND35Lsolo120.insertAdjacentHTML('beforeend', `
+                <span class="badge text-bg-danger">${t38Meta.solo120[i]}</span>
+                `
+                )   
+            }
+
+            for (let i = 0; i < t38Meta.solosOffStation.length; i++) {
+                KEND35LsolosOffStation.insertAdjacentHTML('beforeend', `
+                <span class="badge text-bg-warning">${t38Meta.solosOffStation[i]}</span>
+                `
+                )   
+            }
+
+            for (let i = 0; i < t38Meta.solosInPattern.length; i++) {
+                KEND35LsolosInPattern.insertAdjacentHTML('beforeend', `
+                <span class="badge text-bg-info">${t38Meta.solosInPattern[i]}</span>
+                `
+                )   
+            }
+
+            
             for (let i = 0; i < t38Update.length; i++) {
 
                 if (t38Update[i].fields.state == "in pattern") {

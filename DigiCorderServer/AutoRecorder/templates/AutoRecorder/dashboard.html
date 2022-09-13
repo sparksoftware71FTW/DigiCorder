@@ -12,6 +12,19 @@
     
     const chatSocket = new WebSocket(url)
 
+    chatSocket.addEventListener('message', function(e){
+        let data = JSON.parse(e.data)
+        
+        if(data.type == 't38Update'){
+            console.log("t38 meta is: ", data.meta)
+        }
+        if(data.type == 't6Update'){
+            console.log("t6 meta is: ", data.meta)
+        }
+    }
+    )
+
+
     // chatSocket.onmessage = function(e){
     //     let data = JSON.parse(e.data)
     //     console.log('Data: ', data)

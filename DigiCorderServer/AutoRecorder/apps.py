@@ -64,8 +64,9 @@ def task1(parentThreadName):
                     )
 
                     Acft.callSign=aircraft["flight"]
+                    if "SMAL" in Acft.callSign:
+                        Acft.solo = True
                     Acft.aircraftType=aircraft['t']
-                    #solo=aircraft["solo"],                 need solo callsign db
                     #formation=aircraft[""],                need form callsign db
                     Acft.emergency=False if aircraft["emergency"] == "none" else True
                     Acft.alt_baro=aircraft['alt_baro']
@@ -100,7 +101,7 @@ def task1(parentThreadName):
 
         aircraftNotUpdated = getAircraftNotUpdated(updatedAircraftList)
 
-# NEED TO THOROUGHLY TEST THE LOGIC ABOVE AND BELOW THIS LINE. STATE TRANSITIONS ARE CRITICAL TO GET RIGHT. 
+# TODO NEED TO THOROUGHLY TEST THE LOGIC ABOVE AND BELOW THIS LINE. STATE TRANSITIONS ARE CRITICAL TO GET RIGHT. 
 
         if aircraftNotUpdated is not None:
             for Acft in aircraftNotUpdated:
@@ -126,7 +127,7 @@ def task1(parentThreadName):
                 killSignal = False
         
         if killSignal is False:
-            time.sleep(10)
+            time.sleep(.1)
             continue
         else:
             logger.debug("Stopping ADSB Thread")
