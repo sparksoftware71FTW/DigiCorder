@@ -66,11 +66,11 @@ LOGGING = {
         },
         'AutoRecorder.apps': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'AutoRecorder.signals': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'AutoRecorder.views': {
             'handlers': ['console'],
@@ -84,7 +84,7 @@ LOGGING = {
 }
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['172.16.30.220', 'localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition

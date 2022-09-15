@@ -1,6 +1,7 @@
 import json
 from channels import layers
-from datetime import datetime, timedelta
+from django.utils import timezone
+from django.utils.timezone import timedelta
 from asgiref.sync import async_to_sync
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -41,7 +42,7 @@ def log_completed_flight(sender, instance, created, **kwargs):
         )
         justLandedT6.save()
         instance.delete()
-        logger.warning("!!!!!!!!!!!Active -> Completed Transition Occured!!!!!!!!!!!!")
+        logger.info("Active -> Completed Transition Occured")
 
 
 @receiver(post_save, sender=ActiveAircraft, dispatch_uid="displayActiveAircraft")
@@ -67,14 +68,14 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
 
         }
     )
-    logger.warning("!!!!!!!!!!!Active Aircraft Signal Triggered!!!!!!!!!!!!")
+    logger.info("Active Aircraft Signal Triggered")
 
 def get_ActiveAircraft_queryset():
     """
     Return all active aircraft
     """
     #Question.objects.filter(pub_date__lte=timezone.now())
-    return ActiveAircraft.objects.all().order_by('-takeoffTime')
+    return ActiveAircraft.objects.all().order_by('tailNumber')
 
 def get_Message_queryset():
     """
@@ -88,7 +89,7 @@ def get_T6_queryset_update_message(sender):
     """
     Return all active T-6s serialized with associated metadata
     """
-    activeT6query = sender.objects.all().filter(aircraftType='TEX2')
+    activeT6query = sender.objects.all().filter(aircraftType='TEX2').order_by('tailNumber')
 
     activeT6Metadata = {}
     activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count()
@@ -97,13 +98,13 @@ def get_T6_queryset_update_message(sender):
     activeT6Metadata['Lost_Signal'] = activeT6query.filter(state="lost signal").count()
     activeT6Metadata['dual145'] = []
     for T6 in activeT6query.filter(
-        takeoffTime__lt=datetime.now() - timedelta(hours=1, minutes=45)).exclude(
+        takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=45)).exclude(
             solo=True).exclude(state='in pattern').exclude(state='taxiing'):
         activeT6Metadata['dual145'].append(T6.callSign)
 
     activeT6Metadata['solo120'] = []
     for T6 in activeT6query.filter(
-        takeoffTime__lt=datetime.now() - timedelta(hours=1, minutes=20)).filter(
+        takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).filter(
             solo=True).exclude(state='in pattern').exclude(state='taxiing'):
             activeT6Metadata['solo120'].append(T6.callSign)
 
@@ -125,8 +126,7 @@ def get_T38_queryset_update_message(sender):
     """
     Return all active T-38s serialized with associated metadata
     """
-    activeT38query = sender.objects.all().filter(aircraftType='T38').order_by(
-    '-takeoffTime')
+    activeT38query = sender.objects.all().filter(aircraftType='T38').order_by('tailNumber')
 
     activeT38Metadata = {}
     activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count()
@@ -135,12 +135,12 @@ def get_T38_queryset_update_message(sender):
     activeT38Metadata['Lost_Signal'] = activeT38query.filter(state="lost signal").count()
     activeT38Metadata['dual145'] = []
     for T38 in activeT38query.filter(
-        takeoffTime__lt=datetime.now() - timedelta(hours=1, minutes=45)).exclude(solo=True):
+        takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=45)).exclude(solo=True):
         activeT38Metadata['dual145'].append(T38.callSign)
 
     activeT38Metadata['solo120'] = []
     for T38 in activeT38query.filter(
-        takeoffTime__lt=datetime.now() - timedelta(hours=1, minutes=20)).filter(solo=True):
+        takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).filter(solo=True):
         activeT38Metadata['solo120'].append(T38.callSign)
 
     activeT38Metadata['solosOffStation'] = []

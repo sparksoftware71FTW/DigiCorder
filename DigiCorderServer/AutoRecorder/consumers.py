@@ -1,7 +1,8 @@
 import imp
 import json
 from time import sleep
-from datetime import datetime, timedelta
+from django.utils import timezone
+from django.utils.timezone import timedelta
 from django.db.models.signals import post_save
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
@@ -70,7 +71,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         """
         Return all active T-6s serialized
         """
-        activeT6query = ActiveAircraft.objects.all().filter(aircraftType='TEX2')
+        activeT6query = ActiveAircraft.objects.all().filter(aircraftType='TEX2').order_by('tailNumber')
 
         activeT6Metadata = {}
         activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count()
@@ -79,13 +80,13 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         activeT6Metadata['Lost_Signal'] = activeT6query.filter(state="lost signal").count()
         activeT6Metadata['dual145'] = []
         for T6 in activeT6query.filter(
-            takeoffTime__lt=datetime.now() - timedelta(hours=1, minutes=45)).exclude(
+            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=45)).exclude(
                 solo=True).exclude(state='in pattern').exclude(state='taxiing'):
             activeT6Metadata['dual145'].append(T6.callSign)
 
         activeT6Metadata['solo120'] = []
         for T6 in activeT6query.filter(
-            takeoffTime__lt=datetime.now() - timedelta(hours=1, minutes=20)).filter(
+            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).filter(
                 solo=True).exclude(state='in pattern').exclude(state='taxiing'):
                 activeT6Metadata['solo120'].append(T6.callSign)
 
@@ -99,7 +100,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
 
         activeT6s = serializers.serialize('json', activeT6query)
 
-        logger.debug(json.dumps(activeT6Metadata))
+        #logger.debug(json.dumps(activeT6Metadata))
         return activeT6s, json.dumps(activeT6Metadata)
     
 
@@ -107,8 +108,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         """
         Return all active T-6s serialized
         """
-        activeT38query = ActiveAircraft.objects.all().filter(aircraftType='T38').order_by(
-        '-takeoffTime')
+        activeT38query = ActiveAircraft.objects.all().filter(aircraftType='T38').order_by('tailNumber')
 
         activeT38Metadata = {}
         activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count()
@@ -117,12 +117,12 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         activeT38Metadata['Lost_Signal'] = activeT38query.filter(state="lost signal").count()
         activeT38Metadata['dual145'] = []
         for T38 in activeT38query.filter(
-            takeoffTime__lt=datetime.now() - timedelta(hours=1, minutes=45)).exclude(solo=True):
+            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=45)).exclude(solo=True):
             activeT38Metadata['dual145'].append(T38.callSign)
 
         activeT38Metadata['solo120'] = []
         for T38 in activeT38query.filter(
-            takeoffTime__lt=datetime.now() - timedelta(hours=1, minutes=20)).filter(solo=True):
+            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).filter(solo=True):
             activeT38Metadata['solo120'].append(T38.callSign)
 
         activeT38Metadata['solosOffStation'] = []
@@ -135,7 +135,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
 
         activeT38s = serializers.serialize('json', activeT38query)
 
-        logger.debug(json.dumps(activeT38Metadata))
+        #logger.debug(json.dumps(activeT38Metadata))
         return activeT38s, json.dumps(activeT38Metadata)
  
 
@@ -151,6 +151,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
     async def t6Update(self, event):
         txmessage = event['message']
         txmetadata = event['meta']
+        #logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(txmessage))
         await self.send(text_data=json.dumps({
             'type':'t6Update',
             'message':txmessage,
@@ -166,5 +167,5 @@ class DashboardConsumer(AsyncWebsocketConsumer):
             'message':txmessage,
             'meta':txmetadata
         }))
-        logger.debug('!!!!!!! t38Update' + str(txmessage))
+        #logger.debug('!!!!!!! t38Update' + str(txmessage))
 

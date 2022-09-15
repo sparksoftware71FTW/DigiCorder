@@ -8,6 +8,8 @@ from django.db.models import F
 from django.views import generic
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 
 from .models import ActiveAircraft, CompletedSortie
@@ -17,11 +19,11 @@ from .models import ActiveAircraft, CompletedSortie
 def index(request):
     return render(request, 'AutoRecorder/bootbase.html')
 
-@login_required(login_url='/login')
+@staff_member_required(login_url='/login')
 def dashboard(request):
     return render(request, 'AutoRecorder/dashboard.html')
 
-@login_required(login_url='/login')
+@staff_member_required(login_url='/login')
 def form355(request):
     landedAircraft = CompletedSortie.objects.all()
     return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft})

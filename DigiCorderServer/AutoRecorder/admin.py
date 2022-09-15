@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import ActiveAircraft, CompletedSortie
 
 class ActiveAircraftAdmin(admin.ModelAdmin):
-    list_display = ('aircraftType', 'tailNumber', 'callSign', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formation', 'emergency', 'natureOfEmergency')
+    list_display = ('aircraftType', 'tailNumber', 'callSign', 'state', 'lastState', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formation', 'emergency', 'natureOfEmergency')
     list_filter = ['solo', 'emergency', 'takeoffTime']
 admin.site.register(ActiveAircraft, ActiveAircraftAdmin)
 
