@@ -125,7 +125,7 @@ function loadKEND17R(chatSocket) {
                 if (t38Update[i].fields.state == "in pattern") {
                     KEND17RPattern.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t38Update[i].pk}</td>
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
@@ -136,14 +136,14 @@ function loadKEND17R(chatSocket) {
                             <td>  
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
                 if (t38Update[i].fields.state == "taxiing") {
                     KEND17RTaxiing.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t38Update[i].pk}</td>
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
@@ -154,14 +154,14 @@ function loadKEND17R(chatSocket) {
                             <td>  
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
                 if (t38Update[i].fields.state == "off station") {
                     KEND17ROffStation.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t38Update[i].pk}</td>
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
@@ -172,14 +172,14 @@ function loadKEND17R(chatSocket) {
                             <td>  
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
                 if (t38Update[i].fields.state == "lost signal") {
                     KEND17RLostSignal.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t38Update[i].pk}</td>
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
@@ -190,7 +190,7 @@ function loadKEND17R(chatSocket) {
                             <td>  
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }

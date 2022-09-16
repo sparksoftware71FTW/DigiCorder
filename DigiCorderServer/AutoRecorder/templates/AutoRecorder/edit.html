@@ -1,0 +1,15 @@
+
+{% extends 'AutoRecorder/bootbase.html'%}
+
+{% block title %} 355 - Pattern Violation {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<form method="POST" class="form-group">
+    {% csrf_token %}
+    {{ acfteditformset|crispy }}
+    <button type="submit" class"btn btn-success">Save</button>
+</form>
+{% endblock %}
+ 

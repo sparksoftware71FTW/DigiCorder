@@ -125,7 +125,7 @@ function loadKEND35L(chatSocket) {
                 if (t38Update[i].fields.state == "in pattern") {
                     KEND35LPattern.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t38Update[i].pk}</td>
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
@@ -136,14 +136,14 @@ function loadKEND35L(chatSocket) {
                             <td>  
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
                 if (t38Update[i].fields.state == "taxiing") {
                     KEND35LTaxiing.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t38Update[i].pk}</td>
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
@@ -154,14 +154,14 @@ function loadKEND35L(chatSocket) {
                             <td>  
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
                 if (t38Update[i].fields.state == "off station") {
                     KEND35LOffStation.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t38Update[i].pk}</td>
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
@@ -172,14 +172,14 @@ function loadKEND35L(chatSocket) {
                             <td>  
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
                 if (t38Update[i].fields.state == "lost signal") {
                     KEND35LLostSignal.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="#" class="btn btn-primary btn-sm">edit</a></th>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
                             <td>${t38Update[i].pk}</td>
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
@@ -190,7 +190,7 @@ function loadKEND35L(chatSocket) {
                             <td>  
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="#" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
