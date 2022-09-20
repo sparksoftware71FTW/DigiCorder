@@ -28,30 +28,30 @@ function loadKEND35L(chatSocket) {
             removeAllChildNodes(numKEND35LLostSignal)
 
 
-            let KEND35Ldual145 = document.getElementById('KEND35L Dual Aircraft Outside the Pattern > 1+45')
-            removeAllChildNodes(KEND35Ldual145)
-            let KEND35Lsolo120 = document.getElementById('KEND35L Solo Aircraft Outside the Pattern > 1+20')
-            removeAllChildNodes(KEND35Lsolo120)
+            let KEND35Ldual120 = document.getElementById('KEND35L Dual Aircraft Outside the Pattern > 1+20')
+            removeAllChildNodes(KEND35Ldual120)
+            let KEND35Lsolo100 = document.getElementById('KEND35L Solo Aircraft Outside the Pattern > 1+00')
+            removeAllChildNodes(KEND35Lsolo100)
             let KEND35LsolosOffStation = document.getElementById('KEND35L Solos Off Station')
             removeAllChildNodes(KEND35LsolosOffStation)
             let KEND35LsolosInPattern = document.getElementById('KEND35L Solos in the Pattern')
             removeAllChildNodes(KEND35LsolosInPattern)
 
-            let numKEND35Ldual145 = document.getElementById('numKEND35L Dual Aircraft Outside the Pattern > 1+45')
-            removeAllChildNodes(numKEND35Ldual145)
-            let numKEND35Lsolo120 = document.getElementById('numKEND35L Solo Aircraft Outside the Pattern > 1+20')
-            removeAllChildNodes(numKEND35Lsolo120)
+            let numKEND35Ldual120 = document.getElementById('numKEND35L Dual Aircraft Outside the Pattern > 1+20')
+            removeAllChildNodes(numKEND35Ldual120)
+            let numKEND35Lsolo100 = document.getElementById('numKEND35L Solo Aircraft Outside the Pattern > 1+00')
+            removeAllChildNodes(numKEND35Lsolo100)
             let numKEND35LsolosOffStation = document.getElementById('numKEND35L Solos Off Station')
             removeAllChildNodes(numKEND35LsolosOffStation)
             let numKEND35LsolosInPattern = document.getElementById('numKEND35L Solos in the Pattern')
             removeAllChildNodes(numKEND35LsolosInPattern)
 
-            numKEND35Ldual145.insertAdjacentHTML('beforeend', `
-            <span class="badge bg-primary rounded-pill">${t38Meta.dual145.length}</span>
+            numKEND35Ldual120.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.dual120.length}</span>
             `)
             
-            numKEND35Lsolo120.insertAdjacentHTML('beforeend', `
-            <span class="badge bg-primary rounded-pill">${t38Meta.solo120.length}</span>
+            numKEND35Lsolo100.insertAdjacentHTML('beforeend', `
+            <span class="badge bg-primary rounded-pill">${t38Meta.solo100.length}</span>
             `)
             
             numKEND35LsolosOffStation.insertAdjacentHTML('beforeend', `
@@ -91,16 +91,16 @@ function loadKEND35L(chatSocket) {
             <span class="badge bg-primary rounded-pill">${t38Meta.Lost_Signal}</span>
             `)
 
-            for (let i = 0; i < t38Meta.dual145.length; i++) {
-                KEND35Ldual145.insertAdjacentHTML('beforeend', `
-                <span class="badge text-bg-secondary">${t38Meta.dual145[i]}</span>
+            for (let i = 0; i < t38Meta.dual120.length; i++) {
+                KEND35Ldual120.insertAdjacentHTML('beforeend', `
+                <span class="badge text-bg-secondary">${t38Meta.dual120[i]}</span>
                 `
                 )   
             }
 
-            for (let i = 0; i < t38Meta.solo120.length; i++) {
-                KEND35Lsolo120.insertAdjacentHTML('beforeend', `
-                <span class="badge text-bg-danger">${t38Meta.solo120[i]}</span>
+            for (let i = 0; i < t38Meta.solo100.length; i++) {
+                KEND35Lsolo100.insertAdjacentHTML('beforeend', `
+                <span class="badge text-bg-danger">${t38Meta.solo100[i]}</span>
                 `
                 )   
             }

@@ -134,15 +134,16 @@ def get_T38_queryset_update_message(sender):
     activeT38Metadata['Taxiing'] = activeT38query.filter(state="taxiing").count()
     activeT38Metadata['Off_Station'] = activeT38query.filter(state="off station").count()
     activeT38Metadata['Lost_Signal'] = activeT38query.filter(state="lost signal").count()
-    activeT38Metadata['dual145'] = []
-    for T38 in activeT38query.filter(
-        takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=45)).exclude(solo=True):
-        activeT38Metadata['dual145'].append(T38.callSign)
 
-    activeT38Metadata['solo120'] = []
+    activeT38Metadata['dual120'] = []
     for T38 in activeT38query.filter(
-        takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).filter(solo=True):
-        activeT38Metadata['solo120'].append(T38.callSign)
+        takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).exclude(solo=True).exclude(state='taxiing'):
+        activeT38Metadata['dual120'].append(T38.callSign)
+
+    activeT38Metadata['solo100'] = []
+    for T38 in activeT38query.filter(
+        takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=0)).filter(solo=True).exclude(state='taxiing'):
+        activeT38Metadata['solo100'].append(T38.callSign)
 
     activeT38Metadata['solosOffStation'] = []
     for T38 in activeT38query.filter(solo=True).exclude(state='in pattern'):
