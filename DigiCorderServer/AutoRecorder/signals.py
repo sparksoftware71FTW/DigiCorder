@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 def log_completed_flight(sender, instance, created, **kwargs):
     if instance.state == "completed sortie":
         #ActiveAircraft.objects.get(pk=instance.tailNumber)
-        justLandedT6 = CompletedSortie(
+        justLandedAcft = CompletedSortie(
+        aircraftType = instance.aircraftType,
         tailNumber=instance.tailNumber,
         callSign=instance.callSign,
         takeoffTime=instance.takeoffTime,
@@ -40,7 +41,7 @@ def log_completed_flight(sender, instance, created, **kwargs):
         state=instance.state,
         lastState = instance.lastState
         )
-        justLandedT6.save()
+        justLandedAcft.save()
         instance.delete()
         logger.info("Active -> Completed Transition Occured")
 
