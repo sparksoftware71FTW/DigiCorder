@@ -46,7 +46,18 @@ def task1(parentThreadName):
         'X-RapidAPI-Key': "e7a36b9597msh0954cc7e057677dp160f6fjsn5e333eceedc4",
         'X-RapidAPI-Host': "adsbexchange-com1.p.rapidapi.com"
         }
-    
+
+    # New pattern logic:
+    # If any aircraft is in a pattern, add it to active aircraft for displaying
+    # Once non-T1/T6/T38 aircraft depart the pattern, delete from active aircraft
+
+    # Either replace "in pattern" state with seperate states for each pattern,
+    # or add additional db field for a specific pattern (e.g. 'shoehorn'/'eastside')
+
+    # Rework t6 and t38 messaging functions to send all types of aircraft in the shoehorn
+    # or eastside patterns
+
+
     while True:
         logger.info("Requesting ADSB Data...")
         conn.request("GET", "/v2/lat/36.3393/lon/-97.9131/dist/250/", headers=headers)
