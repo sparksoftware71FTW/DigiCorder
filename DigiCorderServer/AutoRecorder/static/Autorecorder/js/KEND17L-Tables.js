@@ -1,5 +1,31 @@
-function loadKEND17L(chatSocket) {
+function loadKEND17L(chatSocket, staticPATH) {
 
+    var KEND17Lmap = L.map('KEND17Lmap').setView([36.3393, -97.9131], 13);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(KEND17Lmap);
+
+    L.marker([36.3393, -97.9131]).addTo(KEND17Lmap)
+        .bindPopup('KEND')
+        .openPopup();
+
+    var KEND17LMapAcft = {}
+    var KEND17LMapAcftNotUpdated = []
+
+    // let legacyT6Icon = L.icon({
+    //     iconUrl: 'static/images/LegacyT6Icon.png',
+    //     shadowUrl: 'static/leaflet/images/marker-shadow.png',
+
+    //     iconSize:     [38, 95], // size of the icon
+    //     shadowSize:   [50, 64], // size of the shadow
+    //     iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    //     shadowAnchor: [4, 62],  // the same for the shadow
+    //     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+
+    // })
+
+    
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
 
@@ -119,8 +145,21 @@ function loadKEND17L(chatSocket) {
                 )   
             }
 
-            
+            KEND17LMapAcftNotUpdated = {...KEND17LMapAcft}
+            console.log(KEND17LMapAcftNotUpdated)
+                            
             for (let i = 0; i < t6Update.length; i++) {
+                KEND17Lmap.invalidateSize()
+
+                if (!KEND17LMapAcft[t6Update[i].pk]) {
+                    // If there is no marker with this id yet, instantiate a new one.
+                    KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                  } else {
+                    // If there is already a marker with this id, simply modify its position.
+                    KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setPopupContent(t6Update[i].fields.callSign);
+                  }
+
+                  delete KEND17LMapAcftNotUpdated[t6Update[i].pk]
 
                 if (t6Update[i].fields.state == "in pattern") {
                     KEND17LPattern.insertAdjacentHTML('beforeend',       
@@ -139,6 +178,7 @@ function loadKEND17L(chatSocket) {
                             <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
+
                 }
                 if (t6Update[i].fields.state == "taxiing") {
                     KEND17LTaxiing.insertAdjacentHTML('beforeend',       
@@ -194,6 +234,11 @@ function loadKEND17L(chatSocket) {
                             </tr>`
                             )
                 }
+            }
+                        //remove all aircraft on the map that were not in the update message
+            for (const[tailNumber, data] of Object.entries(KEND17LMapAcftNotUpdated)) {
+                KEND17Lmap.removeLayer(KEND17LMapAcft[tailNumber])
+                delete KEND17LMapAcft[tailNumber]
             }
 
         }

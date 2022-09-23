@@ -1,5 +1,30 @@
 function loadKEND35R(chatSocket) {
 
+    var KEND35Rmap = L.map('KEND35Rmap').setView([36.3393, -97.9131], 13);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(KEND35Rmap);
+
+    L.marker([36.3393, -97.9131]).addTo(KEND35Rmap)
+        .bindPopup('KEND')
+        .openPopup();
+
+    var KEND35RMapAcft = {}
+    var KEND35RMapAcftNotUpdated = []
+
+    // let legacyT6Icon = L.icon({
+    //     iconUrl: 'static/images/LegacyT6Icon.png',
+    //     shadowUrl: 'static/leaflet/images/marker-shadow.png',
+
+    //     iconSize:     [38, 95], // size of the icon
+    //     shadowSize:   [50, 64], // size of the shadow
+    //     iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    //     shadowAnchor: [4, 62],  // the same for the shadow
+    //     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+
+    // })
+
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
 
@@ -120,6 +145,17 @@ function loadKEND35R(chatSocket) {
 
             
             for (let i = 0; i < t6Update.length; i++) {
+                KEND35Rmap.invalidateSize()
+                
+                if (!KEND35RMapAcft[t6Update[i].pk]) {
+                    // If there is no marker with this id yet, instantiate a new one.
+                    KEND35RMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).addTo(KEND35Rmap).bindPopup(t6Update[i].fields.callSign);
+                  } else {
+                    // If there is already a marker with this id, simply modify its position.
+                    KEND35RMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setPopupContent(t6Update[i].fields.callSign);
+                  }
+
+                  delete KEND35RMapAcftNotUpdated[t6Update[i].pk]
 
                 if (t6Update[i].fields.state == "in pattern") {
                     KEND35RPattern.insertAdjacentHTML('beforeend',       
@@ -193,6 +229,11 @@ function loadKEND35R(chatSocket) {
                             </tr>`
                             )
                 }
+            }
+            //remove all aircraft on the map that were not in the update message
+            for (const[tailNumber, data] of Object.entries(KEND35RMapAcftNotUpdated)) {
+                KEND35Rmap.removeLayer(KEND35RMapAcft[tailNumber])
+                delete KEND35RMapAcft[tailNumber]
             }
 
         }
