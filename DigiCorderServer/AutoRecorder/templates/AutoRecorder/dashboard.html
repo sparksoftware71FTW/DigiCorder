@@ -62,6 +62,14 @@
                     {% if True %}
                         {% include 'AutoRecorder/KEND17L-Tables.html' %}
                         <script> loadKEND17L(chatSocket) </script>
+                        {% load static %}
+                        <script type="text/javascript">
+                        
+                            var pattPoints = '{% static "AutoRecorder/RoughPatternPoints.kml" %}'
+                            console.log(pattPoints)
+                            omnivore.kml(pattPoints).addTo(KEND17Lmap) 
+                            
+                        </script>
                     {% endif %}
                 </div>
                 </div>

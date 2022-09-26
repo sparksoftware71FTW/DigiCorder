@@ -1,6 +1,9 @@
+var KEND17Lmap = L.map('KEND17Lmap').setView([36.3393, -97.9131], 13);
+
+
 function loadKEND17L(chatSocket, staticPATH) {
 
-    var KEND17Lmap = L.map('KEND17Lmap').setView([36.3393, -97.9131], 13);
+    //var KEND17Lmap = L.map('KEND17Lmap').setView([36.3393, -97.9131], 13);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
