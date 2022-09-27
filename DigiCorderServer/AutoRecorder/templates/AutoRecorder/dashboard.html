@@ -65,9 +65,11 @@
                         {% load static %}
                         <script type="text/javascript">
                         
-                            var pattPoints = '{% static "AutoRecorder/RoughPatternPoints.kml" %}'
-                            console.log(pattPoints)
-                            omnivore.kml(pattPoints).addTo(KEND17Lmap) 
+                            omnivore.kml('{% static "AutoRecorder/kml/Eckho Recovery.kml" %}').addTo(KEND17Lmap)
+                            omnivore.kml('{% static "AutoRecorder/kml/RoughPatternPoints.kml" %}').addTo(KEND17Lmap)
+                            omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}').addTo(KEND17Lmap) 
+                            //omnivore.kml('{% static "AutoRecorder/kml/FOXTR Recoery.kml" %}').addTo(KEND17Lmap)
+                            KEND17Lmap.invalidateSize() //?????????????????????????????????????????????????????????
                             
                         </script>
                     {% endif %}

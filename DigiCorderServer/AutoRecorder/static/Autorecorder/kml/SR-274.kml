@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>SR-274.kml</name>
+	<Schema name="MTRSR_OK_KS_TX_Footprints" id="S_MTRSR_OK_KS_TX_Footprints_ISSSSSSSDD">
+		<SimpleField type="int" name="OBJECTID"><displayName>&lt;b&gt;OBJECTID&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="MTR_IDENT"><displayName>&lt;b&gt;MTR_IDENT&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_USIN"><displayName>&lt;b&gt;FIRST_USIN&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_US_1"><displayName>&lt;b&gt;FIRST_US_1&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_US_2"><displayName>&lt;b&gt;FIRST_US_2&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SCHE"><displayName>&lt;b&gt;FIRST_SCHE&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SC_1"><displayName>&lt;b&gt;FIRST_SC_1&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SC_2"><displayName>&lt;b&gt;FIRST_SC_2&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Shape_Leng"><displayName>&lt;b&gt;Shape_Leng&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Shape_Area"><displayName>&lt;b&gt;Shape_Area&lt;/b&gt;</displayName>
+</SimpleField>
+	</Schema>
+	<StyleMap id="falseColor0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#falseColor</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#falseColor1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="falseColor1">
+		<BalloonStyle>
+			<text><![CDATA[<table border="0">
+  <tr><td><b>OBJECTID</b></td><td>$[MTRSR_OK_KS_TX_Footprints/OBJECTID]</td></tr>
+  <tr><td><b>MTR_IDENT</b></td><td>$[MTRSR_OK_KS_TX_Footprints/MTR_IDENT]</td></tr>
+  <tr><td><b>FIRST_USIN</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_USIN]</td></tr>
+  <tr><td><b>FIRST_US_1</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_US_1]</td></tr>
+  <tr><td><b>FIRST_US_2</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_US_2]</td></tr>
+  <tr><td><b>FIRST_SCHE</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SCHE]</td></tr>
+  <tr><td><b>FIRST_SC_1</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SC_1]</td></tr>
+  <tr><td><b>FIRST_SC_2</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SC_2]</td></tr>
+  <tr><td><b>Shape_Leng</b></td><td>$[MTRSR_OK_KS_TX_Footprints/Shape_Leng]</td></tr>
+  <tr><td><b>Shape_Area</b></td><td>$[MTRSR_OK_KS_TX_Footprints/Shape_Area]</td></tr>
+</table>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff0000ff</color>
+			<width>6</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>00d4bc00</color>
+		</PolyStyle>
+	</Style>
+	<Style id="falseColor">
+		<BalloonStyle>
+			<text><![CDATA[<table border="0">
+  <tr><td><b>OBJECTID</b></td><td>$[MTRSR_OK_KS_TX_Footprints/OBJECTID]</td></tr>
+  <tr><td><b>MTR_IDENT</b></td><td>$[MTRSR_OK_KS_TX_Footprints/MTR_IDENT]</td></tr>
+  <tr><td><b>FIRST_USIN</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_USIN]</td></tr>
+  <tr><td><b>FIRST_US_1</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_US_1]</td></tr>
+  <tr><td><b>FIRST_US_2</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_US_2]</td></tr>
+  <tr><td><b>FIRST_SCHE</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SCHE]</td></tr>
+  <tr><td><b>FIRST_SC_1</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SC_1]</td></tr>
+  <tr><td><b>FIRST_SC_2</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SC_2]</td></tr>
+  <tr><td><b>Shape_Leng</b></td><td>$[MTRSR_OK_KS_TX_Footprints/Shape_Leng]</td></tr>
+  <tr><td><b>Shape_Area</b></td><td>$[MTRSR_OK_KS_TX_Footprints/Shape_Area]</td></tr>
+</table>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff0000ff</color>
+			<width>6</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>00d4bc00</color>
+		</PolyStyle>
+	</Style>
+	<Placemark>
+		<name>SR-274</name>
+		<styleUrl>#falseColor0</styleUrl>
+		<ExtendedData>
+			<SchemaData schemaUrl="#S_MTRSR_OK_KS_TX_Footprints_ISSSSSSSDD">
+				<SimpleData name="OBJECTID">84</SimpleData>
+				<SimpleData name="MTR_IDENT">SR274</SimpleData>
+				<SimpleData name="FIRST_USIN">71 OSS</SimpleData>
+				<SimpleData name="FIRST_US_1">Vance AFB</SimpleData>
+				<SimpleData name="FIRST_US_2"></SimpleData>
+				<SimpleData name="FIRST_SCHE">71 OSS</SimpleData>
+				<SimpleData name="FIRST_SC_1">Vance AFB</SimpleData>
+				<SimpleData name="FIRST_SC_2"></SimpleData>
+				<SimpleData name="Shape_Leng">609742</SimpleData>
+				<SimpleData name="Shape_Area">3.94378e+09</SimpleData>
+			</SchemaData>
+		</ExtendedData>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-101.8909599102765,34.51808779676054,0 -101.9637606870196,34.50692371504621,0 -102.1500024410137,34.06842868651613,0 -102.0699999996484,34.04499999965885,0 -101.990049248842,34.02151128713261,0 -101.8112799959541,34.44030546260301,0 -101.4972238378549,34.48684841952878,0 -101.3887049058154,34.2269653822266,0 -101.3735797421692,34.20473651361823,0 -101.1539475105912,33.98556659438103,0 -101.4930030938976,33.8190655079643,0 -101.5121069367592,33.76876983579447,0 -101.5724121676808,33.51716899826961,0 -101.7337440076351,33.33667839772033,0 -101.7522047383807,33.30406971296384,0 -101.747907670594,33.25999043798912,0 -101.4644945878292,32.97186042135918,0 -101.3999999995868,33.01666599957272,0 -101.3354267290399,33.06143568151087,0 -101.576476653478,33.3071654468143,0 -101.4461101380689,33.45259988035875,0 -101.4514585081686,33.48456865247776,0 -101.3991303392616,33.70150576403413,0 -100.9823012743196,33.90572542069018,0 -100.946073394249,33.95504444905087,0 -100.9597505642962,34.01169357084746,0 -101.2329918528413,34.28525218340455,0 -101.3526152953355,34.57308087288015,0 -101.4000548864487,34.58988499804359,0 -101.4407499860622,34.58478895383213,0 -101.8909599102765,34.51808779676054,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>

@@ -1,0 +1,1736 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+  <Document>
+    <name>MOAs.kmz</name>
+    <open>1</open>
+    <Style id="sh_ylw-pushpin3700100">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="MOA_numbers">
+      <IconStyle>
+        <scale>1</scale>
+        <color>ff0000FF</color>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+        </Icon>
+        <hotSpot x="0" y="0" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LabelStyle>
+        <color>0000ffff</color>
+        <scale>1.1</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin4600100">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin4802">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff7fffff</color>
+        <width>0.5</width>
+      </LineStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin3601">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin631</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin5700</styleUrl>
+      </Pair>
+    </StyleMap>
+    <StyleMap id="msn_placemark_circle24">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_placemark_circle16</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_placemark_circle_highlight14</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sn_placemark_circle">
+      <IconStyle>
+        <color>ff0000ff</color>
+        <scale>0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+        </Icon>
+      </IconStyle>
+      <ListStyle></ListStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin4100111">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>f27fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin5600110">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin6000110">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin3111100</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin4100111</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sh_ylw-pushpin481100">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin4130">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin0051</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin310000</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sh_ylw-pushpin440010">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>f27fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin34110">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>f27fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin45000100">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin5700100</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin1701102</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sn_ylw-pushpin11500">
+      <LineStyle>
+        <color>ffff0000</color>
+        <width>3</width>
+      </LineStyle>
+    </Style>
+    <Style id="sn_placemark_circle16">
+      <IconStyle>
+        <color>ff0000ff</color>
+        <scale>0.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin34200110">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>f27fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin631">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff7fffff</color>
+        <width>0.5</width>
+      </LineStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin44001">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>f27fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin9000">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin901</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin1410</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sn_ylw-pushpin5700100">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>ff7fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin5700">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff7fffff</color>
+        <width>0.5</width>
+      </LineStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin560">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff7fffff</color>
+        <width>0.5</width>
+      </LineStyle>
+    </Style>
+    <Style id="sh_placemark_circle_highlight14">
+      <IconStyle>
+        <color>ff0000ff</color>
+        <scale>0.118182</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle_highlight.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin281100">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin6600">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin6410</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin560</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sh_ylw-pushpin1701102">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>ff7fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin430010">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>f07fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin1410">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin35300100">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin381100</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin430010</styleUrl>
+      </Pair>
+    </StyleMap>
+    <StyleMap id="msn_ylw-pushpin5400100">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin5600110</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin3700100</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sh_placemark_circle_highlight">
+      <IconStyle>
+        <color>ff0000ff</color>
+        <scale>0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle_highlight.png</href>
+        </Icon>
+      </IconStyle>
+      <ListStyle></ListStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin5400100">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin381100">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>f07fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin0230">
+      <IconStyle>
+        <scale>1.2</scale>
+      </IconStyle>
+      <LineStyle>
+        <color>ffff0000</color>
+        <width>3</width>
+      </LineStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin621100">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin34110</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin440010</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sn_ylw-pushpin901">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin0030">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin11500</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin0230</styleUrl>
+      </Pair>
+    </StyleMap>
+    <StyleMap id="msn_ylw-pushpin2210100">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin3700100</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin481100</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sh_ylw-pushpin591">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff7fffff</color>
+        <width>0.5</width>
+      </LineStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin6410">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff7fffff</color>
+        <width>0.5</width>
+      </LineStyle>
+    </Style>
+    <StyleMap id="msn_placemark_circle">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_placemark_circle</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_placemark_circle_highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <StyleMap id="msn_ylw-pushpin5500100">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin5400100</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin3300100</styleUrl>
+      </Pair>
+    </StyleMap>
+    <StyleMap id="msn_ylw-pushpin4900100">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin281100</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin4600100</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sh_ylw-pushpin3300100">
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin3111100">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>f27fffff</color>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="msn_ylw-pushpin3900100">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin44001</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin34200110</styleUrl>
+      </Pair>
+    </StyleMap>
+    <StyleMap id="msn_ylw-pushpin531">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#sn_ylw-pushpin4802</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#sh_ylw-pushpin591</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="sn_ylw-pushpin0051">
+      <LineStyle>
+        <color>baFF0000</color>
+        <width>7</width>
+      </LineStyle>
+    </Style>
+    <Style id="sh_ylw-pushpin310000">
+      <IconStyle>
+        <scale>1.2</scale>
+      </IconStyle>
+      <LineStyle>
+        <color>ffff0000</color>
+        <width>3</width>
+      </LineStyle>
+    </Style>
+    <Style id="sn_ylw-pushpin3700100">
+      <IconStyle>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+        </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+      </IconStyle>
+      <LineStyle>
+        <color>ff00ffff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <fill>0</fill>
+      </PolyStyle>
+    </Style>
+    <Folder>
+      <name>East MOAs</name>
+      <open>1</open>
+      <Placemark>
+        <name>T-6 Area Boundaries 09</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-97.7662388888889,36.4813055555556,0 -97.4980527777778,36.7200333333333,0 -97.3836111111111,36.6689,0 -97.3836111111111,36.5094527777778,0 -97.7063111111111,36.410575,0 -97.7662388888889,36.4813055555556,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 09</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-97.7063111111111,36.410575,0 -97.6956861111111,36.3097333333333,0 -97.4732194444444,36.2740805555556,0 -97.3836111111111,36.4666666666667,0 -97.3836111111111,36.5094527777778,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 11</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-97.6956861111111,36.3097333333333,0 -97.760975,36.2128055555556,0 -97.5756638888889,36.0563361111111,0 -97.4732194444444,36.2740805555556,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 12</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-97.5756638888889,36.0563361111111,0 -97.5836111111111,36.0333333333333,0 -97.9370416666667,35.9096138888889,0 -97.9291194444444,36.0947694444444,0 -97.9262527777778,36.1614916666667,0 -97.760975,36.2128055555556,0 -97.760975,36.2128055555556,0 
+</coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 13</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-97.9291194444444,36.0947694444444,0 -98.0909416666667,36.1372944444444,0 -98.3412972222222,35.8336138888889,0 -98.0169444444444,35.8833333333333,0 -97.9370416666667,35.9096138888889,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 1</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.1770305555556,36.5607916666667,0 -98.408175,36.75215,0 
+-98.553225,36.8715166666667,0 -98.3559166666667,37.0042333333333,0 -98.2497916666667,36.8455277777778,0 -98.1030416666666,36.6248138888889,0 -98.1770305555556,36.5607916666667,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 02</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.1030416666666,36.6248138888889,0 -97.9934472222222,36.6562222222222,0 -98.0371972222222,36.8363916666667,0 -98.0531583333333,36.9019,0 -98.0968333333333,37.0805638888889,0 -98.2502777777778,37.075,0 -98.3559166666667,37.0042333333333,0 				</coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 03</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.0968333333333,37.0805638888889,0 -98.0002777777778,37.0833333333333,0 -97.86045,37.0277944444444,0 -97.8943333333333,36.8364222222222,0 -97.7888611111111,36.8346361111111,0 -97.8365333333333,36.6551138888889,0 -97.9934472222222,36.6562222222222,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 04</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-97.7888611111111,36.8346361111111,0 -97.7259222222222,36.8209888888889,0 -97.6738222222222,36.7978888888889,0 -97.6010666666667,36.9200222222222,0 -97.3836111111111,36.8333333333333,0 -97.3836111111111,36.6689,0 -97.4980527777778,36.7200333333333,0 -97.655275,36.5803361111111,0 -97.7967555555555,36.6464888888889,0 -97.7259222222222,36.8209888888889,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 05</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.408175,36.75215,0 -98.2497916666667,36.8455277777778,0 -98.0531583333333,36.9019,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 06</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.0371972222222,36.8363916666667,0 -97.8943333333333,36.8364222222222,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 07</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-97.86045,37.0277944444444,0 -97.6010666666667,36.9200222222222,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>T-6 Area Boundaries 08</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-97.6738222222222,36.7978888888889,0 -97.4980527777778,36.7200333333333,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>0</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END319/39
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-98.39,36.87,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>1</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END319/26
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-98.23,36.69,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>2</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END336/40
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-98.19,36.97,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END336/26
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-98.1,36.75,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END351/37
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.97,36.96,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END356/24
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.91,36.74,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END009/34
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.75,36.89,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END031/34
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.50,36.80,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>8</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 8 / 273.475 <br/>
+Discrete&#58; Ch 9 / 354.3 <br/>
+<br/>
+Center Point&#58; END025/24
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.66,36.69,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>9</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 10 / 388.2 <br/>
+Discrete&#58; Ch 11 / 271.3 <br/>
+<br/>
+Center Point&#58; END050/21
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.56,36.54,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>10</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 10 / 388.2 <br/>
+Discrete&#58; Ch 11 / 271.3 <br/>
+<br/>
+Center Point&#58; END081/17
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.57,36.36,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>11</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 10 / 388.2 <br/>
+Discrete&#58; Ch 11 / 271.3 <br/>
+<br/>
+Center Point&#58; END115/16
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.63,36.21,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>12</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 10 / 388.2 <br/>
+Discrete&#58; Ch 11 / 271.3 <br/>
+<br/>
+Center Point&#58; END155/18
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-97.79,36.06,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>13</name>
+<description><![CDATA[
+<h1> Low&#58; 7000-12000 MSL <br/>
+High&#58; 14000-22000 MSL <br/>
+<br/>
+Approach&#58; Ch 10 / 388.2 <br/>
+Discrete&#58; Ch 11 / 271.3 <br/>
+<br/>
+Center Point&#58; END193/22
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#MOA_numbers</styleUrl>
+        <Point>
+          <coordinates>-98.06,35.99,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>West MOAs</name>
+      <open>1</open>
+      <Placemark>
+        <name>Inner ring4</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.553225,36.8715166666667,0 -98.1770305555556,36.5607916666667,0 -98.2606972222222,36.4618638888889,0 -98.7570027777778,36.6289611111111,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>1</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; Ch 8 / 296.7 <br/>
+<br/>
+Center Point&#58; END223/33
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-98.43,35.97,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>2</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; Ch 8 / 296.7 <br/>
+<br/>
+Center Point&#58; END246/31
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-98.52,36.17,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; Ch 9 / 317.6 <br/>
+<br/>
+Center Point&#58; END272/31
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-98.55,36.40,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; Ch 9 / 317.6 <br/>
+<br/>
+Center Point&#58; END299/31
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-98.44,36.64,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 256.75 <br/>
+<br/>
+Center Point&#58; END241/56
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-98.98,35.96,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 271.8 <br/>
+<br/>
+Center Point&#58; END260/56
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-99.07,36.25,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 369.25 <br/>
+<br/>
+Center Point&#58; END281/55
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-99.03,36.59,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>8</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 289.1 <br/>
+<br/>
+Center Point&#58; END301/54
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-98.82,36.88,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>9</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 289.1 <br/>
+<br/>
+Center Point&#58; END319/55
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-98.60,37.09,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>10</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 259.5 <br/>
+<br/>
+Center Point&#58; END252/78
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-99.50,36.05,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>11</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 259.5 <br/>
+<br/>
+Center Point&#58; END267/78
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-99.53,36.38,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>12</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 278.1 <br/>
+<br/>
+Center Point&#58; END280/77
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-99.47,36.67,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>13</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 278.1 <br/>
+<br/>
+Center Point&#58; END294/78
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-99.33,36.97,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>14</name>
+<description><![CDATA[
+<h1> Low&#58; 10000-14000 MSL <br/>
+High&#58; 16000-20000 MSL <br/>
+Low AR&#58; 17000 B 19000 MSL <br/>
+High AR&#58; 21000 B 23000 MSL <br/>
+<br/>
+Approach&#58; Ch 7 / 346.325 <br/>
+Discrete&#58; 289.1 <br/>
+<br/>
+Center Point&#58; END308/75
+<br/>
+<br/>
+Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 MSL <br/> </h1>
+<font color="white">FACE STRAFE INTL FNG https&#58;//imgur.com/a/QTe11Km</font>
+  ]]></description>
+        <LookAt>
+          <longitude>-99.41823656308037</longitude>
+          <latitude>28.03089627503955</latitude>
+          <altitude>0</altitude>
+          <heading>0.2177774677173355</heading>
+          <tilt>0</tilt>
+          <range>1019642.400274799</range>
+          <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+        </LookAt>
+        <styleUrl>#msn_placemark_circle</styleUrl>
+        <Point>
+          <coordinates>-99.07,37.20,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Inner ring3</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.7792583333333,36.5809527777778,0 -98.2699111111111,36.4422611111111,0 -98.2887,36.3234416666667,0 -98.8232722222222,36.2903194444444,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Inner ring2</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.8160694444444,36.2393944444445,0 -98.2858916666667,36.3025972222222,0 -98.2360333333333,36.1898194444444,0 -98.1253527777778,36.0957305555556,0 -98.3412972222222,35.8336305555556,0 -98.5002777777778,35.81675,0 -98.6372222222222,35.8208333333333,0 -98.7163222222222,35.9975583333333,0 -98.2360333333333,36.1898194444444,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>ring9</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.7163222222222,35.9975583333333,0 -98.7690083333333,36.1345333333333,0 -98.8160694444444,36.2393944444445,0 -98.8232722222222,36.2903194444444,0 -98.8072055555555,36.3964555555556,0 -98.7792583333333,36.5809527777778,0 -98.7570027777778,36.6289611111111,0 -98.7306583333333,36.6602861111111,0 -98.553225,36.8715166666667,0 -98.2502777777778,37.075,0 -98.2892611111111,37.1111138888889,0 -98.7162861111111,37.2747444444445,0 -98.8759527777778,37.132125,0 -98.553225,36.8715166666667,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>ring8</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.8759527777778,37.132125,0 -99.03365,36.9806472222222,0 -99.1757277777778,36.8173305555556,0 -98.7306583333333,36.6602861111111,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>ring7</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-99.1757277777778,36.8173305555556,0 -99.1977027777778,36.7582361111111,0 -99.2900055555556,36.5079277777778,0 -99.2993416666667,36.4463916666667,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>ring6</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-99.2993416666667,36.4463916666667,0 -99.3097416666667,36.2366694444444,0 -99.2816388888889,36.0716916666667,0 -98.7690083333333,36.1345333333333,0 
+</coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>ring5</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-99.2816388888889,36.0716916666667,0 -99.2303027777778,35.8307111111111,0 -98.6372222222222,35.8208333333333,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>ring10</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-99.2303027777778,35.8307111111111,0 -99.3836111111111,35.8333333333333,0 -99.4169444444445,35.8833333333333,0 -99.5255555555556,35.8777083333333,0 -99.7431111111111,36.0807694444445,0 -99.7647,36.1995166666667,0 -99.3097416666667,36.2366694444444,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Radial 10</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-99.758275,36.5616527777778,0 -99.2900055555556,36.5079277777778,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Radial 11</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-99.6499083333334,36.8999861111111,0 -99.1977027777778,36.7582361111111,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Radial 12</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-99.03365,36.9806472222222,0 -99.4455194444444,37.2091694444444,0 -99.3794444444444,37.2805555555556,0 -98.9502777777778,37.3666666666667,0 -98.7162861111111,37.2747444444445,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>Radial 6</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-98.8072055555555,36.3964555555556,0 -99.2993416666667,36.4463916666667,0 </coordinates>
+        </LineString>
+      </Placemark>
+      <Placemark>
+        <name>90 DME</name>
+        <styleUrl>#msn_ylw-pushpin4130</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>-99.7647,36.1995166666667,0 -99.758275,36.5616527777778,0 -99.6499083333334,36.8999861111111,0 -99.4455194444444,37.2091694444444,0 </coordinates>
+        </LineString>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>FOXTR Recoery.kml</name>
+	<Style id="failed">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<Style id="failed0">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<Style id="failed1">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<Style id="failed2">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_ylw-pushpin">
+		<IconStyle>
+			<color>ffff0000</color>
+			<scale>1.2</scale>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+		<BalloonStyle>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="msn_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed3">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="failed4">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed6</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed5">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_ylw-pushpin0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed6">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<BalloonStyle>
+		</BalloonStyle>
+		<LineStyle>
+			<color>b3ff0000</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<StyleMap id="failed7">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed15</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed2</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed8">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<Style id="failed9">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<Style id="failed10">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="failed11">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed14</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed5</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="failed12">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed8</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="failed13">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed3</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed9</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed14">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_ylw-pushpin0">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<BalloonStyle>
+		</BalloonStyle>
+		<LineStyle>
+			<color>b3ff0000</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<Style id="failed15">
+		<IconStyle>
+			<color>ffff0000</color>
+		</IconStyle>
+		<LabelStyle>
+			<color>ffff0000</color>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="failed16">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed10</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_ylw-pushpin0">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<BalloonStyle>
+		</BalloonStyle>
+		<LineStyle>
+			<color>80ffaa00</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<Style id="sh_ylw-pushpin1">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<BalloonStyle>
+		</BalloonStyle>
+		<LineStyle>
+			<color>80ffaa00</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<StyleMap id="mfailed">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Folder>
+		<name>FOXTR Recoery</name>
+		<Placemark>
+			<name>FOXTR</name>
+			<open>1</open>
+			<styleUrl>#mfailed</styleUrl>
+			<Point>
+				<coordinates>-97.87037220000001,36.1998639,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>LEPTE</name>
+			<open>1</open>
+			<styleUrl>#failed12</styleUrl>
+			<Point>
+				<coordinates>-97.8197028,36.2118833,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>JUTAG 5,000 or above</name>
+			<open>1</open>
+			<styleUrl>#failed7</styleUrl>
+			<Point>
+				<coordinates>-97.8129556,36.2467222,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ODG 6,000 or Above</name>
+			<open>1</open>
+			<styleUrl>#failed16</styleUrl>
+			<Point>
+				<coordinates>-97.7881203,36.3737689,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>PONCK 13,000 to 6,000</name>
+			<open>1</open>
+			<styleUrl>#failed4</styleUrl>
+			<Point>
+				<coordinates>-97.81648609999999,36.6512167,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>MEDFD 13,000 to 6,000</name>
+			<open>1</open>
+			<styleUrl>#failed11</styleUrl>
+			<Point>
+				<coordinates>-97.7625583,36.8123611,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>NASSH 6,000 OR 13,000</name>
+			<open>1</open>
+			<styleUrl>#failed13</styleUrl>
+			<Point>
+				<coordinates>-98.0399389,36.6464917,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>FOXTR Recovery</name>
+			<styleUrl>#msn_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					-97.76246179754349,36.81263292601221,0 -97.81638355503566,36.65137052302959,0 -97.78786265230016,36.37419560380246,0 -97.8127476375911,36.24692698708947,0 -97.81953083895772,36.21202371025764,0 -97.87177066422443,36.20316175461802,0 -97.88835242200982,36.20300133041697,0 -97.90736210168704,36.21760026958518,0 -97.9074759499842,36.24615668987072,0 -97.91006542754609,36.27494900444062,0 -97.91010872522784,36.30374897172576,0 -97.91083403175367,36.33363438811259,0 -97.91085505654915,36.34674094333875,0 -97.91066013775044,36.37621970821675,0 -97.85472238813036,36.3761802311509,0 -97.85384046293746,36.27492138386096,0 -97.88945156827327,36.27477159840089,0 -97.90987948329631,36.28982853040851,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>Nassh to PONCK</name>
+			<styleUrl>#msn_ylw-pushpin0</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					-98.03982104640099,36.64734979099891,0 -97.81641553932589,36.65068904221345,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>

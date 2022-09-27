@@ -16,17 +16,17 @@ function loadKEND17L(chatSocket, staticPATH) {
     var KEND17LMapAcft = {}
     var KEND17LMapAcftNotUpdated = []
 
-    // let legacyT6Icon = L.icon({
-    //     iconUrl: 'static/images/LegacyT6Icon.png',
-    //     shadowUrl: 'static/leaflet/images/marker-shadow.png',
+    let legacyT6Icon = L.icon({
+        iconUrl: '../static/AutoRecorder/images/LegacyT6Icon.png',
+        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
 
-    //     iconSize:     [38, 95], // size of the icon
-    //     shadowSize:   [50, 64], // size of the shadow
-    //     iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-    //     shadowAnchor: [4, 62],  // the same for the shadow
-    //     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        iconSize:     [30, 30], // size of the icon
+        shadowSize:   [20, 20], // size of the shadow
+        iconAnchor:   [15, 15], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 0],  // the same for the shadow
+        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
 
-    // })
+    })
 
     
     chatSocket.addEventListener('message', function(e){
@@ -152,14 +152,13 @@ function loadKEND17L(chatSocket, staticPATH) {
             console.log(KEND17LMapAcftNotUpdated)
                             
             for (let i = 0; i < t6Update.length; i++) {
-                KEND17Lmap.invalidateSize()
 
                 if (!KEND17LMapAcft[t6Update[i].pk]) {
                     // If there is no marker with this id yet, instantiate a new one.
-                    KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                    KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: legacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
                   } else {
                     // If there is already a marker with this id, simply modify its position.
-                    KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setPopupContent(t6Update[i].fields.callSign);
+                    KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
                   }
 
                   delete KEND17LMapAcftNotUpdated[t6Update[i].pk]
