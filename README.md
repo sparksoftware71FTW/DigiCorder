@@ -1,9 +1,9 @@
 # DigiCorder
 - Enhance/replace recorders in the RSU
-- Possibly host a ORM management app
+- Possibly integrate additional hardware/software to assist with other duties as well!
 
 # Dev Environment Setup Instructions:
-*Note: these instructions are Windows-centric, but almost identical for Linux/MacOS.*
+*Note: these instructions are Windows-centric, but they are almost identical for Linux/MacOS.*
 
 1. Install python and setup virtual environment
    - Download and install python 3.10 on your machine
@@ -37,7 +37,19 @@
    > `python manage.py createsuperuser`
    - Follow the instructions that populate. Email and other fields are not strictly necessary.
 
-4.  Run the server!
-	> `python manage.py runserver`
+4. Install `Docker` and run a stripped down virtual machine with a Redis RAM database to support our application's asynchronous features with fast, in-RAM queing
+   - Download from https://www.docker.com/
+   - Run the installation executable, and when complete, run the command below in a terminal: 
+   > `docker run -p 6379:6379 -d redis:5`
+   - This will download and instantiate the Redis 5 database VM that our app will hook into via localhost port 6379 mapped to the VM's port 6379.
+   - This port will need to change to 80 when deployed most likely due to common routing rules (especially if the VM is on a different machine altogether than the one our app is running on).
+   - Either use Docker's desktop app or its proprietary terminal commands to shut down, save, or restart this VM as needed going forward.
 
-5. Checkout the admin site in your browser, and login with the credentials you specified earlier `http://localhost:8000/admin/`.
+5.  **IMPORTANT:** by default, the server will pull ADSB data from https://rapidapi.com/adsbx/api/adsbexchange-com1/ every second. This costs real money for every data pull.
+   - To disable the ADSB data stream, (with the server not running) run the powershell command `$env:ENABLE_ADSB='False'` in the same terminal window that you will run the server from.
+   - To re-enable it, just set this environment variable to `'True'` (again, when the server is shut down).
+6. Run the server! Just navigate to the `..\Digicorder\Digicorder\DigicorderServer\` directory and punch in the commands below into a terminal: 
+	> `python manage.py runserver`
+   
+7. Visit `http://localhost:8000/AutoRecorder/` in the browser of your choice, login, and enjoy!
+8. Also checkout the admin site in your browser, and login with the credentials you specified earlier `http://localhost:8000/admin/`. You can then manage the permissions of any other user that registers an account on the site. By default, a newly registered account cannot see any of the dashboard or Form 355 pages. An admin must mark each account with `staff` permissions before users can see or do anything useful.

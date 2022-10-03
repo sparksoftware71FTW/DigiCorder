@@ -1,6 +1,4 @@
-import imp
 import json
-from time import sleep
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from django.db.models.signals import post_save
