@@ -48,6 +48,7 @@
 5.  **IMPORTANT:** by default, the server will pull ADSB data from https://rapidapi.com/adsbx/api/adsbexchange-com1/ every second. This costs real money for every data pull.
    - To disable the ADSB data stream, (with the server not running) run the powershell command `$env:ENABLE_ADSB='False'` in the same terminal window that you will run the server from.
    - To re-enable it, just set this environment variable to `'True'` (again, when the server is shut down).
+
 6. Run the server! Just navigate to the `..\Digicorder\Digicorder\DigicorderServer\` directory and punch in the commands below into a terminal: 
 	> `python manage.py runserver`
    
