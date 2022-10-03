@@ -6,7 +6,7 @@
 *Note: these instructions are Windows-centric, but they are almost identical for Linux/MacOS.*
 
 1. Install python and setup virtual environment
-   - Download and install python 3.10 on your machine
+   - Download and install python 3.10.5 on your machine
    - Make a directory for the project (something like ..\Digicorder\)
    - Open a terminal in the project directory and run the following commands:
    > `python -m venv env1`
