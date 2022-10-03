@@ -20,6 +20,8 @@
 
 2. Clone the Digicorder repo into prefered directory, and use `pip` to install the dependencies in `requirements.txt`. 
    - Recommend cloning the repo right *next to* where you installed your virtual environment `..\Digicorder\` - though NOT in the `..\Digicorder\env1` directory... This will cause git to track over a thousand unnecessary virtual environment files.
+   - When you have a terminal open in the target directory run `git clone https://github.com/Gmunster33/DigiCorder.git`
+     - Note: if you do not have `Git` installed on your machine, download and run the installer here: https://git-scm.com/downloads
    - Once cloned, `cd` into the repo directory (`..\Digicorder\Digicorder` if you've been following along exactly so far and you used Git default naming)
    - Now run the command below to install the project's dependencies:
    > `pip install -r requirements.txt`
@@ -45,7 +47,7 @@
    - This port will need to change to 80 when deployed most likely due to common routing rules (especially if the VM is on a different machine altogether than the one our app is running on).
    - Either use Docker's desktop app or its proprietary terminal commands to shut down, save, or restart this VM as needed going forward.
 
-5.  **IMPORTANT:** by default, the server will pull ADSB data from https://rapidapi.com/adsbx/api/adsbexchange-com1/ every second. This costs real money for every data pull.
+5. **IMPORTANT:** by default, the server will pull ADSB data from https://rapidapi.com/adsbx/api/adsbexchange-com1/ every second. This costs real money for every data pull.
    - To disable the ADSB data stream, (with the server not running) run the powershell command `$env:ENABLE_ADSB='False'` in the same terminal window that you will run the server from.
    - To re-enable it, just set this environment variable to `'True'` (again, when the server is shut down).
 
