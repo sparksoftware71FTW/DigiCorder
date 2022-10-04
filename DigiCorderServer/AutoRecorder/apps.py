@@ -8,6 +8,7 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from shapely import geometry
 from django.utils import timezone
+from fastkml import kml
 
 
 import logging
@@ -153,13 +154,53 @@ def task1(parentThreadName):
             os.environ['ENABLE_ADSB'] = 'True'
             return
 
+# patterngeo is: POLYGON Z ((-97.85030679597989 36.34361697636346 356.5965643368178, -97.8519523722311 36.42150409466861 386.7798542217082, -97.8665824662419 36.41770787541027 386.7433724200206, -97.88379406517919 36.42324959552203 405.2495714293286, -97.87599735916334 36.47861104189872 413.0276973875364, -97.95303083318271 36.48381133357203 427.3829198543955, -98.01875560914486 36.34124538321816 413.7861677624667, -97.95432176629562 36.19512333559884 372.9853171169215, -97.87839028617687 36.19511818635721 387.4445295500769, -97.88047829281494 36.27096011513436 386.9419600520378, -97.85030679597989 36.34361697636346 356.5965643368178))
+# patterngeo2 is: POLYGON ((36.34274909853927 -97.85060096116348, 36.38501763547715 -97.85340389119733, 36.37083992357469 -97.9199899747725, 36.37083992899921 -97.91998998150338, 36.45457130802796 -97.88064193324243, 36.43822747970118 -97.94454597209545, 36.34029761411401 -98.01874780036422, 36.27950096822119 -97.96044005727545, 36.27950096279858 -97.96044005727501, 36.27950095737597 -97.96044005727457, 36.34274909853927 -97.85060096116348))
+
+
 def inPattern(position):
     patternCoords = [(36.34274909853927, -97.85060096116348), (36.38501763547715, -97.85340389119733), (36.37083992357469, -97.91998997477251), (36.37083992899921, -97.91998998150338), (36.45457130802796, -97.88064193324243), (36.43822747970118, -97.94454597209545), (36.34029761411401, -98.01874780036422), (36.27950096822119, -97.96044005727545), (36.27950096279858, -97.96044005727501), (36.27950095737597, -97.96044005727457)]
-    patternGeo = geometry.Polygon(patternCoords)
-    if position.within(patternGeo) and position.z < 5000:
+    patternGeo = readKML("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml") #geometry.Polygon(patternCoords)
+    patternGeo2 = geometry.Polygon(patternCoords)
+    alt = position.z
+    position2d = geometry.Point(position.x, position.y)
+
+    print(position2d)
+    
+    if position2d.within(patternGeo2) and alt < 5000:
+        print("TRUE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         return True
     else:
+        print("False")
         return False
+    
+
+def readKML(file):
+    k = kml.KML()
+    with open(file, 'rt', encoding='utf-8') as myfile:
+        doc = myfile.read().encode('utf-8')
+    k.from_string(doc)
+    placemarks = []
+    parse_placemarks(placemarks, list(k.features()))
+    # print(k.to_string(prettyprint=True))
+    for placemark in placemarks:
+        if placemark.name == "PatternOutline":
+            return placemark.geometry
+        
+
+
+def parse_placemarks(target, document):
+    for feature in document:
+        if isinstance(feature, kml.Placemark):  
+           placemark = feature
+           target.append(placemark)
+    for feature in document:
+        if isinstance(feature, kml.Folder):
+            parse_placemarks(target, list(feature.features()))
+        if isinstance(feature, kml.Document):
+           parse_placemarks(target, list(feature.features()))
+
+
 
 def getAircraftNotUpdated(updatedAircraftList):
     from AutoRecorder.models import ActiveAircraft

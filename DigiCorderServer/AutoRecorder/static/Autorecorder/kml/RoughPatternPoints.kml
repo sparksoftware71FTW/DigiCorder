@@ -216,7 +216,7 @@
 		</Point>
 	</Placemark>
 	<Placemark id="05044D4CF824B63C6A54">
-		<name>Polygon</name>
+		<name>PatternOutline</name>
 		<LookAt>
 			<longitude>-97.95432177146063</longitude>
 			<latitude>36.38399499906387</latitude>
