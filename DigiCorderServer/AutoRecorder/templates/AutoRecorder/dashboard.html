@@ -64,11 +64,30 @@
                         <script> loadKEND17L(chatSocket) </script>
                         {% load static %}
                         <script type="text/javascript">
+
+                            var myCustomGroup = L.geoJSON(null, {
+                                style: getStyle
+                            });
+
+                            function getStyle(feature) {
+                                return {
+                                            color: '#ff6e6e6e',
+                                            // weight: 7
+                                        }
+                                // if (feature.properties.styleUrl === '#PolyStyleOGreen') {
+                                //     if (feature.geometry.type === 'LineString') {
+                                //         return {
+                                //             color: '#ff6e6e6e',
+                                //             weight: 4
+                                //         }
+                                //     }
+                                // }
+                            }
                         
                             omnivore.kml('{% static "AutoRecorder/kml/Eckho Recovery.kml" %}').addTo(KEND17Lmap)
                             omnivore.kml('{% static "AutoRecorder/kml/RoughPatternPoints.kml" %}').addTo(KEND17Lmap)
-                            omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}').addTo(KEND17Lmap) 
-                            //omnivore.kml('{% static "AutoRecorder/kml/FOXTR Recoery.kml" %}').addTo(KEND17Lmap)
+                            omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}', null, myCustomGroup).addTo(KEND17Lmap) 
+                            omnivore.kml('{% static "AutoRecorder/kml/FOXTR Recoery.kml" %}').addTo(KEND17Lmap)
                             KEND17Lmap.invalidateSize() //?????????????????????????????????????????????????????????
                             
                         </script>
