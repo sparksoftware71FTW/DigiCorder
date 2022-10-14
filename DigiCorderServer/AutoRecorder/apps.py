@@ -98,19 +98,19 @@ def task1(parentThreadName):
                     if inPattern(position, patterns) and Acft.groundSpeed > 70 and Acft.alt_baro != "ground" and Acft.state != "in pattern":
                         Acft.lastState = Acft.state
                         Acft.state="in pattern"
-                        Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
+                        Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                         if Acft.lastState == "taxiing":
                             Acft.takeoffTime = timezone.now()
                     elif inPattern(position, patterns) and Acft.groundSpeed < 70 and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or (int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro < 1350))):
                         Acft.lastState = Acft.state
                         Acft.state="taxiing"
-                        Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
+                        Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                         if Acft.lastState == "in pattern":
                             Acft.landTime = timezone.now()
                     elif inPattern(position, patterns) == False and Acft.state != "off station":
                         Acft.lastState = Acft.state
                         Acft.state="off station"
-                        Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon) 
+                        Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
                     Acft.timestamp=timezone.now()
                     Acft.save()
                     logger.debug("Success!")   
@@ -132,17 +132,17 @@ def task1(parentThreadName):
                     if Acft.landTime == None and Acft.state != "lost signal":
                         Acft.lastState = Acft.state
                         Acft.state = "lost signal"
-                        Acft.substate=Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
+                        Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                         Acft.save()
                     elif Acft.landTime != None and Acft.state != "completed sortie":
                         Acft.lastState = Acft.state
                         Acft.state = "completed sortie"
-                        Acft.substate=Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
+                        Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                         Acft.save()
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 14400: #4 hrs
                     Acft.lastState = Acft.state
                     Acft.state = "completed sortie"
-                    Acft.substate=Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
+                    Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                     Acft.save()
 
         killSignal = True
@@ -222,10 +222,10 @@ def getPosition(aircraft):
     return position
 
 
-def setSubstate(position, eastside, shoehorn):
-    if position.within(eastside):
+def setSubstate(position, state, eastside, shoehorn):
+    if position.within(eastside) and state == "in pattern":
         return "eastside"
-    elif position.within(shoehorn):
+    elif position.within(shoehorn) and state == "in pattern":
         return "shoehorn"
     else:
         return "null"

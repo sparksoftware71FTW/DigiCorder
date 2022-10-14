@@ -163,7 +163,7 @@ function loadKEND17L(chatSocket, staticPATH) {
 
                   delete KEND17LMapAcftNotUpdated[t6Update[i].pk]
 
-                if (t6Update[i].fields.state == "in pattern") {
+                if (t6Update[i].fields.substate == "eastside") {
                     KEND17LPattern.insertAdjacentHTML('beforeend',       
                             `<tr>
                             <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
