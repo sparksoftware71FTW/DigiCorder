@@ -2,6 +2,7 @@ import json
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from django.db.models.signals import post_save
+from django.db.models import Q
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
 from channels import layers
@@ -69,7 +70,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         """
         Return all active T-6s serialized
         """
-        activeT6query = ActiveAircraft.objects.all().filter(aircraftType='TEX2').order_by('tailNumber')
+        activeT6query = ActiveAircraft.objects.all().filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
 
         activeT6Metadata = {}
         activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count()
@@ -107,7 +108,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         """
         Return all active T-6s serialized
         """
-        activeT38query = ActiveAircraft.objects.all().filter(aircraftType='T38').order_by('tailNumber')
+        activeT38query = ActiveAircraft.objects.all().filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
 
         activeT38Metadata = {}
         activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count()

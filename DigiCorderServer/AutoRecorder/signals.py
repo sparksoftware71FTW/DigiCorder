@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.timezone import timedelta
 from asgiref.sync import async_to_sync
 from django.db.models.signals import post_save
+from django.db.models import Q
 from django.dispatch import receiver
 from django.utils import timezone
 from django.core import serializers
@@ -90,7 +91,7 @@ def get_T6_queryset_update_message(sender):
     """
     Return all active T-6s serialized with associated metadata
     """
-    activeT6query = sender.objects.all().filter(aircraftType='TEX2').order_by('tailNumber')
+    activeT6query = ActiveAircraft.objects.all().filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
 
     activeT6Metadata = {}
     activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count()
@@ -127,7 +128,7 @@ def get_T38_queryset_update_message(sender):
     """
     Return all active T-38s serialized with associated metadata
     """
-    activeT38query = sender.objects.all().filter(aircraftType='T38').order_by('tailNumber')
+    activeT38query = ActiveAircraft.objects.all().filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
 
     activeT38Metadata = {}
     activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count()

@@ -1,4 +1,3 @@
-from contextlib import nullcontext
 import os
 import threading
 import asyncio
@@ -58,6 +57,9 @@ def task1(parentThreadName):
     # Rework t6 and t38 messaging functions to send all types of aircraft in the shoehorn
     # or eastside patterns
 
+    eastsidePatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Eastside")
+    shoehornPatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Shoehorn")
+    patterns = [eastsidePatternPolygon, shoehornPatternPolygon]
 
     while True:
         logger.info("Requesting ADSB Data...")
@@ -68,7 +70,8 @@ def task1(parentThreadName):
         updatedAircraftList = []
         for aircraft in jsondata['ac']:
             try:
-                if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38':
+                position = getPosition(aircraft)
+                if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
                     Acft, created = ActiveAircraft.objects.get_or_create(
                         tailNumber=aircraft["r"][-3:] #,
@@ -92,19 +95,22 @@ def task1(parentThreadName):
                         position = geometry.Point(Acft.latitude, Acft.longitude, 1300)
                     else:
                         position = geometry.Point(Acft.latitude, Acft.longitude, int(Acft.alt_baro))
-                    if inPattern(position) and Acft.groundSpeed > 70 and Acft.alt_baro != "ground" and Acft.state != "in pattern":
+                    if inPattern(position, patterns) and Acft.groundSpeed > 70 and Acft.alt_baro != "ground" and Acft.state != "in pattern":
                         Acft.lastState = Acft.state
                         Acft.state="in pattern"
+                        Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
                         if Acft.lastState == "taxiing":
                             Acft.takeoffTime = timezone.now()
-                    elif inPattern(position) and Acft.groundSpeed < 70 and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or (int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro < 1350))):
+                    elif inPattern(position, patterns) and Acft.groundSpeed < 70 and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or (int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro < 1350))):
                         Acft.lastState = Acft.state
                         Acft.state="taxiing"
+                        Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
                         if Acft.lastState == "in pattern":
                             Acft.landTime = timezone.now()
-                    elif inPattern(position) == False and Acft.state != "off station":
+                    elif inPattern(position, patterns) == False and Acft.state != "off station":
                         Acft.lastState = Acft.state
-                        Acft.state="off station" 
+                        Acft.state="off station"
+                        Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon) 
                     Acft.timestamp=timezone.now()
                     Acft.save()
                     logger.debug("Success!")   
@@ -126,14 +132,17 @@ def task1(parentThreadName):
                     if Acft.landTime == None and Acft.state != "lost signal":
                         Acft.lastState = Acft.state
                         Acft.state = "lost signal"
+                        Acft.substate=Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
                         Acft.save()
                     elif Acft.landTime != None and Acft.state != "completed sortie":
                         Acft.lastState = Acft.state
                         Acft.state = "completed sortie"
+                        Acft.substate=Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
                         Acft.save()
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 14400: #4 hrs
                     Acft.lastState = Acft.state
                     Acft.state = "completed sortie"
+                    Acft.substate=Acft.substate=setSubstate(position, eastsidePatternPolygon, shoehornPatternPolygon)
                     Acft.save()
 
         killSignal = True
@@ -154,18 +163,18 @@ def task1(parentThreadName):
             os.environ['ENABLE_ADSB'] = 'True'
             return
 
-def inPattern(position):
-    patternGeo = getEastsideKMLgeometry("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml") #geometry.Polygon(patternCoords)
-    # patternGeo2 = geometry.Polygon(patternCoords)
-    alt = position.z
-    position2d = geometry.Point(position.x, position.y)    
-    if position2d.within(patternGeo) and alt < 5000:
-        return True
-    else:
-        return False
-    
 
-def getEastsideKMLgeometry(file):
+def inPattern(position, patterns):
+    alt = position.z
+    position2d = geometry.Point(position.x, position.y)  
+    for pattern in patterns:
+        if position2d.within(pattern) and alt < 5000:
+            return True
+        else:
+            return False
+
+
+def getKMLplacemark(file, placemarkName):
     k = kml.KML()
     with open(file, 'rt', encoding='utf-8') as myfile:
         doc = myfile.read().encode('utf-8')
@@ -174,8 +183,9 @@ def getEastsideKMLgeometry(file):
     parse_placemarks(placemarks, list(k.features()))
     # print(k.to_string(prettyprint=True))
     for placemark in placemarks:
-        if placemark.name == "Eastside":
+        if placemark.name == placemarkName:
             return swapLatLong(placemark.geometry)
+
 
 def swapLatLong(polygon):
     coordList = list(polygon.exterior.coords)
@@ -199,7 +209,24 @@ def parse_placemarks(target, document):
            parse_placemarks(target, list(feature.features()))
 
 
-
 def getAircraftNotUpdated(updatedAircraftList):
     from AutoRecorder.models import ActiveAircraft
     return ActiveAircraft.objects.exclude(tailNumber__in=updatedAircraftList)
+
+
+def getPosition(aircraft):
+    if aircraft["alt_baro"] == "ground":
+        position = geometry.Point(aircraft["lat"], aircraft["lon"], 1300)
+    else:
+        position = geometry.Point(aircraft["lat"], aircraft["lon"], int(aircraft["alt_baro"]))
+    return position
+
+
+def setSubstate(position, eastside, shoehorn):
+    if position.within(eastside):
+        return "eastside"
+    elif position.within(shoehorn):
+        return "shoehorn"
+    else:
+        return "null"
+        

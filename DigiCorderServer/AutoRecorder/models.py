@@ -1,12 +1,6 @@
-from codecs import latin_1_decode
-from telnetlib import STATUS
-from tkinter import CASCADE
-from unicodedata import name
 from django.db import models
-# from django.db.models.signals import post_save
 # from django.dispatch import receiver
 from django.utils import timezone
-# Create your models here.
 
 class Message(models.Model):
     message = models.CharField('message', max_length=150, blank=True, null=True)
@@ -24,7 +18,7 @@ class Airfield(models.Model):
 class Callsigns(models.Model):
     callsign = models.CharField('Callsigns', max_length=20, primary_key=True)
     aircraftType = models.CharField('Aircraft Type', max_length=20, blank=True, null=True)
-    typoe = models.CharField('Type', max_length=20, default="dual")
+    type = models.CharField('Type', max_length=20, default="dual")
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE)
 
 class Tails(models.Model):
@@ -74,6 +68,7 @@ class ActiveAircraft(models.Model):
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
     state = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
     lastState = models.CharField('Last State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
+    substate = models.CharField('Substate', max_length=20, blank=True, null=True) # used to discern specific pattern. Can be 'eastside', 'shoehorn', etc.
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
 
@@ -104,6 +99,7 @@ class CompletedSortie(models.Model):
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
     state = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
     lastState = models.CharField('Last State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
+    substate = models.CharField('Substate', max_length=20, blank=True, null=True) # used to discern specific pattern. Can be 'eastside', 'shoehorn', etc.
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
 
