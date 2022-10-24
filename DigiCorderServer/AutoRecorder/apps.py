@@ -114,7 +114,11 @@ def task1(parentThreadName):
                     Acft.timestamp=timezone.now()
                     Acft.save()
                     logger.debug("Success!")   
-                    updatedAircraftList.append(Acft.tailNumber)         
+                    updatedAircraftList.append(Acft.tailNumber)
+
+                    # logger.info("ADSB Thread sleeping... Acft saved.")
+                    time.sleep(.04)
+                    # logger.info("ADSB Thread waking up...")         
 
             except KeyError as e:
                 logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
