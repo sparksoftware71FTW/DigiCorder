@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.core import serializers
 
-from .models import ActiveAircraft, CompletedSortie, Message
+from .models import ActiveAircraft, CompletedSortie, Message, Trigger
 
 import logging
 logger = logging.getLogger(__name__)
@@ -47,12 +47,11 @@ def log_completed_flight(sender, instance, created, **kwargs):
         logger.info("Active -> Completed Transition Occured")
 
 
-@receiver(post_save, sender=ActiveAircraft, dispatch_uid="displayActiveAircraft")
+@receiver(post_save, sender=Trigger, dispatch_uid="displayActiveAircraft")
 def displayActiveAircraft(sender, instance, created, **kwargs):
-    t38message, t38metadata = get_T38_queryset_update_message(sender)
-    t6message, t6metadata = get_T6_queryset_update_message(sender)
 
     channel_layer = layers.get_channel_layer()
+    t6message, t6metadata = get_T6_queryset_update_message()
     async_to_sync(channel_layer.group_send)(
     'test',
         {
@@ -61,6 +60,8 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
             'meta': t6metadata
         }
     )
+    
+    t38message, t38metadata = get_T38_queryset_update_message()
     async_to_sync(channel_layer.group_send)(
     'test',
         {
@@ -70,7 +71,39 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
 
         }
     )
-    logger.info("Active Aircraft Signal Triggered")
+    #logger.info("Active Aircraft Signal Triggered")
+
+
+# @receiver(post_save, sender=ActiveAircraft, dispatch_uid="displayActiveAircraft")
+# def displayActiveAircraft(sender, instance, created, **kwargs):
+
+    # channel_layer = layers.get_channel_layer()
+
+    # if instance.aircraftType == "TEX2" or instance.substate == "eastside":
+    #     t6message, t6metadata = get_T6_queryset_update_message(sender)
+    #     async_to_sync(channel_layer.group_send)(
+    #     'test',
+    #         {
+    #             'type':'t6Update',
+    #             'message':t6message,
+    #             'meta': t6metadata
+    #         }
+    #     )
+    
+    # if instance.aircraftType == "T38" or instance.substate == "shoehorn":
+    #     t38message, t38metadata = get_T38_queryset_update_message(sender)
+    #     async_to_sync(channel_layer.group_send)(
+    #     'test',
+    #         {
+    #             'type':'t38Update',
+    #             'message':t38message,
+    #             'meta': t38metadata
+
+    #         }
+    #     )
+    #logger.info("Active Aircraft Signal Triggered")
+
+
 
 def get_ActiveAircraft_queryset():
     """
@@ -79,6 +112,7 @@ def get_ActiveAircraft_queryset():
     #Question.objects.filter(pub_date__lte=timezone.now())
     return ActiveAircraft.objects.all().order_by('tailNumber')
 
+
 def get_Message_queryset():
     """
     Return all messages
@@ -86,7 +120,8 @@ def get_Message_queryset():
     #Question.objects.filter(pub_date__lte=timezone.now())
     return Message.objects
 
-def get_T6_queryset_update_message(sender):
+
+def get_T6_queryset_update_message():
 
     """
     Return all active T-6s serialized with associated metadata
@@ -124,7 +159,7 @@ def get_T6_queryset_update_message(sender):
     return activeT6s, json.dumps(activeT6Metadata)
 
 
-def get_T38_queryset_update_message(sender):
+def get_T38_queryset_update_message():
     """
     Return all active T-38s serialized with associated metadata
     """

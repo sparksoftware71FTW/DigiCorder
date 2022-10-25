@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 # from django.dispatch import receiver
 from django.utils import timezone
@@ -7,6 +8,9 @@ class Message(models.Model):
 
     def __str__(self):
         return "id " + str(self.id)
+
+class Trigger(models.Model):
+    sendAllMessages = models.BooleanField('Send Message', default=False)
 
 class Airfield(models.Model):
     FAAcode = models.CharField('FAA Code', max_length=4, primary_key=True)

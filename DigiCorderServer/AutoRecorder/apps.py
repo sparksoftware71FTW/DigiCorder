@@ -21,8 +21,6 @@ class AutoRecorderConfig(AppConfig):
 
         from AutoRecorder import signals
         #This is where the background thread will kick off...
-        #Make sure to add a is_running database model and a corresponding check 
-        #to make sure you're not adding multiple threads...
         #Also! This thread WILL interact with the database specified in settings.py... NOT a testing db.
         #Make sure we've got only one background thread running...
         enable_adsb = os.environ.get('ENABLE_ADSB') 
@@ -32,7 +30,36 @@ class AutoRecorderConfig(AppConfig):
         threadName = threading.current_thread().name
         logger.debug("ready() thread is: " + threadName)
         ADSBThread = threading.Thread(target=task1, args=(threadName,), name='ADSBThread')
+        MessageThread = threading.Thread(target=messageThread, args=(1, threadName,), name='ADSBThread')
         ADSBThread.start()
+        MessageThread.start()
+
+
+def messageThread(freq, parentThreadName):
+    from AutoRecorder.models import Trigger
+    while True:
+        trigger, created = Trigger.objects.get_or_create(id=1)
+        trigger.sendAllMessages = True
+        trigger.save()
+
+        killSignal = True
+        threads_list = threading.enumerate()
+        
+        for thread in threads_list:
+            if thread.name is parentThreadName and thread.is_alive() is True:
+                killSignal = False
+        
+        if killSignal is False:
+            logger.info("Message Thread sleeping...")
+            time.sleep(freq)
+            logger.info("Message Thread waking up...")
+
+            continue
+        else:
+            logger.debug("Stopping Message Thread")
+            os.environ['ENABLE_ADSB'] = 'True'
+            return
+
             
 def task1(parentThreadName):
     logger.info("Starting ADSB Thread")
@@ -112,12 +139,13 @@ def task1(parentThreadName):
                         Acft.state="off station"
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
                     Acft.timestamp=timezone.now()
+                    #aircraftToSave.append(Acft)
                     Acft.save()
                     logger.debug("Success!")   
                     updatedAircraftList.append(Acft.tailNumber)
 
                     # logger.info("ADSB Thread sleeping... Acft saved.")
-                    time.sleep(.04)
+                    # time.sleep(.05)
                     # logger.info("ADSB Thread waking up...")         
 
             except KeyError as e:
@@ -138,16 +166,19 @@ def task1(parentThreadName):
                         Acft.state = "lost signal"
                         Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                         Acft.save()
+                        logger.info("lost signal")
                     elif Acft.landTime != None and Acft.state != "completed sortie":
                         Acft.lastState = Acft.state
                         Acft.state = "completed sortie"
                         Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                         Acft.save()
+                        logger.info("completed sortie")
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 14400: #4 hrs
                     Acft.lastState = Acft.state
                     Acft.state = "completed sortie"
                     Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                     Acft.save()
+                    logger.info("completed sortie")
 
         killSignal = True
         threads_list = threading.enumerate()
