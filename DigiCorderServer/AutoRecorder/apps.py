@@ -126,9 +126,9 @@ def task1(parentThreadName):
                         Acft.lastState = Acft.state
                         Acft.state="in pattern"
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
-                        if Acft.lastState == "taxiing":
+                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro) < 1600):
                             Acft.takeoffTime = timezone.now()
-                    elif inPattern(position, patterns) and Acft.groundSpeed < 70 and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or (int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro < 1350))):
+                    elif inPattern(position, patterns) and Acft.groundSpeed < 70 and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or (int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro) < 1350)):
                         Acft.lastState = Acft.state
                         Acft.state="taxiing"
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
