@@ -261,62 +261,7 @@
 	</StyleMap>
 	<Folder>
 		<name>FOXTR Recoery</name>
-		<Placemark>
-			<name>FOXTR</name>
-			<open>1</open>
-			<styleUrl>#mfailed</styleUrl>
-			<Point>
-				<coordinates>-97.87037220000001,36.1998639,0</coordinates>
-			</Point>
-		</Placemark>
-		<Placemark>
-			<name>LEPTE</name>
-			<open>1</open>
-			<styleUrl>#failed12</styleUrl>
-			<Point>
-				<coordinates>-97.8197028,36.2118833,0</coordinates>
-			</Point>
-		</Placemark>
-		<Placemark>
-			<name>JUTAG 5,000 or above</name>
-			<open>1</open>
-			<styleUrl>#failed7</styleUrl>
-			<Point>
-				<coordinates>-97.8129556,36.2467222,0</coordinates>
-			</Point>
-		</Placemark>
-		<Placemark>
-			<name>ODG 6,000 or Above</name>
-			<open>1</open>
-			<styleUrl>#failed16</styleUrl>
-			<Point>
-				<coordinates>-97.7881203,36.3737689,0</coordinates>
-			</Point>
-		</Placemark>
-		<Placemark>
-			<name>PONCK 13,000 to 6,000</name>
-			<open>1</open>
-			<styleUrl>#failed4</styleUrl>
-			<Point>
-				<coordinates>-97.81648609999999,36.6512167,0</coordinates>
-			</Point>
-		</Placemark>
-		<Placemark>
-			<name>MEDFD 13,000 to 6,000</name>
-			<open>1</open>
-			<styleUrl>#failed11</styleUrl>
-			<Point>
-				<coordinates>-97.7625583,36.8123611,0</coordinates>
-			</Point>
-		</Placemark>
-		<Placemark>
-			<name>NASSH 6,000 OR 13,000</name>
-			<open>1</open>
-			<styleUrl>#failed13</styleUrl>
-			<Point>
-				<coordinates>-98.0399389,36.6464917,0</coordinates>
-			</Point>
-		</Placemark>
+		
 		<Placemark>
 			<name>FOXTR Recovery</name>
 			<styleUrl>#msn_ylw-pushpin</styleUrl>

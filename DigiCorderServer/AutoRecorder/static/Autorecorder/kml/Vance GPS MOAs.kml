@@ -797,9 +797,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.39,36.87,0</coordinates>
-        </Point>
+        </Point> --> -->
       </Placemark>
       <Placemark>
         <name>1</name>
@@ -826,9 +826,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.23,36.69,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>2</name>
@@ -855,9 +855,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.19,36.97,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>3</name>
@@ -884,9 +884,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.1,36.75,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>4</name>
@@ -913,9 +913,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.97,36.96,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>5</name>
@@ -942,9 +942,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.91,36.74,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>6</name>
@@ -971,9 +971,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.75,36.89,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>7</name>
@@ -1000,9 +1000,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.50,36.80,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>8</name>
@@ -1029,9 +1029,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.66,36.69,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>9</name>
@@ -1058,9 +1058,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.56,36.54,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>10</name>
@@ -1087,9 +1087,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.57,36.36,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>11</name>
@@ -1116,9 +1116,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.63,36.21,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>12</name>
@@ -1145,9 +1145,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-97.79,36.06,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>13</name>
@@ -1174,9 +1174,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 21000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#MOA_numbers</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.06,35.99,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
     </Folder>
     <Folder>
@@ -1217,9 +1217,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.43,35.97,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>2</name>
@@ -1249,9 +1249,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.52,36.17,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>3</name>
@@ -1281,9 +1281,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.55,36.40,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>4</name>
@@ -1312,9 +1312,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.44,36.64,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>5</name>
@@ -1343,9 +1343,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.98,35.96,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>6</name>
@@ -1374,9 +1374,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-99.07,36.25,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>7</name>
@@ -1405,9 +1405,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-99.03,36.59,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>8</name>
@@ -1436,9 +1436,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.82,36.88,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>9</name>
@@ -1467,9 +1467,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-98.60,37.09,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>10</name>
@@ -1498,9 +1498,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-99.50,36.05,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>11</name>
@@ -1529,9 +1529,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-99.53,36.38,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>12</name>
@@ -1560,9 +1560,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-99.47,36.67,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>13</name>
@@ -1591,9 +1591,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-99.33,36.97,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>14</name>
@@ -1622,9 +1622,9 @@ Note&#58; When local altimeter is less than 29.92, the top of the MOA is 22000 M
           <gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
         </LookAt>
         <styleUrl>#msn_placemark_circle</styleUrl>
-        <Point>
+        <!-- <Point>
           <coordinates>-99.07,37.20,0</coordinates>
-        </Point>
+        </Point> -->
       </Placemark>
       <Placemark>
         <name>Inner ring3</name>
