@@ -101,7 +101,7 @@ def task1(parentThreadName):
                 if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
                     Acft, created = ActiveAircraft.objects.get_or_create(
-                        tailNumber=aircraft["r"][-3:] #,
+                        tailNumber= aircraft["r"][:-3] + "--" + aircraft["r"][-3:] #,
                     )
 
                     Acft.callSign=aircraft["flight"]

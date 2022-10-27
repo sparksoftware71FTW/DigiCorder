@@ -82,7 +82,7 @@ class ActiveAircraft(models.Model):
 
 class CompletedSortie(models.Model):
     aircraftType = models.CharField('Type', max_length=20, blank=True, null=True)
-    tailNumber = models.IntegerField('Tail Number')
+    tailNumber = models.CharField('Tail', max_length=15)
     callSign = models.CharField('Callsign', max_length=12, blank=True, null=True)
     takeoffTime = models.DateTimeField('Takeoff Time', blank=True, null=True)
     three55Code = models.CharField('355 Code', max_length=5, default='none')
