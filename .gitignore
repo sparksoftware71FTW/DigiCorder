@@ -1,0 +1,8 @@
+
+*.pyc
+
+DigiCorderServer/register/migrations/
+
+DigiCorderServer/AutoRecorder/migrations/
+
+DigiCorderServer/polls/migrations/
