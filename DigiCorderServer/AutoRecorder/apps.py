@@ -78,12 +78,6 @@ def task1(parentThreadName):
     # If any aircraft is in a pattern, add it to active aircraft for displaying
     # Once non-T1/T6/T38 aircraft depart the pattern, delete from active aircraft
 
-    # Either replace "in pattern" state with seperate states for each pattern,
-    # or add additional db field for a specific pattern (e.g. 'shoehorn'/'eastside')
-
-    # Rework t6 and t38 messaging functions to send all types of aircraft in the shoehorn
-    # or eastside patterns
-
     eastsidePatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Eastside")
     shoehornPatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Shoehorn")
     patterns = [eastsidePatternPolygon, shoehornPatternPolygon]
