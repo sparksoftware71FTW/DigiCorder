@@ -29,7 +29,7 @@ class AutoRecorderConfig(AppConfig):
         os.environ['ENABLE_ADSB'] = 'False'
         threadName = threading.current_thread().name
         logger.debug("ready() thread is: " + threadName)
-        ADSBThread = threading.Thread(target=task1, args=(threadName,), name='ADSBThread')
+        ADSBThread = threading.Thread(target=adsbThread, args=(threadName,), name='ADSBThread')
         MessageThread = threading.Thread(target=messageThread, args=(1, threadName,), name='ADSBThread')
         ADSBThread.start()
         MessageThread.start()
@@ -61,7 +61,7 @@ def messageThread(freq, parentThreadName):
             return
 
             
-def task1(parentThreadName):
+def adsbThread(parentThreadName):
     logger.info("Starting ADSB Thread")
     import http.client
     import json
@@ -95,7 +95,7 @@ def task1(parentThreadName):
                 if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
                     Acft, created = ActiveAircraft.objects.get_or_create(
-                        tailNumber= aircraft["r"][:-3] + "--" + aircraft["r"][-3:] #,
+                        tailNumber= aircraft["r"][:-3] + "--" + aircraft["r"][-3:]
                     )
 
                     Acft.callSign=aircraft["flight"]
@@ -116,7 +116,7 @@ def task1(parentThreadName):
                         position = geometry.Point(Acft.latitude, Acft.longitude, 1300)
                     else:
                         position = geometry.Point(Acft.latitude, Acft.longitude, int(Acft.alt_baro))
-                    if inPattern(position, patterns) and Acft.groundSpeed > 70 and Acft.alt_baro != "ground" and Acft.state != "in pattern":
+                    if inPattern(position, patterns) and Acft.groundSpeed > 70 and Acft.alt_baro != "ground" and Acft.state != "in pattern": # TODO: test removing ground to fix T-38 bug
                         Acft.lastState = Acft.state
                         Acft.state="in pattern"
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
@@ -183,7 +183,7 @@ def task1(parentThreadName):
         
         if killSignal is False:
             logger.info("ADSB Thread sleeping...")
-            time.sleep(1)
+            #time.sleep(1)
             logger.info("ADSB Thread waking up...")
 
             continue
