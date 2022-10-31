@@ -10,6 +10,8 @@
     var url = `ws://${window.location.host}/ws/socket-server/`
     console.log(url)
     
+    var csrf_token = '{{ csrf_token }}'
+
     const chatSocket = new WebSocket(url)
 
     chatSocket.addEventListener('message', function(e){
@@ -61,7 +63,7 @@
                 <div class="accordion-body">
                     {% if True %}
                         {% include 'AutoRecorder/KEND17L-Tables.html' %}
-                        <script> loadKEND17L(chatSocket) </script>
+                        <script> loadKEND17L(chatSocket, csrf_token) </script>
                         {% load static %}
                         <script type="text/javascript">
 
@@ -106,7 +108,7 @@
                 <div class="accordion-body">
                 {% if True %}
                     {% include 'AutoRecorder/KEND35L-Tables.html' %}
-                    <script> loadKEND35L(chatSocket) </script>
+                    <script> loadKEND35L(chatSocket, csrf_token) </script>
                 {% endif %}
                 </div>
                 </div>

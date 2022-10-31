@@ -1,4 +1,4 @@
-function loadKEND35L(chatSocket) {
+function loadKEND35L(chatSocket, csrf_token) {
 
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)

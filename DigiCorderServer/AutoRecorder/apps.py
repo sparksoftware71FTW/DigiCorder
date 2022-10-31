@@ -183,7 +183,7 @@ def adsbThread(parentThreadName):
         
         if killSignal is False:
             logger.info("ADSB Thread sleeping...")
-            #time.sleep(1)
+            time.sleep(1)
             logger.info("ADSB Thread waking up...")
 
             continue

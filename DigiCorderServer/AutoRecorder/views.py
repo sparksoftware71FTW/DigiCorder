@@ -17,14 +17,16 @@ from .models import ActiveAircraft, CompletedSortie, Airfield
 def index(request):
     return render(request, 'AutoRecorder/bootbase.html')
 
-@staff_member_required(login_url='/login')
+@staff_member_required(login_url='AutoRecorder/bootbase.html')
 def dashboard(request):
     return render(request, 'AutoRecorder/dashboard.html')
 
-@staff_member_required(login_url='/login')
+
+@staff_member_required(login_url='AutoRecorder/bootbase.html')
 def form355(request):
     landedAircraft = CompletedSortie.objects.all()
     return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft})
+
 
 @staff_member_required(login_url='/login')
 def violation355View(request, tailNumber):
@@ -58,7 +60,35 @@ def editView(request, tailNumber):
         return render(request, 'AutoRecorder/edit.html', {"acfteditformset": acfteditformset})
 
 
+@staff_member_required(login_url='AutoRecorder/bootbase.html')
+def formSolo(request, tailNumber):
 
+    if request.method == 'POST':
+        acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
+        toggleFormSolo(acft)
+        return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+    else:
+        return render(request, 'AutoRecorder/dashboard.html')
+
+
+def toggleFormSolo(acft):
+    if acft.formation == False:
+        acft.formation = True
+    elif acft.formation == True:
+        acft.formation = False
+    else:
+        acft.formation = True
+
+    if acft.solo == False:
+        acft.solo = True
+    elif acft.solo == True:
+        acft.solo = False
+    else:
+        acft.solo = True
+
+    acft.save()
+    print(acft.solo)
+    print(acft.formation)
 
 
 # class IndexView(generic.ListView):

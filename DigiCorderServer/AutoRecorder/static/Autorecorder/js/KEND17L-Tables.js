@@ -1,7 +1,7 @@
 var KEND17Lmap = L.map('KEND17Lmap').setView([36.3393, -97.9131], 13);
 
 
-function loadKEND17L(chatSocket, staticPATH) {
+function loadKEND17L(chatSocket, csrf_token) {
 
     //var KEND17Lmap = L.map('KEND17Lmap').setView([36.3393, -97.9131], 13);
 
@@ -163,6 +163,9 @@ function loadKEND17L(chatSocket, staticPATH) {
 
                   delete KEND17LMapAcftNotUpdated[t6Update[i].pk]
 
+                let formsoloCheckmark = ""
+                if (t6Update[i].fields.solo && t6Update[i].fields.formation) {formsoloCheckmark = "checked"}
+
                 if (t6Update[i].fields.substate == "eastside") {
                     KEND17LPattern.insertAdjacentHTML('beforeend',       
                             `<tr>
@@ -174,9 +177,13 @@ function loadKEND17L(chatSocket, staticPATH) {
                             <td>${t6Update[i].fields.takeoffTime}</td>
                             <td>${t6Update[i].fields.landTime}</td>
 
-                            <td>  
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
+                            <td>
+                                <form method="POST" action="dashboard/formsolo/${t6Update[i].pk}" class="form-group">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                    <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formsoloCheckmark}>  
+                                    <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form Solo</label>
+                                </form>
+                            </td>
                             <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
@@ -184,57 +191,69 @@ function loadKEND17L(chatSocket, staticPATH) {
                 }
                 if (t6Update[i].fields.state == "taxiing") {
                     KEND17LTaxiing.insertAdjacentHTML('beforeend',       
-                            `<tr>
-                            <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
-                            <td>${t6Update[i].pk}</td>
-                            <td>${t6Update[i].fields.callSign}</td>
-                            <td>${t6Update[i].fields.alt_baro}</td>
-                            <td>${t6Update[i].fields.groundSpeed}</td>
-                            <td>${t6Update[i].fields.takeoffTime}</td>
-                            <td>${t6Update[i].fields.landTime}</td>
+                    `<tr>
+                    <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
+                    <td>${t6Update[i].pk}</td>
+                    <td>${t6Update[i].fields.callSign}</td>
+                    <td>${t6Update[i].fields.alt_baro}</td>
+                    <td>${t6Update[i].fields.groundSpeed}</td>
+                    <td>${t6Update[i].fields.takeoffTime}</td>
+                    <td>${t6Update[i].fields.landTime}</td>
 
-                            <td>  
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                            <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
-                            </tr>`
-                            )
+                    <td>
+                        <form method="POST" action="dashboard/formsolo/${t6Update[i].pk}" class="form-group">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formsoloCheckmark}>  
+                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form Solo</label>
+                        </form>
+                    </td>
+                    <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                    </tr>`
+                    )
                 }
                 if (t6Update[i].fields.state == "off station") {
                     KEND17LOffStation.insertAdjacentHTML('beforeend',       
-                            `<tr>
-                            <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
-                            <td>${t6Update[i].pk}</td>
-                            <td>${t6Update[i].fields.callSign}</td>
-                            <td>${t6Update[i].fields.alt_baro}</td>
-                            <td>${t6Update[i].fields.groundSpeed}</td>
-                            <td>${t6Update[i].fields.takeoffTime}</td>
-                            <td>${t6Update[i].fields.landTime}</td>
+                    `<tr>
+                    <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
+                    <td>${t6Update[i].pk}</td>
+                    <td>${t6Update[i].fields.callSign}</td>
+                    <td>${t6Update[i].fields.alt_baro}</td>
+                    <td>${t6Update[i].fields.groundSpeed}</td>
+                    <td>${t6Update[i].fields.takeoffTime}</td>
+                    <td>${t6Update[i].fields.landTime}</td>
 
-                            <td>  
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
-                            </tr>`
-                            )
+                    <td>
+                        <form method="POST" action="dashboard/formsolo/${t6Update[i].pk}" class="form-group">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formsoloCheckmark}>  
+                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form Solo</label>
+                        </form>
+                    </td>
+                    <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                    </tr>`
+                    )
                 }
                 if (t6Update[i].fields.state == "lost signal") {
                     KEND17LLostSignal.insertAdjacentHTML('beforeend',       
-                            `<tr>
-                            <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
-                            <td>${t6Update[i].pk}</td>
-                            <td>${t6Update[i].fields.callSign}</td>
-                            <td>${t6Update[i].fields.alt_baro}</td>
-                            <td>${t6Update[i].fields.groundSpeed}</td>
-                            <td>${t6Update[i].fields.takeoffTime}</td>
-                            <td>${t6Update[i].fields.landTime}</td>
+                    `<tr>
+                    <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
+                    <td>${t6Update[i].pk}</td>
+                    <td>${t6Update[i].fields.callSign}</td>
+                    <td>${t6Update[i].fields.alt_baro}</td>
+                    <td>${t6Update[i].fields.groundSpeed}</td>
+                    <td>${t6Update[i].fields.takeoffTime}</td>
+                    <td>${t6Update[i].fields.landTime}</td>
 
-                            <td>  
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
-                            </tr>`
-                            )
+                    <td>
+                        <form method="POST" action="dashboard/formsolo/${t6Update[i].pk}" class="form-group">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formsoloCheckmark}>  
+                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form Solo</label>
+                        </form>
+                    </td>
+                    <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                    </tr>`
+                    )
                 }
             }
                         //remove all aircraft on the map that were not in the update message
