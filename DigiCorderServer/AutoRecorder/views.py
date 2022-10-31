@@ -87,8 +87,6 @@ def toggleFormSolo(acft):
         acft.solo = True
 
     acft.save()
-    print(acft.solo)
-    print(acft.formation)
 
 
 # class IndexView(generic.ListView):
