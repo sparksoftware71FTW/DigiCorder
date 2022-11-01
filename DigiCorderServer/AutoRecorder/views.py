@@ -71,6 +71,28 @@ def formSolo(request, tailNumber):
         return render(request, 'AutoRecorder/dashboard.html')
 
 
+@staff_member_required(login_url='AutoRecorder/bootbase.html')
+def form(request, tailNumber):
+
+    if request.method == 'POST':
+        acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
+        toggleForm(acft)
+        return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+    else:
+        return render(request, 'AutoRecorder/dashboard.html')
+
+
+@staff_member_required(login_url='AutoRecorder/bootbase.html')
+def solo(request, tailNumber):
+
+    if request.method == 'POST':
+        acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
+        toggleSolo(acft)
+        return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+    else:
+        return render(request, 'AutoRecorder/dashboard.html')
+
+
 def toggleFormSolo(acft):
     if acft.formation == False:
         acft.formation = True
@@ -88,6 +110,25 @@ def toggleFormSolo(acft):
 
     acft.save()
 
+
+def toggleForm(acft):
+    if acft.formation == False:
+        acft.formation = True
+    elif acft.formation == True:
+        acft.formation = False
+    else:
+        acft.formation = True
+    acft.save()
+
+
+def toggleSolo(acft):
+    if acft.solo == False:
+        acft.solo = True
+    elif acft.solo == True:
+        acft.solo = False
+    else:
+        acft.solo = True
+    acft.save()
 
 # class IndexView(generic.ListView):
 #     template_name = 'AutoRecorder/index.html'

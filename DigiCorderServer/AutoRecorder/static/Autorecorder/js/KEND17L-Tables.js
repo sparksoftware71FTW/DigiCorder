@@ -163,8 +163,11 @@ function loadKEND17L(chatSocket, csrf_token) {
 
                   delete KEND17LMapAcftNotUpdated[t6Update[i].pk]
 
-                let formsoloCheckmark = ""
-                if (t6Update[i].fields.solo && t6Update[i].fields.formation) {formsoloCheckmark = "checked"}
+                let formCheckmark = ""
+                let soloCheckmark = ""
+                if (t6Update[i].fields.solo) {soloCheckmark = "checked"}
+                if (t6Update[i].fields.formation) {formCheckmark = "checked"}
+                
 
                 if (t6Update[i].fields.substate == "eastside") {
                     KEND17LPattern.insertAdjacentHTML('beforeend',       
@@ -174,16 +177,25 @@ function loadKEND17L(chatSocket, csrf_token) {
                             <td>${t6Update[i].fields.callSign}</td>
                             <td>${t6Update[i].fields.alt_baro}</td>
                             <td>${t6Update[i].fields.groundSpeed}</td>
-                            <td>${t6Update[i].fields.takeoffTime}</td>
-                            <td>${t6Update[i].fields.landTime}</td>
+                            <td>${String(t6Update[i].fields.takeoffTime).slice(11, -8).concat(String(t6Update[i].fields.takeoffTime).slice(23))}</td>
+                            <td>${String(t6Update[i].fields.landTime).slice(11, -8).concat(String(t6Update[i].fields.landTime).slice(23))}</td>
 
                             <td>
-                                <form method="POST" action="dashboard/formsolo/${t6Update[i].pk}" class="form-group">
-                                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                    <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formsoloCheckmark}>  
-                                    <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form Solo</label>
-                                </form>
+                            <form method="POST" action="dashboard/form/${t6Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form</label>
+                            </form>
                             </td>
+        
+                            <td>
+                            <form method="POST" action="dashboard/solo/${t6Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${soloCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Solo</label>
+                            </form>
+                            </td>
+    
                             <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
@@ -197,16 +209,25 @@ function loadKEND17L(chatSocket, csrf_token) {
                     <td>${t6Update[i].fields.callSign}</td>
                     <td>${t6Update[i].fields.alt_baro}</td>
                     <td>${t6Update[i].fields.groundSpeed}</td>
-                    <td>${t6Update[i].fields.takeoffTime}</td>
-                    <td>${t6Update[i].fields.landTime}</td>
+                    <td>${String(t6Update[i].fields.takeoffTime).slice(11, -8).concat(String(t6Update[i].fields.takeoffTime).slice(23))}</td>
+                    <td>${String(t6Update[i].fields.landTime).slice(11, -8).concat(String(t6Update[i].fields.landTime).slice(23))}</td>
 
                     <td>
-                        <form method="POST" action="dashboard/formsolo/${t6Update[i].pk}" class="form-group">
+                        <form method="POST" action="dashboard/form/${t6Update[i].pk}" class="form-group">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formsoloCheckmark}>  
-                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form Solo</label>
+                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formCheckmark}>  
+                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form</label>
                         </form>
                     </td>
+
+                    <td>
+                    <form method="POST" action="dashboard/solo/${t6Update[i].pk}" class="form-group">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${soloCheckmark}>  
+                        <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Solo</label>
+                    </form>
+                    </td>
+
                     <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                     </tr>`
                     )
@@ -219,16 +240,25 @@ function loadKEND17L(chatSocket, csrf_token) {
                     <td>${t6Update[i].fields.callSign}</td>
                     <td>${t6Update[i].fields.alt_baro}</td>
                     <td>${t6Update[i].fields.groundSpeed}</td>
-                    <td>${t6Update[i].fields.takeoffTime}</td>
-                    <td>${t6Update[i].fields.landTime}</td>
+                    <td>${String(t6Update[i].fields.takeoffTime).slice(11, -8).concat(String(t6Update[i].fields.takeoffTime).slice(23))}</td>
+                    <td>${String(t6Update[i].fields.landTime).slice(11, -8).concat(String(t6Update[i].fields.landTime).slice(23))}</td>
 
                     <td>
-                        <form method="POST" action="dashboard/formsolo/${t6Update[i].pk}" class="form-group">
+                        <form method="POST" action="dashboard/form/${t6Update[i].pk}" class="form-group">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formsoloCheckmark}>  
-                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form Solo</label>
+                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formCheckmark}>  
+                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form</label>
                         </form>
                     </td>
+
+                    <td>
+                    <form method="POST" action="dashboard/solo/${t6Update[i].pk}" class="form-group">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${soloCheckmark}>  
+                        <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Solo</label>
+                    </form>
+                    </td>
+
                     <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                     </tr>`
                     )
@@ -241,16 +271,25 @@ function loadKEND17L(chatSocket, csrf_token) {
                     <td>${t6Update[i].fields.callSign}</td>
                     <td>${t6Update[i].fields.alt_baro}</td>
                     <td>${t6Update[i].fields.groundSpeed}</td>
-                    <td>${t6Update[i].fields.takeoffTime}</td>
-                    <td>${t6Update[i].fields.landTime}</td>
+                    <td>${String(t6Update[i].fields.takeoffTime).slice(11, -8).concat(String(t6Update[i].fields.takeoffTime).slice(23))}</td>
+                    <td>${String(t6Update[i].fields.landTime).slice(11, -8).concat(String(t6Update[i].fields.landTime).slice(23))}</td>
 
                     <td>
-                        <form method="POST" action="dashboard/formsolo/${t6Update[i].pk}" class="form-group">
+                        <form method="POST" action="dashboard/form/${t6Update[i].pk}" class="form-group">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formsoloCheckmark}>  
-                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form Solo</label>
+                            <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formCheckmark}>  
+                            <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Form</label>
                         </form>
                     </td>
+
+                    <td>
+                    <form method="POST" action="dashboard/solo/${t6Update[i].pk}" class="form-group">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${soloCheckmark}>  
+                        <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Solo</label>
+                    </form>
+                    </td>
+
                     <td><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                     </tr>`
                     )

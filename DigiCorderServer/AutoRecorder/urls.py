@@ -9,6 +9,7 @@ urlpatterns = [
     path('form355', views.form355, name='form355'),
     path('dashboard/355/<str:tailNumber>', views.violation355View, name='violation355View'),
     path('dashboard/edit/<str:tailNumber>', views.editView, name='editView'),
-    path('dashboard/formsolo/<str:tailNumber>', views.formSolo, name='formSolo')
-
+    path('dashboard/formsolo/<str:tailNumber>', views.formSolo, name='formSolo'),
+    path('dashboard/form/<str:tailNumber>', views.form, name='form'),
+    path('dashboard/solo/<str:tailNumber>', views.solo, name='solo')
 ]

@@ -91,7 +91,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                 activeT6Metadata['solo120'].append(T6.callSign)
 
         activeT6Metadata['solosOffStation'] = []
-        for T6 in activeT6query.filter(solo=True).exclude(state='in pattern'):
+        for T6 in activeT6query.filter(solo=True).exclude(state='in pattern').exclude(state='taxiing'):
             activeT6Metadata['solosOffStation'].append(T6.callSign)
 
         activeT6Metadata['solosInPattern'] = []
@@ -127,7 +127,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
             activeT38Metadata['solo100'].append(T38.callSign)
 
         activeT38Metadata['solosOffStation'] = []
-        for T38 in activeT38query.filter(solo=True).exclude(state='in pattern'):
+        for T38 in activeT38query.filter(solo=True).exclude(state='in pattern').exclude(state='taxiing'):
             activeT38Metadata['solosOffStation'].append(T38.callSign)
 
         activeT38Metadata['solosInPattern'] = []

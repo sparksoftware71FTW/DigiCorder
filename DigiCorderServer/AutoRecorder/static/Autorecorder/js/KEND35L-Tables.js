@@ -122,6 +122,12 @@ function loadKEND35L(chatSocket, csrf_token) {
             
             for (let i = 0; i < t38Update.length; i++) {
 
+
+                let formCheckmark = ""
+                let soloCheckmark = ""
+                if (t38Update[i].fields.solo) {soloCheckmark = "checked"}
+                if (t38Update[i].fields.formation) {formCheckmark = "checked"}
+
                 if (t38Update[i].fields.state == "in pattern") {
                     KEND35LPattern.insertAdjacentHTML('beforeend',       
                             `<tr>
@@ -130,13 +136,26 @@ function loadKEND35L(chatSocket, csrf_token) {
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
                             <td>${t38Update[i].fields.groundSpeed}</td>
-                            <td>${t38Update[i].fields.takeoffTime}</td>
-                            <td>${t38Update[i].fields.landTime}</td>
+                            <td>${String(t38Update[i].fields.takeoffTime).slice(11, -8).concat(String(t38Update[i].fields.takeoffTime).slice(23))}</td>
+                            <td>${String(t38Update[i].fields.landTime).slice(11, -8).concat(String(t38Update[i].fields.landTime).slice(23))}</td>
 
-                            <td>  
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                            <td>
+                            <form method="POST" action="dashboard/form/${t38Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${formCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Form</label>
+                            </form>
+                            </td>
+        
+                            <td>
+                            <form method="POST" action="dashboard/solo/${t38Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${soloCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Solo</label>
+                            </form>
+                            </td>
+                            
+                            <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
@@ -148,13 +167,25 @@ function loadKEND35L(chatSocket, csrf_token) {
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
                             <td>${t38Update[i].fields.groundSpeed}</td>
-                            <td>${t38Update[i].fields.takeoffTime}</td>
-                            <td>${t38Update[i].fields.landTime}</td>
+                            <td>${String(t38Update[i].fields.takeoffTime).slice(11, -8).concat(String(t38Update[i].fields.takeoffTime).slice(23))}</td>
+                            <td>${String(t38Update[i].fields.landTime).slice(11, -8).concat(String(t38Update[i].fields.landTime).slice(23))}</td>
 
-                            <td>  
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                            <td>
+                            <form method="POST" action="dashboard/form/${t38Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${formCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Form</label>
+                            </form>
+                            </td>
+        
+                            <td>
+                            <form method="POST" action="dashboard/solo/${t38Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${soloCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Solo</label>
+                            </form>
+                            </td>
+                            <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
@@ -166,13 +197,25 @@ function loadKEND35L(chatSocket, csrf_token) {
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
                             <td>${t38Update[i].fields.groundSpeed}</td>
-                            <td>${t38Update[i].fields.takeoffTime}</td>
-                            <td>${t38Update[i].fields.landTime}</td>
+                            <td>${String(t38Update[i].fields.takeoffTime).slice(11, -8).concat(String(t38Update[i].fields.takeoffTime).slice(23))}</td>
+                            <td>${String(t38Update[i].fields.landTime).slice(11, -8).concat(String(t38Update[i].fields.landTime).slice(23))}</td>
 
-                            <td>  
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                            <td>
+                            <form method="POST" action="dashboard/form/${t38Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${formCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Form</label>
+                            </form>
+                            </td>
+        
+                            <td>
+                            <form method="POST" action="dashboard/solo/${t38Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${soloCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Solo</label>
+                            </form>
+                            </td>
+                            <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
@@ -184,13 +227,25 @@ function loadKEND35L(chatSocket, csrf_token) {
                             <td>${t38Update[i].fields.callSign}</td>
                             <td>${t38Update[i].fields.alt_baro}</td>
                             <td>${t38Update[i].fields.groundSpeed}</td>
-                            <td>${t38Update[i].fields.takeoffTime}</td>
-                            <td>${t38Update[i].fields.landTime}</td>
+                            <td>${String(t38Update[i].fields.takeoffTime).slice(11, -8).concat(String(t38Update[i].fields.takeoffTime).slice(23))}</td>
+                            <td>${String(t38Update[i].fields.landTime).slice(11, -8).concat(String(t38Update[i].fields.landTime).slice(23))}</td>
 
-                            <td>  
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">Form Solo</label></td>
-                                <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
+                            <td>
+                            <form method="POST" action="dashboard/form/${t38Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${formCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Form</label>
+                            </form>
+                            </td>
+        
+                            <td>
+                            <form method="POST" action="dashboard/solo/${t38Update[i].pk}" class="form-group">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${soloCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Solo</label>
+                            </form>
+                            </td>
+                            <td><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></td>
                             </tr>`
                             )
                 }
