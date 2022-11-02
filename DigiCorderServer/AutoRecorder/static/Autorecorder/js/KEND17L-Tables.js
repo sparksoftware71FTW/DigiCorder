@@ -154,7 +154,7 @@ function loadKEND17L(chatSocket, csrf_token) {
             for (let i = 0; i < t6Update.length; i++) {
 
                 if (!KEND17LMapAcft[t6Update[i].pk]) {
-                    // If there is no marker with this id yet, instantiate a new one.
+                    // If there is no marker with this id yet, instantiate a new one.;LKJH
                     KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: legacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
                   } else {
                     // If there is already a marker with this id, simply modify its position.
