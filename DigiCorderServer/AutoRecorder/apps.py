@@ -24,7 +24,7 @@ class AutoRecorderConfig(AppConfig):
         #Also! This thread WILL interact with the database specified in settings.py... NOT a testing db.
         #Make sure we've got only one background thread running...
         enable_adsb = os.environ.get('ENABLE_ADSB') 
-        if enable_adsb == 'False':
+        if enable_adsb == 'False' or enable_adsb == None:
             return
         os.environ['ENABLE_ADSB'] = 'False'
         threadName = threading.current_thread().name
@@ -135,9 +135,13 @@ def adsbThread(parentThreadName):
                     Acft.timestamp=timezone.now()
 
                     # Formation logic:
+
+                    # Departure 
+                    # Flying Around
+                    # Recovery
+                    # Four ships
+                    # Robust splits and rejoins
                     
-
-
                     Acft.save()
                     logger.debug("Success!")   
                     updatedAircraftList.append(Acft.tailNumber)     
