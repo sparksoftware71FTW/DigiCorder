@@ -133,14 +133,14 @@ def adsbThread(parentThreadName):
                         Acft.state="off station"
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
                     Acft.timestamp=timezone.now()
-                    #aircraftToSave.append(Acft)
+
+                    # Formation logic:
+                    
+
+
                     Acft.save()
                     logger.debug("Success!")   
-                    updatedAircraftList.append(Acft.tailNumber)
-
-                    # logger.info("ADSB Thread sleeping... Acft saved.")
-                    # time.sleep(.05)
-                    # logger.info("ADSB Thread waking up...")         
+                    updatedAircraftList.append(Acft.tailNumber)     
 
             except KeyError as e:
                 logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")

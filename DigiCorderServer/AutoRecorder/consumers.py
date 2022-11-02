@@ -43,7 +43,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                 'meta':t38metadata
             }
         )
-        logger.debug("Sending initial ActiveAircraft list. Message value is: " + str(t38message))
+        #logger.debug("Sending initial ActiveAircraft list. Message value is: " + str(t38message))
         
 
     # def disconnect(self, code):

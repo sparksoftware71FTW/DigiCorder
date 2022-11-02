@@ -72,11 +72,22 @@ def formSolo(request, tailNumber):
 
 
 @staff_member_required(login_url='AutoRecorder/bootbase.html')
-def form(request, tailNumber):
+def formX2(request, tailNumber):
 
     if request.method == 'POST':
         acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
-        toggleForm(acft)
+        toggleFormX2(acft)
+        return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+    else:
+        return render(request, 'AutoRecorder/dashboard.html')
+
+
+@staff_member_required(login_url='AutoRecorder/bootbase.html')
+def formX4(request, tailNumber):
+
+    if request.method == 'POST':
+        acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
+        toggleFormX4(acft)
         return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
     else:
         return render(request, 'AutoRecorder/dashboard.html')
@@ -94,12 +105,12 @@ def solo(request, tailNumber):
 
 
 def toggleFormSolo(acft):
-    if acft.formation == False:
-        acft.formation = True
-    elif acft.formation == True:
-        acft.formation = False
+    if acft.formationX2 == False:
+        acft.formationX2 = True
+    elif acft.formationX2 == True:
+        acft.formationX2 = False
     else:
-        acft.formation = True
+        acft.formationX2 = True
 
     if acft.solo == False:
         acft.solo = True
@@ -111,13 +122,23 @@ def toggleFormSolo(acft):
     acft.save()
 
 
-def toggleForm(acft):
-    if acft.formation == False:
-        acft.formation = True
-    elif acft.formation == True:
-        acft.formation = False
+def toggleFormX2(acft):
+    if acft.formationX2 == False:
+        acft.formationX2 = True
+    elif acft.formationX2 == True:
+        acft.formationX2 = False
     else:
-        acft.formation = True
+        acft.formationX2 = True
+    acft.save()
+
+
+def toggleFormX4(acft):
+    if acft.formationX4 == False:
+        acft.formationX4 = True
+    elif acft.formationX4 == True:
+        acft.formationX4 = False
+    else:
+        acft.formationX4 = True
     acft.save()
 
 
