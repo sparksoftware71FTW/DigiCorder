@@ -1,4 +1,5 @@
 from email.policy import default
+from unittest.util import _MAX_LENGTH
 from django.db import models
 # from django.dispatch import receiver
 from django.utils import timezone
@@ -33,12 +34,20 @@ class Tails(models.Model):
         return "callsign " + str(self.callsign) 
 
 class Runway(models.Model):
-    name = models.CharField('Name', max_length=4, primary_key=True)
+    name = models.CharField('Name', max_length=15, primary_key=True)
     primaryAircraftType = models.CharField('Primary Aircraft Type', max_length=20, blank=True, null=True)
     airfield = models.OneToOneField(Airfield, on_delete=models.CASCADE)
 
     def __str__(self):
         return "name " + str(self.name) 
+
+class RSUcrew(models.Model):
+    runway = models.ForeignKey(Runway, on_delete=models.CASCADE, blank=True, null=True)
+    controller = models.CharField('Controller', max_length=25, blank=True, null=True)
+    observer = models.CharField('Observer', max_length=25, blank=True, null=True)
+    spotter = models.CharField('Spotter', max_length=25, blank=True, null=True)
+    recorder = models.CharField('Recorder', max_length=25, blank=True, null=True)
+    timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
 
 class Pattern(models.Model):
     lat = models.DecimalField("lat", decimal_places=10, max_digits=13)

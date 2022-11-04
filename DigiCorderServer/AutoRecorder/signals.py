@@ -27,7 +27,8 @@ def log_completed_flight(sender, instance, created, **kwargs):
         Comments=instance.Comments,
         landTime=instance.landTime,
         solo=instance.solo,
-        formation=instance.formation,
+        formationX2=instance.formationX2,
+        formationX4=instance.formationX4,
         emergency=instance.emergency,
         natureOfEmergency=instance.natureOfEmergency,
         groundSpeed=instance.groundSpeed,
@@ -129,10 +130,10 @@ def get_T6_queryset_update_message():
     activeT6query = ActiveAircraft.objects.all().filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
 
     activeT6Metadata = {}
-    activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count()
-    activeT6Metadata['Taxiing'] = activeT6query.filter(state="taxiing").count()
-    activeT6Metadata['Off_Station'] = activeT6query.filter(state="off station").count()
-    activeT6Metadata['Lost_Signal'] = activeT6query.filter(state="lost signal").count()
+    activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
+    activeT6Metadata['Taxiing'] = activeT6query.filter(state="taxiing").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
+    activeT6Metadata['Off_Station'] = activeT6query.filter(state="off station").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
+    activeT6Metadata['Lost_Signal'] = activeT6query.filter(state="lost signal").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
     activeT6Metadata['dual145'] = []
     for T6 in activeT6query.filter(
         takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=45)).exclude(
@@ -166,10 +167,10 @@ def get_T38_queryset_update_message():
     activeT38query = ActiveAircraft.objects.all().filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
 
     activeT38Metadata = {}
-    activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count()
-    activeT38Metadata['Taxiing'] = activeT38query.filter(state="taxiing").count()
-    activeT38Metadata['Off_Station'] = activeT38query.filter(state="off station").count()
-    activeT38Metadata['Lost_Signal'] = activeT38query.filter(state="lost signal").count()
+    activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3
+    activeT38Metadata['Taxiing'] = activeT38query.filter(state="taxiing").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3
+    activeT38Metadata['Off_Station'] = activeT38query.filter(state="off station").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3
+    activeT38Metadata['Lost_Signal'] = activeT38query.filter(state="lost signal").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3
 
     activeT38Metadata['dual120'] = []
     for T38 in activeT38query.filter(

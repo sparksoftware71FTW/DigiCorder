@@ -45,6 +45,28 @@
                       </div>
                       <span id="numKEND17L Solos in the Pattern"></span>
                     </li>
+                    <li>
+                      <div class="accordion" id="accordion1">
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="heading1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                              <strong>Current RSU Crew</strong>
+                            </button>
+                          </h2>
+                          <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1" data-bs-parent="#accordion1">
+                            <div class="accordion-body">
+                              <form method="POST" class="form-group">
+                                {% csrf_token %}
+                                {% load crispy_forms_tags %}
+                                {{ crewformset|crispy }}
+                                <button type="submit" class="btn btn-danger">Save</button>
+                                <button type="reset" class="btn btn-secondary" >Reset</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+
+                    </li>
                   </ol>
                 </div>
               </div>

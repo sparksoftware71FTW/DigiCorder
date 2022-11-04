@@ -10,7 +10,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.forms import modelform_factory
 
 from . import forms
-from .models import ActiveAircraft, CompletedSortie, Airfield
+from .models import ActiveAircraft, CompletedSortie, Airfield, RSUcrew
 
 # Create your views here.
 
@@ -19,7 +19,25 @@ def index(request):
 
 @staff_member_required(login_url='AutoRecorder/bootbase.html')
 def dashboard(request):
-    return render(request, 'AutoRecorder/dashboard.html')
+    RSUcrewFormFactory = modelform_factory(model=RSUcrew, exclude=('timestamp',))
+    if request.method == 'POST':
+        crew = RSUcrew.objects.create(timestamp=timezone.now())
+        crewformset = RSUcrewFormFactory(request.POST, instance=crew)
+        if crewformset.is_valid():
+            crewformset.timestamp = timezone.now()
+            crewformset.save()
+            return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+    else:
+        try:
+            crew = RSUcrew.objects.latest('timestamp')
+            print(str(crew.controller) + "!!!!!!")
+        except RSUcrew.DoesNotExist:
+            crew = RSUcrew.objects.create(timestamp=timezone.now())
+            print(str(crew.controller) + "Created initial blank RSU Crew!!!!")
+
+        crewformset = RSUcrewFormFactory(instance=crew)
+        return render(request, 'AutoRecorder/dashboard.html', {"crewformset": crewformset})
+    #return render(request, 'AutoRecorder/dashboard.html')
 
 
 @staff_member_required(login_url='AutoRecorder/bootbase.html')
