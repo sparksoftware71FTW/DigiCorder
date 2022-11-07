@@ -41,13 +41,16 @@ class Runway(models.Model):
     def __str__(self):
         return "name " + str(self.name) 
 
-class RSUcrew(models.Model):
+class RsuCrew(models.Model):
     runway = models.ForeignKey(Runway, on_delete=models.CASCADE, blank=True, null=True)
     controller = models.CharField('Controller', max_length=25, blank=True, null=True)
     observer = models.CharField('Observer', max_length=25, blank=True, null=True)
     spotter = models.CharField('Spotter', max_length=25, blank=True, null=True)
     recorder = models.CharField('Recorder', max_length=25, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
+
+    # def __str__(self):
+    #     return "RSU Crew"
 
 class Pattern(models.Model):
     lat = models.DecimalField("lat", decimal_places=10, max_digits=13)

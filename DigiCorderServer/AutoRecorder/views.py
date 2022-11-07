@@ -10,7 +10,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.forms import modelform_factory
 
 from . import forms
-from .models import ActiveAircraft, CompletedSortie, Airfield, RSUcrew
+from .models import ActiveAircraft, CompletedSortie, Airfield, RsuCrew
 
 # Create your views here.
 
@@ -19,23 +19,23 @@ def index(request):
 
 @staff_member_required(login_url='AutoRecorder/bootbase.html')
 def dashboard(request):
-    RSUcrewFormFactory = modelform_factory(model=RSUcrew, exclude=('timestamp',))
+    RsuCrewFormFactory = modelform_factory(model=RsuCrew, exclude=('timestamp',))
     if request.method == 'POST':
-        crew = RSUcrew.objects.create(timestamp=timezone.now())
-        crewformset = RSUcrewFormFactory(request.POST, instance=crew)
+        crew = RsuCrew.objects.create(timestamp=timezone.now())
+        crewformset = RsuCrewFormFactory(request.POST, instance=crew)
         if crewformset.is_valid():
             crewformset.timestamp = timezone.now()
             crewformset.save()
             return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
     else:
         try:
-            crew = RSUcrew.objects.latest('timestamp')
+            crew = RsuCrew.objects.latest('timestamp')
             print(str(crew.controller) + "!!!!!!")
-        except RSUcrew.DoesNotExist:
-            crew = RSUcrew.objects.create(timestamp=timezone.now())
+        except RsuCrew.DoesNotExist:
+            crew = RsuCrew.objects.create(timestamp=timezone.now())
             print(str(crew.controller) + "Created initial blank RSU Crew!!!!")
 
-        crewformset = RSUcrewFormFactory(instance=crew)
+        crewformset = RsuCrewFormFactory(instance=crew)
         return render(request, 'AutoRecorder/dashboard.html', {"crewformset": crewformset})
     #return render(request, 'AutoRecorder/dashboard.html')
 
