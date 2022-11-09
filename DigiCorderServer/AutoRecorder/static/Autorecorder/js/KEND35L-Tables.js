@@ -1,4 +1,4 @@
-var KEND35Lmap = L.map('KEND35Lmap').setView([36.3393, -97.9131], 13);
+var KEND35Lmap = L.map('KEND35Lmap').setView([36.3393, -97.9131], 10);
 
 
 function loadKEND35L(chatSocket, csrf_token) {
