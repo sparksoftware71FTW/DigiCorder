@@ -2,67 +2,94 @@
 
 {% block title %}Form 355{% endblock %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <!-- <img src="../assets/brand/bootstrap-logo-white.svg" width="38" height="30" class="d-inline-block align-top" alt="Bootstrap" loading="lazy"
-                 style="filter: invert(1) grayscale(100%) brightness(200%);"> -->
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <!-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Airfield
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">KEND</a></li>
-                </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Rwy
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">17L</a></li>
-                  <li><a class="dropdown-item" href="#">35R</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">17R</a></li>
-                  <li><a class="dropdown-item" href="#">35L</a></li>
-                </ul>
-              </li> -->
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Acft Type
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">T-38</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">T-6</a></li>
-                </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Date
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Today</a></li>
-                  <li><hr class="dropdown-divider"></li>
 
-                </ul>
-              </li>
-            </ul>
-            <form class="d-flex" role="search">
+          <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button> -->
+
+          <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">!!!!!!!!! -->
+            <form class="navbar-nav nav-fill w-100" method="post">
+              {% csrf_token %}
+              {{ formset.management_form }}
+              <!-- <ul class="navbar-nav nav-fill w-100"> -->
+                <!-- me-auto mb-2 mb-lg-0"               -->
+                    {% for form in formset %}
+                      
+                      <!-- <li class="nav-item"> </li> -->
+                      <li class="nav-item"> 
+                        <label>*Acft Type</label> 
+                        {{ form.acftType }}
+                        <label>Burger King is Hiring</label>
+                        {{ form.gotNailed }}
+                      </li>
+                      <li class="nav-item"> <label>*From</label>{{ form.fromDate }}</li>
+                      <li class="nav-item"> <label>*To</label>{{ form.toDate  }}</li>
+                      <li class="nav-item"> 
+                        <label>Search RSU Crew Member</label>
+                        {{ form.search }} 
+                        <label>Search Acft Callsign</label>
+                        {{ form.callSign }}
+                      </li>
+                      <!-- <li class="nav-item"> </li> -->
+                    
+                    {% endfor %}
+                              
+              <!-- </ul> -->
+              <button type="submit" class="btn btn-danger">Filter</button>
+            </form>
+            <!-- <form class="d-flex" role="search">
               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-dark" type="submit">Search</button>
-            </form>
-          </div>
+            </form> -->
+          <!-- </div>!!!!!!!!!!!!!! -->
         </div>
       </nav>
-
+      <div class="card">
+        <div class="card-header">
+          <strong>RSU Crew Log</strong>
+        </div>
+        <div class="card-body" style="overflow-x: scroll;">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">id</th>
+                <th scope="col">Runway</th>
+                <th scope="col">Controller</th>
+                <th scope="col">Observer</th>
+                <th scope="col">Spotter</th>
+                <th scope="col">Recorder</th>
+                <th scope="col">Date/Start Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {% for crew in RSUcrews %}
+                    <tr>
+                        <td scope="row">{{crew.id}}</td>
+                        <td scope="row">{{crew.runway}}</td>
+                        <td scope="row">{{crew.controller}}</td>
+                        <td scope="row">{{crew.observer}}</td>
+                        <td scope="row">{{crew.spotter}}</td>
+                        <td scope="row">{{crew.recorder}}</td>
+                        <td scope="row">{{crew.timestamp}}</td>
+                    </tr>
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <strong>Completed Sorties</strong>
+        </div>
+        <div class="card-body" style="overflow-x: scroll;">
     <table class="table table-striped">
         <thead>
         <tr>
@@ -75,7 +102,8 @@
           <th scope="col">Comments</th>
           <th scope="col">Final Land Time</th>
           <th scope="col">Solo</th>
-          <th scope="col">Form</th>
+          <th scope="col">2-Ship</th>
+          <th scope="col">4-Ship</th>
           <th scope="col">Emergency</th>
           <th scope="col">Nature of Emergency</th>
           <th scope="col">Ground Speed</th>
@@ -87,7 +115,9 @@
           <th scope="col">Sqawk</th>
           <th scope="col">seen</th>
           <th scope="col">rssi</th>
-          <th scope="col">state</th>
+          <th scope="col">State</th>
+          <th scope="col">Last State</th>
+          <th scope="col">timestamp</th>
         </tr>
         </thead>
         <tbody>
@@ -103,7 +133,8 @@
                 <td>{{aircraft.Comments}}</td>
                 <td>{{aircraft.landTime}}</td>
                 <td>{{aircraft.solo}}</td>
-                <td>{{aircraft.formation}}</td>
+                <td>{{aircraft.formationX2}}</td>
+                <td>{{aircraft.formationX4}}</td>
                 <td>{{aircraft.emergency}}</td>
                 <td>{{aircraft.natureOfEmergency}}</td>
                 <td>{{aircraft.groundSpeed}}</td>
@@ -115,10 +146,15 @@
                 <td>{{aircraft.squawk}}</td>
                 <td>{{aircraft.seen}}</td>
                 <td>{{aircraft.rssi}}</td>
+                <td>{{aircraft.state}}</td>
+                <td>{{aircraft.lastState}}</td>
+                <td>{{aircraft.timestamp}}</td>
             </tr>
         {% endfor %}
         </tbody>
       </table>
+      </div>
+    </div>
 
       {% comment %} <ul>
       {% for aircraft in landedAircraft %}

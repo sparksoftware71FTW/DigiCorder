@@ -41,7 +41,8 @@ def log_completed_flight(sender, instance, created, **kwargs):
         seen=instance.seen,
         rssi=instance.rssi,
         state=instance.state,
-        lastState = instance.lastState
+        lastState = instance.lastState,
+        timestamp = instance.timestamp
         )
         justLandedAcft.save()
         instance.delete()

@@ -39,7 +39,7 @@ class Runway(models.Model):
     airfield = models.OneToOneField(Airfield, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "name " + str(self.name) 
+        return str(self.name) 
 
 class RsuCrew(models.Model):
     runway = models.ForeignKey(Runway, on_delete=models.CASCADE, blank=True, null=True)

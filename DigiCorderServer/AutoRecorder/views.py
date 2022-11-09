@@ -2,14 +2,16 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
-from django.db.models import F
+from django.db.models import F, Q
 from django.views import generic
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from django.forms import modelform_factory
+from django.template.context_processors import csrf
+from django.forms import modelform_factory, formset_factory, SelectDateWidget
+from crispy_forms.utils import render_crispy_form
 
-from . import forms
+from .forms import Form355Filters, Form355FiltersFormsetHelper
 from .models import ActiveAircraft, CompletedSortie, Airfield, RsuCrew
 
 # Create your views here.
@@ -42,8 +44,77 @@ def dashboard(request):
 
 @staff_member_required(login_url='AutoRecorder/bootbase.html')
 def form355(request):
-    landedAircraft = CompletedSortie.objects.all()
-    return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft})
+    landedAircraft = CompletedSortie.objects.all().order_by('timestamp')
+    RSUcrews = RsuCrew.objects.all().order_by('timestamp')
+    acft_types = []
+    oldest_entry = None
+    newest_entry = None
+    for acft in landedAircraft:
+
+        if oldest_entry is None or acft.timestamp is not None and acft.timestamp < oldest_entry:
+            oldest_entry = acft.timestamp
+
+        if newest_entry is None or acft.timestamp is not None and acft.timestamp > newest_entry:
+            newest_entry = acft.timestamp
+
+        if (acft.aircraftType, acft.aircraftType) not in acft_types:
+            acft_types.append((acft.aircraftType, acft.aircraftType))
+    
+    if oldest_entry == None:
+        oldest_entry = timezone.now()
+    if newest_entry == None:
+        newest_entry = timezone.now()
+
+    form355FilterFormset = formset_factory(Form355Filters)
+    helper = Form355FiltersFormsetHelper()
+
+    if request.method == 'POST':
+        formset = form355FilterFormset(request.POST)
+        for form in formset:
+            form.fields['acftType'].choices = acft_types
+            form.fields['fromDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
+            form.fields['toDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
+            form = render_crispy_form(form)
+        if formset.is_valid():
+            print(formset.cleaned_data[0]['acftType'])
+            data = formset.cleaned_data[0]
+
+            qAcftFilter = Q()
+            qAcftExclude = Q()
+            qRSUCrewSearch = Q()
+            if data['gotNailed']:
+                qAcftExclude &= Q(three55Code="none")
+                print(qAcftExclude)
+            if data['callSign'] is not None:
+                qAcftFilter &= Q(callSign__contains=data['callSign'])
+                print(qAcftFilter)
+            if data['search'] != '':
+                print(data['search'])
+                qRSUCrewSearch |= Q(controller__contains=data['search'])
+                qRSUCrewSearch |= Q(observer__contains=data['search'])
+                qRSUCrewSearch |= Q(spotter__contains=data['search'])
+                qRSUCrewSearch |= Q(recorder__contains=data['search'])
+                print(qRSUCrewSearch)
+
+            return render(request, 'AutoRecorder/form355.html', 
+            {"landedAircraft": landedAircraft.filter(aircraftType=data['acftType']).filter(qAcftFilter).exclude(
+                qAcftExclude).exclude(timestamp__lt=data['fromDate']).exclude(timestamp__gt=data['toDate']),
+             "formset": formset, 
+             "RSUcrews": RSUcrews.filter(qRSUCrewSearch).exclude(
+                timestamp__lt=data['fromDate']).exclude(timestamp__gt=data['toDate'])})
+        else:
+            return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews})
+    
+    else:
+        formset = form355FilterFormset()
+        for form in formset:
+            form.fields['acftType'].choices = acft_types
+            form.fields['fromDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
+            print(range(oldest_entry.year, newest_entry.year))
+            form.fields['toDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
+            form = render_crispy_form(form)
+        
+        return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews})
 
 
 @staff_member_required(login_url='/login')
