@@ -27,6 +27,7 @@ class Form355Filters(forms.Form):
     search = forms.CharField(required=False)
     gotNailed = forms.BooleanField(required=False)
     callSign = forms.CharField(required=False)
+    runway = forms.ChoiceField(required=False, choices=())
 
 
 class Form355FiltersFormsetHelper(FormHelper):

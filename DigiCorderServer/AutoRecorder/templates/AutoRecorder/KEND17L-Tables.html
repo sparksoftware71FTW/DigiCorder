@@ -2,7 +2,7 @@
             <div class="row g-0">
             
               <!-- <div class="col-md-6" id="map" style="height: 350px; width: 50%;"> -->
-                <div class="col-md-6" id="KEND17Lmap" width="100%" style="height: 350px;" preserveAspectRatio="xMidYMid slice">
+                <div class="col-md-6" id="KEND17Lmap" width="100%" style="height: auto; min-height: 350px;" preserveAspectRatio="xMidYMid slice">
 
                 <!-- <svg class="bd-placeholder-img" width="100%" height="350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Map</text></svg> -->
               </div>
@@ -82,11 +82,6 @@
                                           {
                                               frm_elements[i].checked = false;
                                           }
-                                          break;
-                                      case "select-one":
-                                      case "select-multi":
-                                      case "select":
-                                          frm_elements[i].selectedIndex = -1;
                                           break;
                                       default:
                                           break;

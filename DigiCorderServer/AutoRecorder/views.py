@@ -12,7 +12,7 @@ from django.forms import modelform_factory, formset_factory, SelectDateWidget
 from crispy_forms.utils import render_crispy_form
 
 from .forms import Form355Filters, Form355FiltersFormsetHelper
-from .models import ActiveAircraft, CompletedSortie, Airfield, RsuCrew
+from .models import ActiveAircraft, CompletedSortie, Airfield, RsuCrew, Runway
 
 # Create your views here.
 
@@ -46,6 +46,8 @@ def dashboard(request):
 def form355(request):
     landedAircraft = CompletedSortie.objects.all().order_by('timestamp')
     RSUcrews = RsuCrew.objects.all().order_by('timestamp')
+    runways = Runway.objects.all()
+    rwys = []
     acft_types = []
     oldest_entry = None
     newest_entry = None
@@ -65,6 +67,10 @@ def form355(request):
     if newest_entry == None:
         newest_entry = timezone.now()
 
+    for rwy in runways:
+        if (rwy.name, rwy.name) not in rwys:
+            rwys.append((rwy.name, rwy.name))
+
     form355FilterFormset = formset_factory(Form355Filters)
     helper = Form355FiltersFormsetHelper()
 
@@ -74,6 +80,7 @@ def form355(request):
             form.fields['acftType'].choices = acft_types
             form.fields['fromDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
             form.fields['toDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
+            form.fields['runway'].choices = rwys
             form = render_crispy_form(form)
         if formset.is_valid():
             print(formset.cleaned_data[0]['acftType'])
