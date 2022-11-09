@@ -1,5 +1,34 @@
+var KEND35Lmap = L.map('KEND35Lmap').setView([36.3393, -97.9131], 13);
+
+
 function loadKEND35L(chatSocket, csrf_token) {
 
+    //var KEND35Lmap = L.map('KEND35Lmap').setView([36.3393, -97.9131], 13);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(KEND35Lmap);
+
+    L.marker([36.3393, -97.9131]).addTo(KEND35Lmap)
+        .bindPopup('KEND')
+        .openPopup();
+
+    var KEND35LMapAcft = {}
+    var KEND35LMapAcftNotUpdated = []
+
+    let T38Icon = L.icon({
+        iconUrl: '../static/AutoRecorder/images/Black T-38 Silhouette with Alpha.png',
+        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
+
+        iconSize:     [30, 30], // size of the icon
+        shadowSize:   [20, 20], // size of the shadow
+        iconAnchor:   [15, 15], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 0],  // the same for the shadow
+        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+
+    })
+
+    
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
 
@@ -119,9 +148,21 @@ function loadKEND35L(chatSocket, csrf_token) {
                 )   
             }
 
-            
+            KEND35LMapAcftNotUpdated = {...KEND35LMapAcft}
+            console.log(KEND35LMapAcftNotUpdated)
+                            
             for (let i = 0; i < t38Update.length; i++) {
 
+                if (!KEND35LMapAcft[t38Update[i].pk]) {
+                    // If there is no marker with this id yet, instantiate a new one.;
+        
+                    KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: T38Icon}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                  } else {
+                    // If there is already a marker with this id, simply modify its position.
+                    KEND35LMapAcft[t38Update[i].pk].setLatLng([t38Update[i].fields.latitude, t38Update[i].fields.longitude]).setRotationAngle(t38Update[i].fields.track).setPopupContent(t38Update[i].fields.callSign);
+                  }
+
+                  delete KEND35LMapAcftNotUpdated[t38Update[i].pk]
 
                 let formX2Checkmark = ""
                 let formX4Checkmark = ""
@@ -129,46 +170,48 @@ function loadKEND35L(chatSocket, csrf_token) {
                 if (t38Update[i].fields.solo) {soloCheckmark = "checked"}
                 if (t38Update[i].fields.formationX2) {formX2Checkmark = "checked"}
                 if (t38Update[i].fields.formationX4) {formX4Checkmark = "checked"}
+                
 
-                if (t38Update[i].fields.substate == "shoehorn") {
+                if (t38Update[i].fields.substate == "eastside") {
                     KEND35LPattern.insertAdjacentHTML('beforeend',       
-                    `<tr>
-                    <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
-                    <td>${t38Update[i].pk.slice(-3)}</td>
-                    <td>${t38Update[i].fields.callSign}</td>
-                    <td>${t38Update[i].fields.alt_baro}</td>
-                    <td>${t38Update[i].fields.groundSpeed}</td>
-                    <td>${String(t38Update[i].fields.takeoffTime).slice(11, -8).concat(String(t38Update[i].fields.takeoffTime).slice(23))}</td>
-                    <td>${String(t38Update[i].fields.landTime).slice(11, -8).concat(String(t38Update[i].fields.landTime).slice(23))}</td>
+                            `<tr>
+                            <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
+                            <td>${t38Update[i].pk.slice(-3)}</td>
+                            <td>${t38Update[i].fields.callSign}</td>
+                            <td>${t38Update[i].fields.alt_baro}</td>
+                            <td>${t38Update[i].fields.groundSpeed}</td>
+                            <td>${String(t38Update[i].fields.takeoffTime).slice(11, -8).concat(String(t38Update[i].fields.takeoffTime).slice(23))}</td>
+                            <td>${String(t38Update[i].fields.landTime).slice(11, -8).concat(String(t38Update[i].fields.landTime).slice(23))}</td>
 
-                    <td style="padding-top: 0px; padding-bottom: 0px; white-space: nowrap;">
-                        <table><tr><td>
-                            <form method="POST" action="dashboard/formX2/${t38Update[i].pk}" class="form-group">    
+                            <td style="padding-top: 0px; padding-bottom: 0px; white-space: nowrap;">
+                                <table><tr><td>
+                                    <form method="POST" action="dashboard/formX2/${t38Update[i].pk}" class="form-group">    
+                                        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${formX2Checkmark}>  
+                                        <label class="form-check-label" for="flexCheck${t38Update[i].pk}">2-Ship</label>     
+                                    </form>
+                                </td></tr>
+                                <tr><td>
+                                    <form method="POST" action="dashboard/formX4/${t38Update[i].pk}" class="form-group">
+                                        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${formX4Checkmark}>  
+                                        <label class="form-check-label" for="flexCheck${t38Update[i].pk}">4-Ship</label>
+                                    </form>
+                                </td></tr></table>
+                            </td>
+
+                            <td>
+                            <form method="POST" action="dashboard/solo/${t38Update[i].pk}" class="form-group">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${formX2Checkmark}>  
-                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">2-Ship</label>     
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${soloCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Solo</label>
                             </form>
-                        </td></tr>
-                        <tr><td>
-                            <form method="POST" action="dashboard/formX4/${t38Update[i].pk}" class="form-group">
-                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${formX4Checkmark}>  
-                                <label class="form-check-label" for="flexCheck${t38Update[i].pk}">4-Ship</label>
-                            </form>
-                        </td></tr></table>
-                    </td>
+                            </td>
 
-                    <td>
-                    <form method="POST" action="dashboard/solo/${t38Update[i].pk}" class="form-group">
-                        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t38Update[i].pk}" ${soloCheckmark}>  
-                        <label class="form-check-label" for="flexCheck${t38Update[i].pk}">Solo</label>
-                    </form>
-                    </td>
+                            <td><center><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
+                            </tr>`
+                            )
 
-                    <td><center><a href="dashboard/355/${t38Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
-                    </tr>`
-                    )
                 }
                 if (t38Update[i].fields.state == "taxiing") {
                     KEND35LTaxiing.insertAdjacentHTML('beforeend',       
@@ -290,6 +333,11 @@ function loadKEND35L(chatSocket, csrf_token) {
                     </tr>`
                     )
                 }
+            }
+                        //remove all aircraft on the map that were not in the update message
+            for (const[tailNumber, data] of Object.entries(KEND35LMapAcftNotUpdated)) {
+                KEND35Lmap.removeLayer(KEND35LMapAcft[tailNumber])
+                delete KEND35LMapAcft[tailNumber]
             }
 
         }

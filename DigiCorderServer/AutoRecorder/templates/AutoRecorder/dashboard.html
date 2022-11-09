@@ -55,7 +55,7 @@
         <div class="accordion" id="accordionExample">
             <div class="accordion-item">
                 <h4 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" onclick="KEND17Lmap.invalidateSize()">
                     KEND 17L/35R -- T-6s
                 </button>
                 </h4>
@@ -100,16 +100,43 @@
 
             <div class="accordion-item">
                 <h4 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" onclick="KEND35Lmap.invalidateSize()">
                     KEND 17R/35L -- T-38s
                 </button>
                 </h4>
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                {% if True %}
-                    {% include 'AutoRecorder/KEND35L-Tables.html' %}
-                    <script> loadKEND35L(chatSocket, csrf_token) </script>
-                {% endif %}
+                    {% if True %}
+                        {% include 'AutoRecorder/KEND35L-Tables.html' %}
+                        <script> loadKEND35L(chatSocket, csrf_token) </script>
+                        {% load static %}
+                        <script type="text/javascript">
+
+                            var myCustomGroup = L.geoJSON(null, {
+                                style: getStyle
+                            });
+
+                            function getStyle(feature) {
+                                return {
+                                            color: '#ff6e6e6e',
+                                            // weight: 7
+                                        }
+                                // if (feature.properties.styleUrl === '#PolyStyleOGreen') {
+                                //     if (feature.geometry.type === 'LineString') {
+                                //         return {
+                                //             color: '#ff6e6e6e',
+                                //             weight: 4
+                                //         }
+                                //     }
+                                // }
+                            }
+                        
+                            omnivore.kml('{% static "AutoRecorder/kml/RoughPatternPoints.kml" %}').addTo(KEND35Lmap)
+                            omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}', null, myCustomGroup).addTo(KEND35Lmap) 
+                            KEND35Lmap.invalidateSize() //?????????????????????????????????????????????????????????
+                            
+                        </script>
+                    {% endif %}
                 </div>
                 </div>
             </div>

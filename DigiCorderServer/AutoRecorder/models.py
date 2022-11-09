@@ -18,7 +18,7 @@ class Airfield(models.Model):
     name = models.CharField('Name', max_length=40, blank=True, null=True)
 
     def __str__(self):
-        return "FAAcode " + str(self.FAAcode)
+        return str(self.FAAcode)
 
 class Callsigns(models.Model):
     callsign = models.CharField('Callsigns', max_length=20, primary_key=True)
@@ -36,7 +36,7 @@ class Tails(models.Model):
 class Runway(models.Model):
     name = models.CharField('Name', max_length=15, primary_key=True)
     primaryAircraftType = models.CharField('Primary Aircraft Type', max_length=20, blank=True, null=True)
-    airfield = models.OneToOneField(Airfield, on_delete=models.CASCADE)
+    airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.name) 
