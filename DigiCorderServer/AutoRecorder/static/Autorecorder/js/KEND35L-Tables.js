@@ -20,6 +20,42 @@ function loadKEND35L(chatSocket, csrf_token) {
         iconUrl: '../static/AutoRecorder/images/Black T-38 Silhouette with Alpha.png',
         //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
 
+        iconSize:     [40, 40], // size of the icon
+        shadowSize:   [20, 20], // size of the shadow
+        iconAnchor:   [20, 20], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 0],  // the same for the shadow
+        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+
+    })
+
+    let inactiveT38Icon = L.icon({
+        iconUrl: '../static/AutoRecorder/images/30-Black T-38 Silhouette with Alpha.png',
+        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
+
+        iconSize:     [40, 40], // size of the icon
+        shadowSize:   [20, 20], // size of the shadow
+        iconAnchor:   [20, 20], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 0],  // the same for the shadow
+        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+
+    })
+
+    let UFO = L.icon({
+        iconUrl: '../static/AutoRecorder/images/UFO.png',
+        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
+
+        iconSize:     [20, 20], // size of the icon
+        shadowSize:   [20, 20], // size of the shadow
+        iconAnchor:   [10, 10], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 0],  // the same for the shadow
+        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+
+    })
+
+    let inactiveUFO = L.icon({
+        iconUrl: '../static/AutoRecorder/images/30-UFO.png',
+        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
+
         iconSize:     [30, 30], // size of the icon
         shadowSize:   [20, 20], // size of the shadow
         iconAnchor:   [15, 15], // point of the icon which will correspond to marker's location
@@ -153,16 +189,7 @@ function loadKEND35L(chatSocket, csrf_token) {
                             
             for (let i = 0; i < t38Update.length; i++) {
 
-                if (!KEND35LMapAcft[t38Update[i].pk]) {
-                    // If there is no marker with this id yet, instantiate a new one.;
-        
-                    KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: T38Icon}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
-                  } else {
-                    // If there is already a marker with this id, simply modify its position.
-                    KEND35LMapAcft[t38Update[i].pk].setLatLng([t38Update[i].fields.latitude, t38Update[i].fields.longitude]).setRotationAngle(t38Update[i].fields.track).setPopupContent(t38Update[i].fields.callSign);
-                  }
-
-                  delete KEND35LMapAcftNotUpdated[t38Update[i].pk]
+                delete KEND35LMapAcftNotUpdated[t38Update[i].pk]
 
                 let formX2Checkmark = ""
                 let formX4Checkmark = ""
@@ -172,7 +199,32 @@ function loadKEND35L(chatSocket, csrf_token) {
                 if (t38Update[i].fields.formationX4) {formX4Checkmark = "checked"}
                 
 
-                if (t38Update[i].fields.substate == "eastside") {
+                if (t38Update[i].fields.substate == "shoehorn") {
+                    if (!KEND35LMapAcft[t38Update[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+
+                        if(t38Update[i].fields.aircraftType != "T38") {
+                            //If it's not a T-38, then it's a UFO!
+                            KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: UFO}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                        }
+                        else { //It's a T-38...
+                            KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: T38Icon}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                        }
+                          
+                      } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        KEND35LMapAcft[t38Update[i].pk].setLatLng([t38Update[i].fields.latitude, t38Update[i].fields.longitude]).setRotationAngle(t38Update[i].fields.track).setPopupContent(t38Update[i].fields.callSign);
+
+                        if(t38Update[i].fields.aircraftType != "T38") {
+                            //If it's not a T-38, then it's a UFO!
+                            KEND35LMapAcft[t38Update[i].pk].setIcon(UFO);
+                        }
+                        else { //It's a T-38...
+                            KEND35LMapAcft[t38Update[i].pk].setIcon(T38Icon);
+                        }
+
+                      }
+
                     KEND35LPattern.insertAdjacentHTML('beforeend',       
                             `<tr>
                             <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
@@ -214,6 +266,31 @@ function loadKEND35L(chatSocket, csrf_token) {
 
                 }
                 if (t38Update[i].fields.state == "taxiing") {
+                    if (!KEND35LMapAcft[t38Update[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+
+                        if(t38Update[i].fields.aircraftType != "T38") {
+                            //If it's not a T-38, then it's a UFO!
+                            KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: inactiveUFO}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                        }
+                        else { //It's a T-38...
+                            KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: inactiveT38Icon}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                        }
+                          
+                    } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        KEND35LMapAcft[t38Update[i].pk].setLatLng([t38Update[i].fields.latitude, t38Update[i].fields.longitude]).setRotationAngle(t38Update[i].fields.track).setPopupContent(t38Update[i].fields.callSign);
+
+                        if(t38Update[i].fields.aircraftType != "T38") {
+                            //If it's not a T-38, then it's a UFO!
+                            KEND35LMapAcft[t38Update[i].pk].setIcon(inactiveUFO);
+                        }
+                        else { //It's a T-38...
+                            KEND35LMapAcft[t38Update[i].pk].setIcon(inactiveT38Icon);
+                        }
+
+                      }
+
                     KEND35LTaxiing.insertAdjacentHTML('beforeend',       
                     `<tr>
                     <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
@@ -254,6 +331,31 @@ function loadKEND35L(chatSocket, csrf_token) {
                     )
                 }
                 if (t38Update[i].fields.state == "off station") {
+                    if (!KEND35LMapAcft[t38Update[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+
+                        if(t38Update[i].fields.aircraftType != "T38") {
+                            //If it's not a T-38, then it's a UFO!
+                            KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: UFO}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                        }
+                        else { //It's a T-38...
+                            KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: T38Icon}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                        }
+                          
+                    } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        KEND35LMapAcft[t38Update[i].pk].setLatLng([t38Update[i].fields.latitude, t38Update[i].fields.longitude]).setRotationAngle(t38Update[i].fields.track).setPopupContent(t38Update[i].fields.callSign);
+
+                        if(t38Update[i].fields.aircraftType != "T38") {
+                            //If it's not a T-38, then it's a UFO!
+                            KEND35LMapAcft[t38Update[i].pk].setIcon(UFO);
+                        }
+                        else { //It's a T-38...
+                            KEND35LMapAcft[t38Update[i].pk].setIcon(T38Icon);
+                        }
+
+                      }
+
                     KEND35LOffStation.insertAdjacentHTML('beforeend',       
                     `<tr>
                     <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
@@ -294,6 +396,31 @@ function loadKEND35L(chatSocket, csrf_token) {
                     )
                 }
                 if (t38Update[i].fields.state == "lost signal") {
+                    if (!KEND35LMapAcft[t38Update[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+
+                        if(t38Update[i].fields.aircraftType != "T38") {
+                            //If it's not a T-38, then it's a UFO!
+                            KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: inactiveUFO}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                        }
+                        else { //It's a T-38...
+                            KEND35LMapAcft[t38Update[i].pk] = L.marker([t38Update[i].fields.latitude, t38Update[i].fields.longitude], {rotationAngle: t38Update[i].fields.track, icon: inactiveT38Icon}).addTo(KEND35Lmap).bindPopup(t38Update[i].fields.callSign);
+                        }
+                          
+                    } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        KEND35LMapAcft[t38Update[i].pk].setLatLng([t38Update[i].fields.latitude, t38Update[i].fields.longitude]).setRotationAngle(t38Update[i].fields.track).setPopupContent(t38Update[i].fields.callSign);
+
+                        if(t38Update[i].fields.aircraftType != "T38") {
+                            //If it's not a T-38, then it's a UFO!
+                            KEND35LMapAcft[t38Update[i].pk].setIcon(inactiveUFO);
+                        }
+                        else { //It's a T-38...
+                            KEND35LMapAcft[t38Update[i].pk].setIcon(inactiveT38Icon);
+                        }
+
+                      }
+
                     KEND35LLostSignal.insertAdjacentHTML('beforeend',       
                     `<tr>
                     <th scope="row"><a href="dashboard/edit/${t38Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>

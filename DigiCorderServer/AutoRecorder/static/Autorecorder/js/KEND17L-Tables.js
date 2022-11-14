@@ -28,6 +28,42 @@ function loadKEND17L(chatSocket, csrf_token) {
 
     })
 
+    let inactiveLegacyT6Icon = L.icon({
+        iconUrl: '../static/AutoRecorder/images/40-LegacyT6Icon.png',
+        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
+
+        iconSize:     [30, 30], // size of the icon
+        shadowSize:   [20, 20], // size of the shadow
+        iconAnchor:   [15, 15], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 0],  // the same for the shadow
+        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+
+    })
+
+    let UFO = L.icon({
+        iconUrl: '../static/AutoRecorder/images/UFO.png',
+        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
+
+        iconSize:     [20, 20], // size of the icon
+        shadowSize:   [20, 20], // size of the shadow
+        iconAnchor:   [10, 10], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 0],  // the same for the shadow
+        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+
+    })
+
+    let inactiveUFO = L.icon({
+        iconUrl: '../static/AutoRecorder/images/30-UFO.png',
+        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
+
+        iconSize:     [30, 30], // size of the icon
+        shadowSize:   [20, 20], // size of the shadow
+        iconAnchor:   [15, 15], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 0],  // the same for the shadow
+        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+
+    })
+
     
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
@@ -153,16 +189,7 @@ function loadKEND17L(chatSocket, csrf_token) {
                             
             for (let i = 0; i < t6Update.length; i++) {
 
-                if (!KEND17LMapAcft[t6Update[i].pk]) {
-                    // If there is no marker with this id yet, instantiate a new one.;
-        
-                    KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: legacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
-                  } else {
-                    // If there is already a marker with this id, simply modify its position.
-                    KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
-                  }
-
-                  delete KEND17LMapAcftNotUpdated[t6Update[i].pk]
+                delete KEND17LMapAcftNotUpdated[t6Update[i].pk]
 
                 let formX2Checkmark = ""
                 let formX4Checkmark = ""
@@ -173,6 +200,30 @@ function loadKEND17L(chatSocket, csrf_token) {
                 
 
                 if (t6Update[i].fields.substate == "eastside") {
+                    if (!KEND17LMapAcft[t6Update[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+
+                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                            //If it's not a T-6, then it's a UFO!
+                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: UFO}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                        }
+                        else { //It's a T-6...
+                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: legacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                        }
+                          
+                      } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
+
+                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                            //If it's not a T-6, then it's a UFO!
+                            KEND17LMapAcft[t6Update[i].pk].setIcon(UFO);
+                        }
+                        else { //It's a T-6...
+                            KEND17LMapAcft[t6Update[i].pk].setIcon(legacyT6Icon);
+                        }
+                      }
+
                     KEND17LPattern.insertAdjacentHTML('beforeend',       
                             `<tr>
                             <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
@@ -214,6 +265,30 @@ function loadKEND17L(chatSocket, csrf_token) {
 
                 }
                 if (t6Update[i].fields.state == "taxiing") {
+                    if (!KEND17LMapAcft[t6Update[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+
+                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                            //If it's not a T-6, then it's a UFO!
+                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: inactiveUFO}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                        }
+                        else { //It's a T-6...
+                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: inactiveLegacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                        }
+                          
+                    } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
+
+                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                            //If it's not a T-6, then it's a UFO!
+                            KEND17LMapAcft[t6Update[i].pk].setIcon(inactiveUFO);
+                        }
+                        else { //It's a T-6...
+                            KEND17LMapAcft[t6Update[i].pk].setIcon(inactiveLegacyT6Icon);
+                        }
+                      }
+
                     KEND17LTaxiing.insertAdjacentHTML('beforeend',       
                     `<tr>
                     <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
@@ -254,6 +329,30 @@ function loadKEND17L(chatSocket, csrf_token) {
                     )
                 }
                 if (t6Update[i].fields.state == "off station") {
+                    if (!KEND17LMapAcft[t6Update[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+
+                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                            //If it's not a T-6, then it's a UFO!
+                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: UFO}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                        }
+                        else { //It's a T-6...
+                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: legacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                        }
+                          
+                    } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
+
+                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                            //If it's not a T-6, then it's a UFO!
+                            KEND17LMapAcft[t6Update[i].pk].setIcon(UFO);
+                        }
+                        else { //It's a T-6...
+                            KEND17LMapAcft[t6Update[i].pk].setIcon(legacyT6Icon);
+                        }
+                      }
+
                     KEND17LOffStation.insertAdjacentHTML('beforeend',       
                     `<tr>
                     <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
@@ -294,6 +393,30 @@ function loadKEND17L(chatSocket, csrf_token) {
                     )
                 }
                 if (t6Update[i].fields.state == "lost signal") {
+                    if (!KEND17LMapAcft[t6Update[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+
+                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                            //If it's not a T-6, then it's a UFO!
+                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: inactiveUFO}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                        }
+                        else { //It's a T-6...
+                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: inactiveLegacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                        }
+                          
+                    } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
+
+                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                            //If it's not a T-6, then it's a UFO!
+                            KEND17LMapAcft[t6Update[i].pk].setIcon(inactiveUFO);
+                        }
+                        else { //It's a T-6...
+                            KEND17LMapAcft[t6Update[i].pk].setIcon(inactiveLegacyT6Icon);
+                        }
+                      }
+
                     KEND17LLostSignal.insertAdjacentHTML('beforeend',       
                     `<tr>
                     <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>

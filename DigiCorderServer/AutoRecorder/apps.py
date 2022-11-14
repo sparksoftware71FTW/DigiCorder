@@ -201,10 +201,11 @@ def inPattern(position, patterns):
     alt = position.z
     position2d = geometry.Point(position.x, position.y)  
     for pattern in patterns:
-        if position2d.within(pattern) and alt < 5000:
+        if position2d.within(pattern) and alt < 4600:
             return True
         else:
-            return False
+            continue
+    return False
 
 
 def getKMLplacemark(file, placemarkName):
