@@ -89,7 +89,7 @@ def adsbThread(parentThreadName):
         data = res.read()
         jsondata = json.loads(data)
         updatedAircraftList = []
-        for aircraft in jsondata['ac']:
+        for aircraft in jsondata['ac']: #ac is aircraft in the database 
             try:
                 position = getPosition(aircraft)
                 if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
@@ -135,6 +135,21 @@ def adsbThread(parentThreadName):
                     Acft.timestamp=timezone.now()
 
                     # Formation logic:
+                      
+                    #2x shipness starting defination 
+                 #   if Acft.formationX2 == true:
+                  #      Acft.callSign
+
+                    # 4x shipness starting defination
+                 #   if Acft.formationX4 == true: 
+                        
+
+                    # 1x shipness starting defination 
+                #    if Acft.formationX2 == false & Acft.formationX4 == false:   #  logic -> (1 ship = !2ship & !4ship )
+                        
+          
+
+
 
                     # Departure 
                     # Flying Around
