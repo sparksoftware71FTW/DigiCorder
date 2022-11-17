@@ -19,7 +19,7 @@ from .models import ActiveAircraft, CompletedSortie, Airfield, RsuCrew, Runway
 def index(request):
     return render(request, 'AutoRecorder/bootbase.html')
 
-@staff_member_required(login_url='AutoRecorder/bootbase.html')
+@staff_member_required(login_url='/AutoRecorder')
 def dashboard(request):
     RsuCrewFormFactory = modelform_factory(model=RsuCrew, exclude=('timestamp',))
     if request.method == 'POST':
@@ -42,7 +42,7 @@ def dashboard(request):
     #return render(request, 'AutoRecorder/dashboard.html')
 
 
-@staff_member_required(login_url='AutoRecorder/bootbase.html')
+@staff_member_required(login_url='/AutoRecorder')
 def form355(request):
     landedAircraft = CompletedSortie.objects.all().order_by('timestamp')
     RSUcrews = RsuCrew.objects.all().order_by('timestamp')
@@ -124,7 +124,7 @@ def form355(request):
         return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews})
 
 
-@staff_member_required(login_url='/login')
+@staff_member_required(login_url='/AutoRecorder')
 def violation355View(request, tailNumber):
     acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
     #acft355 = forms.ActiveAircraft355(instance=ActiveAircraft.objects.get(tailNumber=tailNumber))
@@ -140,7 +140,7 @@ def violation355View(request, tailNumber):
         return render(request, 'AutoRecorder/edit355.html', {"acft355formset": acft355formset})
 
 
-@staff_member_required(login_url='/login')
+@staff_member_required(login_url='/AutoRecorder')
 def editView(request, tailNumber):
     acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
     #acft355 = forms.ActiveAircraft355(instance=ActiveAircraft.objects.get(tailNumber=tailNumber))
@@ -156,7 +156,7 @@ def editView(request, tailNumber):
         return render(request, 'AutoRecorder/edit.html', {"acfteditformset": acfteditformset})
 
 
-@staff_member_required(login_url='AutoRecorder/bootbase.html')
+@staff_member_required(login_url='/AutoRecorder')
 def formSolo(request, tailNumber):
 
     if request.method == 'POST':
@@ -167,7 +167,7 @@ def formSolo(request, tailNumber):
         return render(request, 'AutoRecorder/dashboard.html')
 
 
-@staff_member_required(login_url='AutoRecorder/bootbase.html')
+@staff_member_required(login_url='/AutoRecorder')
 def formX2(request, tailNumber):
 
     if request.method == 'POST':
@@ -178,7 +178,7 @@ def formX2(request, tailNumber):
         return render(request, 'AutoRecorder/dashboard.html')
 
 
-@staff_member_required(login_url='AutoRecorder/bootbase.html')
+@staff_member_required(login_url='/AutoRecorder')
 def formX4(request, tailNumber):
 
     if request.method == 'POST':
@@ -189,7 +189,7 @@ def formX4(request, tailNumber):
         return render(request, 'AutoRecorder/dashboard.html')
 
 
-@staff_member_required(login_url='AutoRecorder/bootbase.html')
+@staff_member_required(login_url='/AutoRecorder')
 def solo(request, tailNumber):
 
     if request.method == 'POST':

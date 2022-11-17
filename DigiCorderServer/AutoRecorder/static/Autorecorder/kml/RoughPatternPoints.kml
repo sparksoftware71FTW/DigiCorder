@@ -2,7 +2,7 @@
 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
 <Document id="1s-PvZHkhe9x6cB0uB0v7uZC_GC1PnXLh">
 	<name>RoughPatternPoints</name>
-	<gx:CascadingStyle kml:id="__managed_style_275D879BE425474297B3">
+	<gx:CascadingStyle kml:id="__managed_style_5D171EF4EF25BBCC231E">
 		<Style>
 			<IconStyle>
 				<scale>1.2</scale>
@@ -15,7 +15,7 @@
 			</LabelStyle>
 			<LineStyle>
 				<color>ff2f2fd3</color>
-				<width>3</width>
+				<width>6</width>
 			</LineStyle>
 			<PolyStyle>
 				<color>40ffffff</color>
@@ -24,7 +24,7 @@
 			</BalloonStyle>
 		</Style>
 	</gx:CascadingStyle>
-	<gx:CascadingStyle kml:id="__managed_style_1E6130063125474297B3">
+	<gx:CascadingStyle kml:id="__managed_style_42E939CFDE25BBCC231E">
 		<Style>
 			<IconStyle>
 				<Icon>
@@ -36,7 +36,7 @@
 			</LabelStyle>
 			<LineStyle>
 				<color>ff2f2fd3</color>
-				<width>2</width>
+				<width>4</width>
 			</LineStyle>
 			<PolyStyle>
 				<color>40ffffff</color>
@@ -45,17 +45,17 @@
 			</BalloonStyle>
 		</Style>
 	</gx:CascadingStyle>
-	<StyleMap id="__managed_style_048DD6062025474297B3">
+	<StyleMap id="__managed_style_35E4C739A625BBCC231E">
 		<Pair>
 			<key>normal</key>
-			<styleUrl>#__managed_style_1E6130063125474297B3</styleUrl>
+			<styleUrl>#__managed_style_42E939CFDE25BBCC231E</styleUrl>
 		</Pair>
 		<Pair>
 			<key>highlight</key>
-			<styleUrl>#__managed_style_275D879BE425474297B3</styleUrl>
+			<styleUrl>#__managed_style_5D171EF4EF25BBCC231E</styleUrl>
 		</Pair>
 	</StyleMap>
-	<gx:CascadingStyle kml:id="__managed_style_2B9F6116D625474297AE">
+	<gx:CascadingStyle kml:id="__managed_style_228458C42C25BBCC231D">
 		<Style>
 			<IconStyle>
 				<scale>1.2</scale>
@@ -68,7 +68,7 @@
 			</LabelStyle>
 			<LineStyle>
 				<color>ff2dc0fb</color>
-				<width>3</width>
+				<width>6</width>
 			</LineStyle>
 			<PolyStyle>
 				<color>40ffffff</color>
@@ -77,7 +77,7 @@
 			</BalloonStyle>
 		</Style>
 	</gx:CascadingStyle>
-	<gx:CascadingStyle kml:id="__managed_style_14A65B093325474297AE">
+	<gx:CascadingStyle kml:id="__managed_style_18445A387D25BBCC231D">
 		<Style>
 			<IconStyle>
 				<Icon>
@@ -89,7 +89,7 @@
 			</LabelStyle>
 			<LineStyle>
 				<color>ff2dc0fb</color>
-				<width>2</width>
+				<width>4</width>
 			</LineStyle>
 			<PolyStyle>
 				<color>40ffffff</color>
@@ -98,14 +98,14 @@
 			</BalloonStyle>
 		</Style>
 	</gx:CascadingStyle>
-	<StyleMap id="__managed_style_0A583CB94225474297AE">
+	<StyleMap id="__managed_style_0F8CF7B07925BBCC231D">
 		<Pair>
 			<key>normal</key>
-			<styleUrl>#__managed_style_14A65B093325474297AE</styleUrl>
+			<styleUrl>#__managed_style_18445A387D25BBCC231D</styleUrl>
 		</Pair>
 		<Pair>
 			<key>highlight</key>
-			<styleUrl>#__managed_style_2B9F6116D625474297AE</styleUrl>
+			<styleUrl>#__managed_style_228458C42C25BBCC231D</styleUrl>
 		</Pair>
 	</StyleMap>
 	<Placemark id="05044D4CF824B63C6A54">
@@ -120,7 +120,7 @@
 			<range>110367.7141618542</range>
 			<altitudeMode>absolute</altitudeMode>
 		</LookAt>
-		<styleUrl>#__managed_style_0A583CB94225474297AE</styleUrl>
+		<styleUrl>#__managed_style_0F8CF7B07925BBCC231D</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
 				<LinearRing>
@@ -143,12 +143,12 @@
 			<range>95844.00293905288</range>
 			<altitudeMode>absolute</altitudeMode>
 		</LookAt>
-		<styleUrl>#__managed_style_048DD6062025474297B3</styleUrl>
+		<styleUrl>#__managed_style_35E4C739A625BBCC231E</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
 				<LinearRing>
 					<coordinates>
-						-97.91327537634196,36.33963382311001,382.1733832322652 -97.90491116147945,36.52147231564616,379.162827613934 -98.16410611504342,36.52605136466911,427.0088705027123 -98.15679105012453,36.16937571065354,325.5333241872766 -97.89902402674511,36.17043823582967,371.7164815749745 -97.91327537634196,36.33963382311001,382.1733832322652 
+						-97.91327537634196,36.33963382311001,382.1733832322652 -97.90007671805652,36.54840691261381,379.162827613934 -98.17110141530904,36.55469381026241,427.0088705027123 -98.18521880935371,36.14624599402779,325.5333241872766 -97.89978901291018,36.14631050409296,371.7164815749745 -97.91327537634196,36.33963382311001,382.1733832322652 
 					</coordinates>
 				</LinearRing>
 			</outerBoundaryIs>
