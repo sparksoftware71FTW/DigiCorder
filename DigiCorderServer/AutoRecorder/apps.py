@@ -135,17 +135,22 @@ def adsbThread(parentThreadName):
                     Acft.timestamp=timezone.now()
 
                     # Formation logic:
+
+                    #Notes: will need something to store/flag the status 
                       
-                    #2x shipness starting defination 
-                 #   if Acft.formationX2 == true:
-                  #      Acft.callSign
-
-                    # 4x shipness starting defination
-                 #   if Acft.formationX4 == true: 
+                    #2x shipness starting defination (already made)        # if Acft.formationX2 == true:
                         
+               
+                    # 4x shipness starting defination (already made)               # if Acft.formationX4 == true: 
+                   
+                        # 4 same prefixes appear within 2 miles  = 4ship -> 1 ship 
+                        # else 
+                        # 2x 4ship appear 
 
-                    # 1x shipness starting defination 
-                #    if Acft.formationX2 == false & Acft.formationX4 == false:   #  logic -> (1 ship = !2ship & !4ship )
+
+                    # 1x shipness starting defination (already made)               #  if Acft.formationX2 == false & Acft.formationX4 == false:   #  logic -> (1 ship = !2ship & !4ship )
+                 
+
                         
           
 

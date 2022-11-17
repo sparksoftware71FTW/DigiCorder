@@ -83,7 +83,7 @@ class ActiveAircraft(models.Model):
     squawk = models.CharField('Squawk', max_length=10, blank=True, null=True)
     seen = models.DecimalField('seen', blank=True, null=True, decimal_places=2, max_digits=6)
     rssi = models.DecimalField('rssi', blank=True, null=True, decimal_places=3, max_digits=6)
-    state = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
+    state = models.CharField('State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in pattern', 'off station', 'lost signal', or 'completed sortie'
     lastState = models.CharField('Last State', max_length=20, blank=True, null=True)  # 'taxiiing', 'in home pattern', 'off station', 'lost signal', or 'completed sortie'
     substate = models.CharField('Substate', max_length=20, blank=True, null=True) # used to discern specific pattern. Can be 'eastside', 'shoehorn', etc.
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
