@@ -65,7 +65,7 @@ def adsbThread(parentThreadName):
     logger.info("Starting ADSB Thread")
     import http.client
     import json
-    from AutoRecorder.models import ActiveAircraft
+    from AutoRecorder.models import ActiveAircraft, NextTakeoffData, Runway
 
     conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
 
@@ -82,6 +82,9 @@ def adsbThread(parentThreadName):
     shoehornPatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Shoehorn")
     patterns = [eastsidePatternPolygon, shoehornPatternPolygon]
 
+    KEND35L = Runway.objects.all().filter(name='KEND 17R/35L')
+    KEND17L = Runway.objects.all().filter(name='KEND 17L/35R')
+
     while True:
         logger.info("Requesting ADSB Data...")
         conn.request("GET", "/v2/lat/36.3393/lon/-97.9131/dist/250/", headers=headers)
@@ -89,6 +92,7 @@ def adsbThread(parentThreadName):
         data = res.read()
         jsondata = json.loads(data)
         updatedAircraftList = []
+        updatedAircraftObjects = [] 
         for aircraft in jsondata['ac']: #ac is aircraft in the database 
             try:
                 position = getPosition(aircraft)
@@ -120,8 +124,23 @@ def adsbThread(parentThreadName):
                         Acft.lastState = Acft.state
                         Acft.state="in pattern"
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
-                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro) < 1600):
+                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) >= 1000 and int(Acft.alt_baro) < 1600):
                             Acft.takeoffTime = timezone.now()
+                            match Acft.substate:
+                                case 'shoehorn':
+                                    nextTOData = NextTakeoffData.objects.all().filter(runway = KEND35L)
+                                    Acft.solo = nextTOData.solo
+                                    Acft.formationX2 = nextTOData.formationX2
+                                    Acft.formationX4 = nextTOData.formationX4
+                                    logger.info("Next T/O Data applied!!!!!!!!!!!!")
+                                case 'eastside':
+                                    nextTOData = NextTakeoffData.objects.all().filter(runway = KEND17L)
+                                    Acft.solo = nextTOData.solo
+                                    Acft.formationX2 = nextTOData.formationX2
+                                    Acft.formationX4 = nextTOData.formationX4
+                                    logger.info("Next T/O Data applied!!!!!!!!!!!!")
+                                case other:
+                                    logger.info("No runway found with recent aircraft's T/O")
                     elif inPattern(position, patterns) and Acft.groundSpeed < 70 and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or (int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro) < 1350)):
                         Acft.lastState = Acft.state
                         Acft.state="taxiing"
@@ -133,38 +152,11 @@ def adsbThread(parentThreadName):
                         Acft.state="off station"
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
                     Acft.timestamp=timezone.now()
-
-                    # Formation logic:
-
-                    #Notes: will need something to store/flag the status 
-                      
-                    #2x shipness starting defination (already made)        # if Acft.formationX2 == true:
-                        
-               
-                    # 4x shipness starting defination (already made)               # if Acft.formationX4 == true: 
-                   
-                        # 4 same prefixes appear within 2 miles  = 4ship -> 1 ship 
-                        # else 
-                        # 2x 4ship appear 
-
-
-                    # 1x shipness starting defination (already made)               #  if Acft.formationX2 == false & Acft.formationX4 == false:   #  logic -> (1 ship = !2ship & !4ship )
-                 
-
-                        
-          
-
-
-
-                    # Departure 
-                    # Flying Around
-                    # Recovery
-                    # Four ships
-                    # Robust splits and rejoins
                     
                     Acft.save()
                     logger.debug("Success!")   
                     updatedAircraftList.append(Acft.tailNumber)     
+                    updatedAircraftObjects.append(Acft)
 
             except KeyError as e:
                 logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
@@ -178,7 +170,30 @@ def adsbThread(parentThreadName):
             for Acft in aircraftNotUpdated:
                 # if Acft.timestamp or Acft.landTime or Acft.state or Acft.lastState is None:
                 #     continue
-                if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 120: 
+
+                
+                    # Formation logic:
+                    # Departure 
+                    # Flying Around
+                    # Recovery
+                    # Four ships
+                    # Robust splits and rejoins
+                position1 = geometry.Point(0, 0) 
+                position2 = geometry.Point(0, 0)
+
+                for freshAcft in updatedAircraftObjects:        #start form logic 
+                    # 1ship to 2ship & 2ship to 1ship logic 
+                    if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2: 
+                        position1 = geometry.Point(Acft.latitude, Acft.longitude)     #find position of 1st jet
+                        position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude)  #find position of 2nd jet 
+
+                        if (position2.distance(position1) * 69 < 2) and Acft.groundSpeed < 70 and freshAcft.groundSpeed < 70:           # :)  degrees of lat & long to miles
+                            freshAcft.formationX2 == True
+
+                    #2ship to 1ship logic 
+
+                
+                if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
                     if Acft.landTime == None and Acft.state != "lost signal":
                         Acft.lastState = Acft.state
                         Acft.state = "lost signal"

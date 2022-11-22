@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import ActiveAircraft, CompletedSortie, Runway, Airfield, Callsigns, RsuCrew
+from .models import ActiveAircraft, CompletedSortie, Runway, Airfield, Callsigns, RsuCrew, NextTakeoffData
 
 class ActiveAircraftAdmin(admin.ModelAdmin):
     list_display = ('aircraftType', 'tailNumber', 'callSign', 'state', 'lastState', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formationX2', 'formationX4', 'emergency', 'natureOfEmergency')
@@ -27,3 +27,8 @@ class AirfieldAdmin(admin.ModelAdmin):
     list_display = ('FAAcode', 'name')
     list_filter = ['FAAcode', 'name']
 admin.site.register(Airfield, AirfieldAdmin)
+
+class NextTakeoffAdmin(admin.ModelAdmin):
+    list_display = ('runway', 'solo', 'formationX2', 'formationX4')
+    list_filter = ['runway', 'solo', 'formationX2', 'formationX4']
+admin.site.register(NextTakeoffData, NextTakeoffAdmin)

@@ -126,4 +126,11 @@ class CompletedSortie(models.Model):
         return "id " + str(self.id)
 
 
+class NextTakeoffData(models.Model):
+    runway = models.OneToOneField(Runway, on_delete=models.CASCADE, blank=True, null=True)
+    solo = models.BooleanField('Solo', default=False)
+    formationX2 = models.BooleanField('2-Ship Form', default=False)
+    formationX4 = models.BooleanField('4-Ship Form', default=False)
 
+    def __str__(self):
+        return "id " + str(self.id)

@@ -9,7 +9,7 @@ from channels import layers
 from channels.db import database_sync_to_async
 from django.core import serializers
 
-from .models import ActiveAircraft, CompletedSortie, Message
+from .models import ActiveAircraft, CompletedSortie, Message, NextTakeoffData, Runway
 
 import logging
 logger = logging.getLogger(__name__)
@@ -51,9 +51,26 @@ class DashboardConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        txmessage = text_data_json['lolmessage']
-        await database_sync_to_async(self.saveMessage)(txmessage)
-        logger.debug(text_data_json)
+        msgType = text_data_json['type']
+        data = text_data_json['data']
+        # await database_sync_to_async(self.saveMessage)(txmessage)
+        logger.info(text_data_json)
+        print(data)
+
+        if msgType == 'nextTOMessage':
+            flags, created = await NextTakeoffData.objects.aget_or_create(runway=await Runway.objects.aget(name=text_data_json['runway']))
+            match data:
+                case '2-ship':
+                    flags.formationX2 = self.toggle(flags.formationX2)
+                    logger.info("2-ship triggered")
+                case '4-ship':
+                    flags.formationX4 = self.toggle(flags.formationX2)
+                    logger.info("4-ship triggered")
+                case 'solo':
+                    flags.solo = toggle(flags.solo)
+                    logger.info("solo triggered")
+            await database_sync_to_async(self.saveNextTOMessage)(flags)
+            logger.info("we did the thing...")
 
     #     async_to_sync(self.channel_layer.group_send)(
     #         self.room_group_name,
@@ -62,9 +79,51 @@ class DashboardConsumer(AsyncWebsocketConsumer):
     #             'message':txmessage
     #         }
     #     )
+    
+    async def lolmessage(self, event):
+        txmessage = event['message']
+        
+        await self.send(text_data=json.dumps({
+            'type':'lolmessage',
+            'message':txmessage
+        }))
+
+
+    async def t6Update(self, event):
+        txmessage = event['message']
+        txmetadata = event['meta']
+        #logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(txmessage))
+        await self.send(text_data=json.dumps({
+            'type':'t6Update',
+            'message':txmessage,
+            'meta':txmetadata
+        }))
+
+
+    async def t38Update(self, event):
+        txmessage = event['message']
+        txmetadata = event['meta']
+        await self.send(text_data=json.dumps({
+            'type':'t38Update',
+            'message':txmessage,
+            'meta':txmetadata
+        }))
+        #logger.debug('!!!!!!! t38Update' + str(txmessage))
+
 
     def saveMessage(self, txmessage):
         newMessage = Message.objects.create(message=txmessage)
+
+    def saveNextTOMessage(self, nextTOFlags):
+        nextTOFlags.save()
+
+
+    def toggle(self, target):
+        if target:
+            return False
+        else:
+            return True
+
 
     def get_T6_queryset_update_message(self):
         """
@@ -140,33 +199,8 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         return activeT38s, json.dumps(activeT38Metadata)
  
 
-    async def lolmessage(self, event):
-        txmessage = event['message']
-        
-        await self.send(text_data=json.dumps({
-            'type':'lolmessage',
-            'message':txmessage
-        }))
-
-
-    async def t6Update(self, event):
-        txmessage = event['message']
-        txmetadata = event['meta']
-        #logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(txmessage))
-        await self.send(text_data=json.dumps({
-            'type':'t6Update',
-            'message':txmessage,
-            'meta':txmetadata
-        }))
-
-
-    async def t38Update(self, event):
-        txmessage = event['message']
-        txmetadata = event['meta']
-        await self.send(text_data=json.dumps({
-            'type':'t38Update',
-            'message':txmessage,
-            'meta':txmetadata
-        }))
-        #logger.debug('!!!!!!! t38Update' + str(txmessage))
-
+def toggle(target):
+        if target:
+            return False
+        else:
+            return True
