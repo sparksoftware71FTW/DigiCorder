@@ -1,6 +1,49 @@
 var KEND35Lmap = L.map('KEND35Lmap').setView([36.3393, -97.9131], 10);
 
 
+function rxNextTOMessageKEND35L(chatSocket) {
+
+    chatSocket.addEventListener('message', function(e){
+
+        let msg = JSON.parse(e.data)
+
+        console.log("runway is: ")
+        console.log(msg.runway)
+        if(msg.type == 'nextTOMessage' && msg.runway == "KEND 35L/17R"){
+            console.log("We made it")
+
+                let data = msg.data
+                document.getElementById('nextTO-KEND35L-solo').checked = data.solo
+                document.getElementById('nextTO-KEND35L-formationX2').checked = data.formationX2
+                document.getElementById('nextTO-KEND35L-formationX4').checked = data.formationX4
+        }
+    })
+}
+
+function nextTOMessageKEND35L(chatSocket, id) {
+    solo = document.getElementById('nextTO-KEND35L-solo').checked
+    formationX2 = document.getElementById('nextTO-KEND35L-formationX2').checked
+    formationX4 = document.getElementById('nextTO-KEND35L-formationX4').checked
+
+    if(formationX2 == true && id == 'formationX4') {
+        formationX4 = false
+    }
+
+    if(formationX4 == true && id == 'formationX2') {
+        formationX2 = false
+    }
+
+    chatSocket.send(JSON.stringify({
+      'type': 'nextTOMessage',
+      'runway': 'KEND 35L/17R',
+      'data': {
+        'solo': solo,
+        'formationX2': formationX2,
+        'formationX4': formationX4
+      }
+  }))
+}
+
 function loadKEND35L(chatSocket, csrf_token) {
 
     //var KEND35Lmap = L.map('KEND35Lmap').setView([36.3393, -97.9131], 13);

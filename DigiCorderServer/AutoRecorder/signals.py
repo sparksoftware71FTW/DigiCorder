@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.core import serializers
 
-from .models import ActiveAircraft, CompletedSortie, Message, Trigger
+from .models import ActiveAircraft, CompletedSortie, Message, Trigger, NextTakeoffData
 
 import logging
 logger = logging.getLogger(__name__)
@@ -48,6 +48,24 @@ def log_completed_flight(sender, instance, created, **kwargs):
         instance.delete()
         logger.info("Active -> Completed Transition Occured")
 
+
+@receiver(post_save, sender=NextTakeoffData, dispatch_uid="nextTODisplayUpdate")
+def nextTODisplayUpdate(sender, instance, created, **kwargs):
+
+    nextTOMessages = get_next_takeoff_update_messages()
+    
+    print("Trigger success")
+
+    for msg in nextTOMessages:
+        if msg['runway'] == instance.runway.name:
+            channel_layer = layers.get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+            'test',
+                {
+                    'type':'nextTOMessage',
+                    'runway':msg['runway'],
+                    'data':msg        }
+            )
 
 @receiver(post_save, sender=Trigger, dispatch_uid="displayActiveAircraft")
 def displayActiveAircraft(sender, instance, created, **kwargs):
@@ -122,13 +140,22 @@ def get_Message_queryset():
     #Question.objects.filter(pub_date__lte=timezone.now())
     return Message.objects
 
+def get_next_takeoff_update_messages():
+    nextTOquery = NextTakeoffData.objects.all()
+    nextTOMessages = []
+    for entry in json.loads(serializers.serialize('json', nextTOquery)):
+        nextTOMessages.append(
+            entry['fields']
+        )
+    return nextTOMessages
+
 
 def get_T6_queryset_update_message():
 
     """
     Return all active T-6s serialized with associated metadata
     """
-    activeT6query = ActiveAircraft.objects.all().filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
+    activeT6query = ActiveAircraft.objects.filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
 
     activeT6Metadata = {}
     activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
@@ -165,7 +192,7 @@ def get_T38_queryset_update_message():
     """
     Return all active T-38s serialized with associated metadata
     """
-    activeT38query = ActiveAircraft.objects.all().filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
+    activeT38query = ActiveAircraft.objects.filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
 
     activeT38Metadata = {}
     activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3

@@ -66,6 +66,7 @@ def adsbThread(parentThreadName):
     import http.client
     import json
     from AutoRecorder.models import ActiveAircraft, NextTakeoffData, Runway
+    import time
 
     conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
 
@@ -82,8 +83,8 @@ def adsbThread(parentThreadName):
     shoehornPatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Shoehorn")
     patterns = [eastsidePatternPolygon, shoehornPatternPolygon]
 
-    KEND35L = Runway.objects.all().filter(name='KEND 17R/35L')
-    KEND17L = Runway.objects.all().filter(name='KEND 17L/35R')
+    KEND35L = Runway.objects.filter(name='KEND 17R/35L')
+    KEND17L = Runway.objects.filter(name='KEND 17L/35R')
 
     while True:
         logger.info("Requesting ADSB Data...")
@@ -93,14 +94,44 @@ def adsbThread(parentThreadName):
         jsondata = json.loads(data)
         updatedAircraftList = []
         updatedAircraftObjects = [] 
+
+        obj = time.gmtime(0)
+        epoch = time.asctime(obj)
+
+        curr_time4 = round(time.time()*1000)
+        
+        #activeAircraftObjects = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in ActiveAircraft.objects.all()}
+
+        curr_time5 = round(time.time()*1000)
+        print("Hack 0: it took this long to load all objects initially: ", curr_time5-curr_time4)
+
+
         for aircraft in jsondata['ac']: #ac is aircraft in the database 
             try:
                 position = getPosition(aircraft)
                 if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
+
+                    curr_time = round(time.time()*1000)
+                    print("Hack 1: Milliseconds since epoch:",curr_time)
+
                     Acft, created = ActiveAircraft.objects.get_or_create(
-                        tailNumber= aircraft["r"][:-3] + "--" + aircraft["r"][-3:]
+                       tailNumber= aircraft["r"][:-3] + "--" + aircraft["r"][-3:]
                     )
+
+                    curr_time2 = round(time.time()*1000)
+                    print("Hack 2: get_or_create took:", curr_time2 - curr_time)
+
+                    # try:
+                    #     Acft = activeAircraftObjects[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
+                    # except KeyError as e:
+                    #     Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
+                    #     logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
+
+
+                    curr_time3 = round(time.time()*1000)
+                    print("Hack 3: dict lookup or creation took:", curr_time3 - curr_time2)
+
 
                     Acft.callSign=aircraft["flight"]
                     if "SMAL" in Acft.callSign:
@@ -128,16 +159,18 @@ def adsbThread(parentThreadName):
                             Acft.takeoffTime = timezone.now()
                             match Acft.substate:
                                 case 'shoehorn':
-                                    nextTOData = NextTakeoffData.objects.all().filter(runway = KEND35L)
+                                    nextTOData = NextTakeoffData.objects.filter(runway = KEND35L)
                                     Acft.solo = nextTOData.solo
                                     Acft.formationX2 = nextTOData.formationX2
                                     Acft.formationX4 = nextTOData.formationX4
+                                    resetNextTakeoffData(nextTOData)
                                     logger.info("Next T/O Data applied!!!!!!!!!!!!")
                                 case 'eastside':
-                                    nextTOData = NextTakeoffData.objects.all().filter(runway = KEND17L)
+                                    nextTOData = NextTakeoffData.objects.filter(runway = KEND17L)
                                     Acft.solo = nextTOData.solo
                                     Acft.formationX2 = nextTOData.formationX2
                                     Acft.formationX4 = nextTOData.formationX4
+                                    resetNextTakeoffData(nextTOData)
                                     logger.info("Next T/O Data applied!!!!!!!!!!!!")
                                 case other:
                                     logger.info("No runway found with recent aircraft's T/O")
@@ -153,6 +186,14 @@ def adsbThread(parentThreadName):
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
                     Acft.timestamp=timezone.now()
                     
+                    #form logic 
+                    
+                    #2ship to 1ship logic 
+                    # 
+                  #  if Acft.callSign[:-1] == Acft.callSign[:-1] and int(freshAcft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(freshAcft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1   
+
+
+
                     Acft.save()
                     logger.debug("Success!")   
                     updatedAircraftList.append(Acft.tailNumber)     
@@ -161,7 +202,7 @@ def adsbThread(parentThreadName):
             except KeyError as e:
                 logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
 
-        aircraftNotUpdated = getAircraftNotUpdated(updatedAircraftList)
+        aircraftNotUpdated = ActiveAircraft.objects.exclude(tailNumber__in=updatedAircraftList) # getAircraftNotUpdated(updatedAircraftList)
         logger.info('aircraft not updated: ' + str(aircraftNotUpdated))
 
 # TODO NEED TO THOROUGHLY TEST THE LOGIC ABOVE AND BELOW THIS LINE. STATE TRANSITIONS ARE CRITICAL TO GET RIGHT. 
@@ -171,26 +212,25 @@ def adsbThread(parentThreadName):
                 # if Acft.timestamp or Acft.landTime or Acft.state or Acft.lastState is None:
                 #     continue
 
-                
                     # Formation logic:
                     # Departure 
                     # Flying Around
                     # Recovery
                     # Four ships
                     # Robust splits and rejoins
+
+
                 position1 = geometry.Point(0, 0) 
                 position2 = geometry.Point(0, 0)
 
                 for freshAcft in updatedAircraftObjects:        #start form logic 
-                    # 1ship to 2ship & 2ship to 1ship logic 
+                    # 1ship to 2ship logic 
                     if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2: 
                         position1 = geometry.Point(Acft.latitude, Acft.longitude)     #find position of 1st jet
                         position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude)  #find position of 2nd jet 
 
                         if (position2.distance(position1) * 69 < 2) and Acft.groundSpeed < 70 and freshAcft.groundSpeed < 70:           # :)  degrees of lat & long to miles
                             freshAcft.formationX2 == True
-
-                    #2ship to 1ship logic 
 
                 
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
@@ -298,4 +338,9 @@ def setSubstate(position, state, eastside, shoehorn):
         return "shoehorn"
     else:
         return "null"
+
+def resetNextTakeoffData(nextTOData):
+    nextTOData.solo = False
+    nextTOData.formationX2 = False
+    nextTOData.formationX4 = False 
         

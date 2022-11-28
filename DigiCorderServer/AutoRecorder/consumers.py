@@ -25,6 +25,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
 
         t6message, t6metadata = await database_sync_to_async(self.get_T6_queryset_update_message)()
         t38message, t38metadata = await database_sync_to_async(self.get_T38_queryset_update_message)()
+        nextTOMessages = await database_sync_to_async(self.get_next_takeoff_update_messages)()
          
         channel_layer = layers.get_channel_layer()
         await channel_layer.group_send(
@@ -43,6 +44,16 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                 'meta':t38metadata
             }
         )
+        
+        for msg in nextTOMessages:
+            await channel_layer.group_send(
+                'test',
+                {
+                    'type':'nextTOMessage',
+                    'runway':msg['runway'],
+                    'data':msg
+                }
+            )
         #logger.debug("Sending initial ActiveAircraft list. Message value is: " + str(t38message))
         
 
@@ -59,16 +70,20 @@ class DashboardConsumer(AsyncWebsocketConsumer):
 
         if msgType == 'nextTOMessage':
             flags, created = await NextTakeoffData.objects.aget_or_create(runway=await Runway.objects.aget(name=text_data_json['runway']))
-            match data:
-                case '2-ship':
-                    flags.formationX2 = self.toggle(flags.formationX2)
-                    logger.info("2-ship triggered")
-                case '4-ship':
-                    flags.formationX4 = self.toggle(flags.formationX2)
-                    logger.info("4-ship triggered")
-                case 'solo':
-                    flags.solo = toggle(flags.solo)
-                    logger.info("solo triggered")
+            
+            flags.solo = data['solo']
+            flags.formationX2 = data['formationX2']
+            flags.formationX4 = data['formationX4']
+            # match data:
+            #     case '2-ship':
+            #         flags.formationX2 = self.toggle(flags.formationX2)
+            #         logger.info("2-ship triggered")
+            #     case '4-ship':
+            #         flags.formationX4 = self.toggle(flags.formationX2)
+            #         logger.info("4-ship triggered")
+            #     case 'solo':
+            #         flags.solo = toggle(flags.solo)
+            #         logger.info("solo triggered")
             await database_sync_to_async(self.saveNextTOMessage)(flags)
             logger.info("we did the thing...")
 
@@ -80,6 +95,16 @@ class DashboardConsumer(AsyncWebsocketConsumer):
     #         }
     #     )
     
+    async def nextTOMessage(self, event):
+        runway = event['runway']
+        data = event['data']
+        #logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(data))
+        await self.send(text_data=json.dumps({
+            'type':'nextTOMessage',
+            'runway': runway,
+            'data':data
+        })) 
+
     async def lolmessage(self, event):
         txmessage = event['message']
         
@@ -124,12 +149,20 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         else:
             return True
 
+    def get_next_takeoff_update_messages(self):
+        nextTOquery = NextTakeoffData.objects.all()
+        nextTOMessages = []
+        for entry in json.loads(serializers.serialize('json', nextTOquery)):
+            nextTOMessages.append(
+                entry['fields']
+            )
+        return nextTOMessages
 
     def get_T6_queryset_update_message(self):
         """
         Return all active T-6s serialized
         """
-        activeT6query = ActiveAircraft.objects.all().filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
+        activeT6query = ActiveAircraft.objects.filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
 
         activeT6Metadata = {}
         activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
@@ -167,7 +200,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         """
         Return all active T-6s serialized
         """
-        activeT38query = ActiveAircraft.objects.all().filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
+        activeT38query = ActiveAircraft.objects.filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
 
         activeT38Metadata = {}
         activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3

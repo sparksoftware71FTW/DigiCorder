@@ -64,6 +64,7 @@
                     {% if True %}
                         {% include 'AutoRecorder/KEND17L-Tables.html' %}
                         <script> loadKEND17L(chatSocket, csrf_token) </script>
+                        <script> rxNextTOMessageKEND17L(chatSocket) </script>
                         {% load static %}
                         <script type="text/javascript">
 
@@ -109,6 +110,7 @@
                     {% if True %}
                         {% include 'AutoRecorder/KEND35L-Tables.html' %}
                         <script> loadKEND35L(chatSocket, csrf_token) </script>
+                        <script> rxNextTOMessageKEND35L(chatSocket) </script>
                         {% load static %}
                         <script type="text/javascript">
 

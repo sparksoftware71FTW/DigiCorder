@@ -1,0 +1,25 @@
+    [
+    {
+        "model": "AutoRecorder.airfield",
+        "pk": "KEND",
+        "fields": {
+            "name": "Vance AFB"
+        }
+    },
+    {
+        "model": "AutoRecorder.runway",
+        "pk": "KEND 17L/35R",
+        "fields": {
+            "primaryAircraftType": "T-6",
+            "airfield": "KEND"
+        }
+    },
+    {
+        "model": "AutoRecorder.runway",
+        "pk": "KEND 35L/17R",
+        "fields": {
+            "primaryAircraftType": "T-38",
+            "airfield": "KEND"
+        }
+    }
+] 
