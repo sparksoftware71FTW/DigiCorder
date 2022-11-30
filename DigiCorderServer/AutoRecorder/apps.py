@@ -95,15 +95,15 @@ def adsbThread(parentThreadName):
         updatedAircraftList = []
         updatedAircraftObjects = [] 
 
-        obj = time.gmtime(0)
-        epoch = time.asctime(obj)
+        # obj = time.gmtime(0)
+        # epoch = time.asctime(obj)
 
-        curr_time4 = round(time.time()*1000)
+        # curr_time4 = round(time.time()*1000)
         
-        #activeAircraftObjects = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in ActiveAircraft.objects.all()}
+        activeAircraftObjects = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in ActiveAircraft.objects.all()}
 
-        curr_time5 = round(time.time()*1000)
-        print("Hack 0: it took this long to load all objects initially: ", curr_time5-curr_time4)
+        # curr_time5 = round(time.time()*1000)
+        # print("Hack 0: it took this long to load all objects initially: ", curr_time5-curr_time4)
 
 
         for aircraft in jsondata['ac']: #ac is aircraft in the database 
@@ -112,25 +112,25 @@ def adsbThread(parentThreadName):
                 if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
 
-                    curr_time = round(time.time()*1000)
-                    print("Hack 1: Milliseconds since epoch:",curr_time)
+                    # curr_time = round(time.time()*1000)
+                    # print("Hack 1: Milliseconds since epoch:",curr_time)
 
-                    Acft, created = ActiveAircraft.objects.get_or_create(
-                       tailNumber= aircraft["r"][:-3] + "--" + aircraft["r"][-3:]
-                    )
+                    # Acft, created = ActiveAircraft.objects.get_or_create(
+                    #    tailNumber= aircraft["r"][:-3] + "--" + aircraft["r"][-3:]
+                    # )
 
-                    curr_time2 = round(time.time()*1000)
-                    print("Hack 2: get_or_create took:", curr_time2 - curr_time)
+                    # curr_time2 = round(time.time()*1000)
+                    # print("Hack 2: get_or_create took:", curr_time2 - curr_time)
 
-                    # try:
-                    #     Acft = activeAircraftObjects[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
-                    # except KeyError as e:
-                    #     Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
-                    #     logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
+                    try:
+                        Acft = activeAircraftObjects[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
+                    except KeyError as e:
+                        Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
+                        logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
 
 
-                    curr_time3 = round(time.time()*1000)
-                    print("Hack 3: dict lookup or creation took:", curr_time3 - curr_time2)
+                    # curr_time3 = round(time.time()*1000)
+                    # print("Hack 3: dict lookup or creation took:", curr_time3 - curr_time2)
 
 
                     Acft.callSign=aircraft["flight"]
