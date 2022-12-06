@@ -86,25 +86,23 @@ def adsbThread(parentThreadName):
     KEND35L = Runway.objects.filter(name='KEND 17R/35L')
     KEND17L = Runway.objects.filter(name='KEND 17L/35R')
 
+    i = 0
     while True:
         logger.info("Requesting ADSB Data...")
         conn.request("GET", "/v2/lat/36.3393/lon/-97.9131/dist/250/", headers=headers)
         res = conn.getresponse()
         data = res.read()
         jsondata = json.loads(data)
+
+        # logfile = open(r"./AutoRecorder/testFiles/ADSBsnapshot" + str(i) + ".json", "w")
+        # logfile.write(json.dumps(jsondata))
+        # logfile.close
+        # i+=1
+
         updatedAircraftList = []
         updatedAircraftObjects = [] 
-
-        # obj = time.gmtime(0)
-        # epoch = time.asctime(obj)
-
-        # curr_time4 = round(time.time()*1000)
         
         activeAircraftObjects = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in ActiveAircraft.objects.all()}
-
-        # curr_time5 = round(time.time()*1000)
-        # print("Hack 0: it took this long to load all objects initially: ", curr_time5-curr_time4)
-
 
         for aircraft in jsondata['ac']: #ac is aircraft in the database 
             try:
@@ -112,32 +110,17 @@ def adsbThread(parentThreadName):
                 if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
 
-                    # curr_time = round(time.time()*1000)
-                    # print("Hack 1: Milliseconds since epoch:",curr_time)
-
-                    # Acft, created = ActiveAircraft.objects.get_or_create(
-                    #    tailNumber= aircraft["r"][:-3] + "--" + aircraft["r"][-3:]
-                    # )
-
-                    # curr_time2 = round(time.time()*1000)
-                    # print("Hack 2: get_or_create took:", curr_time2 - curr_time)
-
                     try:
                         Acft = activeAircraftObjects[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
                     except KeyError as e:
                         Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
                         logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
 
-
-                    # curr_time3 = round(time.time()*1000)
-                    # print("Hack 3: dict lookup or creation took:", curr_time3 - curr_time2)
-
-
                     Acft.callSign=aircraft["flight"]
                     if "SMAL" in Acft.callSign:
                         Acft.solo = True
                     Acft.aircraftType=aircraft['t']
-                    #formation=aircraft[""],                need form callsign db
+                    #formation=aircraft[""],                need form callsign db?
                     Acft.emergency=False if aircraft["emergency"] == "none" else True
                     Acft.alt_baro=aircraft['alt_baro']
                     Acft.groundSpeed=aircraft['gs']
@@ -164,14 +147,14 @@ def adsbThread(parentThreadName):
                                     Acft.formationX2 = nextTOData.formationX2
                                     Acft.formationX4 = nextTOData.formationX4
                                     resetNextTakeoffData(nextTOData)
-                                    logger.info("Next T/O Data applied!!!!!!!!!!!!")
+                                    logger.info("Next T/O Data applied!")
                                 case 'eastside':
                                     nextTOData = NextTakeoffData.objects.filter(runway = KEND17L)
                                     Acft.solo = nextTOData.solo
                                     Acft.formationX2 = nextTOData.formationX2
                                     Acft.formationX4 = nextTOData.formationX4
                                     resetNextTakeoffData(nextTOData)
-                                    logger.info("Next T/O Data applied!!!!!!!!!!!!")
+                                    logger.info("Next T/O Data applied!")
                                 case other:
                                     logger.info("No runway found with recent aircraft's T/O")
                     elif inPattern(position, patterns) and Acft.groundSpeed < 70 and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or (int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro) < 1350)):
@@ -191,8 +174,6 @@ def adsbThread(parentThreadName):
                     #2ship to 1ship logic 
                     # 
                   #  if Acft.callSign[:-1] == Acft.callSign[:-1] and int(freshAcft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(freshAcft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1   
-
-
 
                     Acft.save()
                     logger.debug("Success!")   
