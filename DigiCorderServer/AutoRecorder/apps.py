@@ -29,7 +29,7 @@ class AutoRecorderConfig(AppConfig):
         os.environ['ENABLE_ADSB'] = 'False'
         threadName = threading.current_thread().name
         logger.debug("ready() thread is: " + threadName)
-        ADSBThread = threading.Thread(target=adsbThread, args=(threadName,), name='ADSBThread')
+        ADSBThread = threading.Thread(target=adsbThreadTEST, args=(threadName,), name='ADSBThread')
         MessageThread = threading.Thread(target=messageThread, args=(1, threadName,), name='ADSBThread')
         ADSBThread.start()
         MessageThread.start()
@@ -205,13 +205,15 @@ def adsbThread(parentThreadName):
                 position2 = geometry.Point(0, 0)
 
                 for freshAcft in updatedAircraftObjects:        #start form logic 
-                    # 1ship to 2ship logic 
+                    # 1ship to 2ship logic )
+
                     if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2: 
                         position1 = geometry.Point(Acft.latitude, Acft.longitude)     #find position of 1st jet
                         position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude)  #find position of 2nd jet 
-
-                        if (position2.distance(position1) * 69 < 2) and Acft.groundSpeed < 70 and freshAcft.groundSpeed < 70:           # :)  degrees of lat & long to miles
-                            freshAcft.formationX2 == True
+                        
+                        if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
+                            freshAcft.formationX2 = True
+                            freshAcft.save()
 
                 
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
@@ -353,7 +355,7 @@ def adsbThreadTEST(parentThreadName):
     KEND35L = Runway.objects.filter(name='KEND 17R/35L')
     KEND17L = Runway.objects.filter(name='KEND 17L/35R')
 
-    i = 11
+    i = 90
     while i <= 277:
         logger.info("Requesting ADSB Data...")
         with open(r"./AutoRecorder/testFiles/ADSBsnapshot" + str(i) + ".json", "r+") as logfile:
@@ -390,7 +392,7 @@ def adsbThreadTEST(parentThreadName):
                             Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
                             logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
 
-                        Acft.callSign=aircraft["flight"]
+                        Acft.callSign=aircraft["flight"].strip()
                         if "SMAL" in Acft.callSign:
                             Acft.solo = True
                         Acft.aircraftType=aircraft['t']
@@ -479,13 +481,15 @@ def adsbThreadTEST(parentThreadName):
                     position2 = geometry.Point(0, 0)
 
                     for freshAcft in updatedAircraftObjects:        #start form logic 
-                        # 1ship to 2ship logic 
+                        # 1ship to 2ship logic )
+
                         if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2: 
                             position1 = geometry.Point(Acft.latitude, Acft.longitude)     #find position of 1st jet
                             position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude)  #find position of 2nd jet 
-
-                            if (position2.distance(position1) * 69 < 2) and Acft.groundSpeed < 70 and freshAcft.groundSpeed < 70:           # :)  degrees of lat & long to miles
-                                freshAcft.formationX2 == True
+                            
+                            if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
+                                freshAcft.formationX2 = True
+                                freshAcft.save()
 
                     
                     if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
@@ -517,7 +521,7 @@ def adsbThreadTEST(parentThreadName):
             
             if killSignal is False:
                 logger.info("ADSB Thread sleeping...")
-                time.sleep(.25)
+                time.sleep(1.5)
                 logger.info("ADSB Thread waking up...")
 
                 continue
