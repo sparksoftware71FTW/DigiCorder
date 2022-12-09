@@ -101,8 +101,13 @@ def adsbThread(parentThreadName):
 
         updatedAircraftList = []
         updatedAircraftObjects = [] 
-        
-        activeAircraftObjects = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in ActiveAircraft.objects.all()}
+
+        activeAircraftObjects = ActiveAircraft.objects.all()
+        activeAircraftDict = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in activeAircraftObjects}
+
+        activeFormationX2 = list(activeAircraftObjects.filter(formationX2=True))
+        activeFormationX4 = list(activeAircraftObjects.filter(formationX4=True))
+
 
         for aircraft in jsondata['ac']: #ac is aircraft in the database 
             try:
@@ -111,7 +116,7 @@ def adsbThread(parentThreadName):
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
 
                     try:
-                        Acft = activeAircraftObjects[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
+                        Acft = activeAircraftDict[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
                     except KeyError as e:
                         Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
                         logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
@@ -172,8 +177,36 @@ def adsbThread(parentThreadName):
                     #form logic 
                     
                     #2ship to 1ship logic 
-                    # 
-                  #  if Acft.callSign[:-1] == Acft.callSign[:-1] and int(freshAcft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(freshAcft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1   
+                    # Check if this aircraft is splitting from a 2 ship nearby
+                    # TODO still need to add timestamp check to "lost signal" form transitions
+                    # TODO still need to add takeoffTime null check for lastState == None form transitions
+                    for formAcft in activeFormationX2:
+
+                        closestFormation = None
+                        closestFormationDistance = None
+
+                        formAcftPosition = geometry.Point(0,0,0)
+                        if formAcft.alt_baro == "ground":
+                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 1300)
+                        else:
+                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
+
+                        if  Acft.callSign[:-1] == formAcft.callSign[:-1]:
+                            if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
+                                distance = position.distance(formAcftPosition) * 69
+                                if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
+                                    if Acft.lastState is None or Acft.lastState == "lost signal":
+                                        if closestFormation is None or distance < closestFormationDistance:
+                                            closestFormation = formAcft
+                                            closestFormationDistance = distance
+
+                        if closestFormation is not None:
+                            # for form in activeFormationX2:
+                            #     if form.tailNumber == closestFormation.tailNumber:
+                            activeFormationX2.remove(closestFormation)
+                            closestFormation.formationX2 = False
+                            closestFormation.save()
+
 
                     Acft.save()
                     logger.debug("Success!")   
@@ -377,8 +410,12 @@ def adsbThreadTEST(parentThreadName):
 
             updatedAircraftList = []
             updatedAircraftObjects = [] 
-            
-            activeAircraftObjects = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in ActiveAircraft.objects.all()}
+
+            activeAircraftObjects = ActiveAircraft.objects.all()
+            activeAircraftDict = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in activeAircraftObjects}
+
+            activeFormationX2 = activeAircraftObjects.filter(formationX2=True)
+            activeFormationX4 = activeAircraftObjects.filter(formationX4=True)
 
             for aircraft in jsondata['ac']: #ac is aircraft in the database 
                 try:
@@ -387,7 +424,7 @@ def adsbThreadTEST(parentThreadName):
                         logger.debug(aircraft['r'] + " is about to be updated or created...")
 
                         try:
-                            Acft = activeAircraftObjects[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
+                            Acft = activeAircraftDict[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
                         except KeyError as e:
                             Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
                             logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
@@ -442,15 +479,43 @@ def adsbThreadTEST(parentThreadName):
                         elif inPattern(position, patterns) == False and Acft.state != "off station":
                             Acft.lastState = Acft.state
                             Acft.state="off station"
-                            Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
-                        Acft.timestamp=timezone.now()
+                            Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
                         
-                        #form logic 
-                        
-                        #2ship to 1ship logic 
-                        # 
-                    #  if Acft.callSign[:-1] == Acft.callSign[:-1] and int(freshAcft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(freshAcft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1   
+                    #form logic 
+                    
+                    #2ship to 1ship logic 
+                    # Check if this aircraft is splitting from a 2 ship nearby
+                    # TODO still need to add timestamp check to "lost signal" form transitions
+                    # TODO still need to add takeoffTime null check for lastState == None form transitions
+                    for formAcft in activeFormationX2:
 
+                        closestFormation = None
+                        closestFormationDistance = None
+
+                        formAcftPosition = geometry.Point(0,0,0)
+                        if formAcft.alt_baro == "ground":
+                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 1300)
+                        else:
+                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
+
+                        if  Acft.callSign[:-1] == formAcft.callSign[:-1]:
+                            if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
+                                distance = position.distance(formAcftPosition) * 69
+                                if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
+                                    if Acft.lastState is None or Acft.lastState == "lost signal":
+                                        if closestFormation is None or distance < closestFormationDistance:
+                                            closestFormation = formAcft
+                                            closestFormationDistance = distance
+
+                        if closestFormation is not None:
+                            # for form in activeFormationX2:
+                            #     if form.tailNumber == closestFormation.tailNumber:
+                            activeFormationX2.remove(closestFormation)
+                            closestFormation.formationX2 = False
+                            closestFormation.save()
+
+
+                        Acft.timestamp=timezone.now()
                         Acft.save()
                         logger.debug("Success!")   
                         updatedAircraftList.append(Acft.tailNumber)     
