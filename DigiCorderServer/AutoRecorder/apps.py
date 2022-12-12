@@ -417,8 +417,8 @@ def adsbThreadTEST(parentThreadName):
             activeAircraftObjects = ActiveAircraft.objects.all()
             activeAircraftDict = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in activeAircraftObjects}
 
-            activeFormationX2 = activeAircraftObjects.filter(formationX2=True)
-            activeFormationX4 = activeAircraftObjects.filter(formationX4=True)
+            activeFormationX2 = list(activeAircraftObjects.filter(formationX2=True))
+            activeFormationX4 = list(activeAircraftObjects.filter(formationX4=True))
 
             for aircraft in jsondata['ac']: #ac is aircraft in the database 
                 try:
@@ -490,28 +490,28 @@ def adsbThreadTEST(parentThreadName):
                     # Check if this aircraft is splitting from a 2 ship nearby
                     # TODO still need to add timestamp check to "lost signal" form transitions
                     # TODO still need to add takeoffTime null check for lastState == None form transitions
-                    for formAcft in activeFormationX2:
-
                         closestFormation = None
                         closestFormationDistance = None
+                        for formAcft in activeFormationX2:
 
-                        formAcftPosition = geometry.Point(0,0,0)
-                        if formAcft.alt_baro == "ground":
-                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 1300)
-                        else:
-                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
+                            formAcftPosition = geometry.Point(0,0,0)
+                            if formAcft.alt_baro == "ground":
+                                formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 1300)
+                            else:
+                                formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
 
-                        if  Acft.callSign[:-1] == formAcft.callSign[:-1]:
-                            if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
-                                distance = position.distance(formAcftPosition) * 69
-                                if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if (Acft.lastState is None and Acft.takeoffTime is not None) or (Acft.lastState == "lost signal" and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
-                                        if closestFormation is None or distance < closestFormationDistance:
-                                            closestFormation = formAcft
-                                            closestFormationDistance = distance
+                            if  Acft.callSign[:-1] == formAcft.callSign[:-1]:
+                                if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
+                                    distance = position.distance(formAcftPosition) * 69
+                                    if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
+                                        if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and Acft.timestamp and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                            if closestFormation is None or distance < closestFormationDistance:
+                                                closestFormation = formAcft
+                                                closestFormationDistance = distance
 
                         if closestFormation is not None:
-                            # for form in activeFormationX2:
+                            print("MADE IT HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                            print(closestFormation)# for form in activeFormationX2:
                             #     if form.tailNumber == closestFormation.tailNumber:
                             activeFormationX2.remove(closestFormation)
                             closestFormation.formationX2 = False
@@ -591,7 +591,7 @@ def adsbThreadTEST(parentThreadName):
             
             if killSignal is False:
                 logger.info("ADSB Thread sleeping...")
-                time.sleep(1.5)
+                time.sleep(0.5)
                 logger.info("ADSB Thread waking up...")
 
                 continue

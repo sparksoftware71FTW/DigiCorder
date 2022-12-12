@@ -88,7 +88,7 @@ class ActiveAircraft(models.Model):
     substate = models.CharField('Substate', max_length=20, blank=True, null=True) # used to discern specific pattern. Can be 'eastside', 'shoehorn', etc.
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
-    formTimestamp = models.DateTimeField('Timestamp', blank=True, null=True)
+    formTimestamp = models.DateTimeField('Form Timestamp', blank=True, null=True)
 
 
     def __str__(self):
@@ -121,7 +121,7 @@ class CompletedSortie(models.Model):
     substate = models.CharField('Substate', max_length=20, blank=True, null=True) # used to discern specific pattern. Can be 'eastside', 'shoehorn', etc.
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
-    formTimestamp = models.DateTimeField('Timestamp', blank=True, null=True)
+    formTimestamp = models.DateTimeField('Form Timestamp', blank=True, null=True)
 
 
     def __str__(self):
