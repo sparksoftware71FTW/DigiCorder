@@ -504,7 +504,7 @@ def adsbThreadTEST(parentThreadName):
                                 if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                     distance = position.distance(formAcftPosition) * 69
                                     if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                        if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and Acft.timestamp and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                        if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
                                             if closestFormation is None or distance < closestFormationDistance:
                                                 closestFormation = formAcft
                                                 closestFormationDistance = distance
