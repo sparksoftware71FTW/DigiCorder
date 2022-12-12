@@ -4,12 +4,12 @@ from django.contrib import admin
 from .models import ActiveAircraft, CompletedSortie, Runway, Airfield, Callsigns, RsuCrew, NextTakeoffData
 
 class ActiveAircraftAdmin(admin.ModelAdmin):
-    list_display = ('aircraftType', 'tailNumber', 'callSign', 'state', 'lastState', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formationX2', 'formationX4', 'emergency', 'natureOfEmergency')
+    list_display = ('aircraftType', 'tailNumber', 'callSign', 'state', 'lastState', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formationX2', 'formationX4','formTimestamp','timestamp', 'emergency', 'natureOfEmergency')
     list_filter = ['solo', 'emergency', 'takeoffTime', 'state', 'lastState']
 admin.site.register(ActiveAircraft, ActiveAircraftAdmin)
 
 class CompletedT6SortieAdmin(admin.ModelAdmin):
-    list_display = ('aircraftType', 'tailNumber', 'callSign', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formationX2', 'formationX4', 'emergency', 'natureOfEmergency')
+    list_display = ('aircraftType', 'tailNumber', 'callSign', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formationX2', 'formationX4','formTimestamp','timestamp', 'emergency', 'natureOfEmergency')
     list_filter = ['solo', 'emergency', 'takeoffTime', 'state', 'lastState']
 admin.site.register(CompletedSortie, CompletedT6SortieAdmin)
 

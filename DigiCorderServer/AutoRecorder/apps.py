@@ -3,10 +3,11 @@ import threading
 import asyncio
 import time
 from django.apps import AppConfig
+from django.utils.timezone import timedelta
+from django.utils import timezone
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from shapely import geometry
-from django.utils import timezone
 from fastkml import kml
 
 
@@ -174,7 +175,7 @@ def adsbThread(parentThreadName):
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
                     Acft.timestamp=timezone.now()
                     
-                    #form logic 
+#form logic 
                     
                     #2ship to 1ship logic 
                     # Check if this aircraft is splitting from a 2 ship nearby
@@ -195,7 +196,7 @@ def adsbThread(parentThreadName):
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                 distance = position.distance(formAcftPosition) * 69
                                 if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if Acft.lastState is None or Acft.lastState == "lost signal":
+                                    if (Acft.lastState is None and Acft.takeoffTime is not None) or (Acft.lastState == "lost signal" and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
                                         if closestFormation is None or distance < closestFormationDistance:
                                             closestFormation = formAcft
                                             closestFormationDistance = distance
@@ -205,6 +206,7 @@ def adsbThread(parentThreadName):
                             #     if form.tailNumber == closestFormation.tailNumber:
                             activeFormationX2.remove(closestFormation)
                             closestFormation.formationX2 = False
+                            closestFormation.formTimestamp = timezone.now()
                             closestFormation.save()
 
 
@@ -246,6 +248,7 @@ def adsbThread(parentThreadName):
                         
                         if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
                             freshAcft.formationX2 = True
+                            freshAcft.formTimestamp = timezone.now()
                             freshAcft.save()
 
                 
@@ -502,7 +505,7 @@ def adsbThreadTEST(parentThreadName):
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                 distance = position.distance(formAcftPosition) * 69
                                 if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if Acft.lastState is None or Acft.lastState == "lost signal":
+                                    if (Acft.lastState is None and Acft.takeoffTime is not None) or (Acft.lastState == "lost signal" and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
                                         if closestFormation is None or distance < closestFormationDistance:
                                             closestFormation = formAcft
                                             closestFormationDistance = distance
@@ -512,6 +515,7 @@ def adsbThreadTEST(parentThreadName):
                             #     if form.tailNumber == closestFormation.tailNumber:
                             activeFormationX2.remove(closestFormation)
                             closestFormation.formationX2 = False
+                            closestFormation.formTimestamp = timezone.now()
                             closestFormation.save()
 
 
@@ -554,6 +558,7 @@ def adsbThreadTEST(parentThreadName):
                             
                             if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
                                 freshAcft.formationX2 = True
+                                freshAcft.formTimestamp = timezone.now()
                                 freshAcft.save()
 
                     
