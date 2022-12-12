@@ -165,10 +165,10 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         activeT6query = ActiveAircraft.objects.filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
 
         activeT6Metadata = {}
-        activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
-        activeT6Metadata['Taxiing'] = activeT6query.filter(state="taxiing").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
-        activeT6Metadata['Off_Station'] = activeT6query.filter(state="off station").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
-        activeT6Metadata['Lost_Signal'] = activeT6query.filter(state="lost signal").count() + activeT6query.filter(formationX2=True).count() + activeT6query.filter(formationX4=True).count()*3
+        activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count() + activeT6query.filter(formationX2=True).filter(state="in pattern").count() + activeT6query.filter(formationX4=True).filter(state="in pattern").count()*3
+        activeT6Metadata['Taxiing'] = activeT6query.filter(state="taxiing").count() + activeT6query.filter(formationX2=True).filter(state="taxiing").count() + activeT6query.filter(formationX4=True).filter(state="taxiing").count()*3
+        activeT6Metadata['Off_Station'] = activeT6query.filter(state="off station").count() + activeT6query.filter(formationX2=True).filter(state="off station").count() + activeT6query.filter(formationX4=True).filter(state="off station").count()*3
+        activeT6Metadata['Lost_Signal'] = activeT6query.filter(state="lost signal").count() + activeT6query.filter(formationX2=True).filter(state="lost signal").count() + activeT6query.filter(formationX4=True).filter(state="lost signal").count()*3
 
         activeT6Metadata['dual145'] = []
         for T6 in activeT6query.filter(
@@ -203,10 +203,10 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         activeT38query = ActiveAircraft.objects.filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
 
         activeT38Metadata = {}
-        activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3
-        activeT38Metadata['Taxiing'] = activeT38query.filter(state="taxiing").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3
-        activeT38Metadata['Off_Station'] = activeT38query.filter(state="off station").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3
-        activeT38Metadata['Lost_Signal'] = activeT38query.filter(state="lost signal").count() + activeT38query.filter(formationX2=True).count() + activeT38query.filter(formationX4=True).count()*3
+        activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count() + activeT38query.filter(formationX2=True).filter(state="in pattern").count() + activeT38query.filter(formationX4=True).filter(state="in pattern").count()*3
+        activeT38Metadata['Taxiing'] = activeT38query.filter(state="taxiing").count() + activeT38query.filter(formationX2=True).filter(state="taxiing").count() + activeT38query.filter(formationX4=True).filter(state="taxiing").count()*3
+        activeT38Metadata['Off_Station'] = activeT38query.filter(state="off station").count() + activeT38query.filter(formationX2=True).filter(state="off station").count() + activeT38query.filter(formationX4=True).filter(state="off station").count()*3
+        activeT38Metadata['Lost_Signal'] = activeT38query.filter(state="lost signal").count() + activeT38query.filter(formationX2=True).filter(state="lost signal").count() + activeT38query.filter(formationX4=True).filter(state="lost signal").count()*3
 
         activeT38Metadata['dual120'] = []
         for T38 in activeT38query.filter(

@@ -30,7 +30,7 @@ class AutoRecorderConfig(AppConfig):
         os.environ['ENABLE_ADSB'] = 'False'
         threadName = threading.current_thread().name
         logger.debug("ready() thread is: " + threadName)
-        ADSBThread = threading.Thread(target=adsbThreadTEST, args=(threadName,), name='ADSBThread')
+        ADSBThread = threading.Thread(target=adsbThread, args=(threadName,), name='ADSBThread')
         MessageThread = threading.Thread(target=messageThread, args=(1, threadName,), name='ADSBThread')
         ADSBThread.start()
         MessageThread.start()
@@ -175,16 +175,16 @@ def adsbThread(parentThreadName):
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
                     Acft.timestamp=timezone.now()
                     
-#form logic 
+                   #form logic 
                     
-                    #2ship to 1ship logic 
-                    # Check if this aircraft is splitting from a 2 ship nearby
-                    # TODO still need to add timestamp check to "lost signal" form transitions
-                    # TODO still need to add takeoffTime null check for lastState == None form transitions
-                    for formAcft in activeFormationX2:
+                #2ship to 1ship logic 
+                # Check if this aircraft is splitting from a 2 ship nearby
+                # TODO still need to add timestamp check to "lost signal" form transitions
+                # TODO still need to add takeoffTime null check for lastState == None form transitions
+                    closestFormation = None
+                    closestFormationDistance = None
 
-                        closestFormation = None
-                        closestFormationDistance = None
+                    for formAcft in activeFormationX2:
 
                         formAcftPosition = geometry.Point(0,0,0)
                         if formAcft.alt_baro == "ground":
@@ -192,22 +192,21 @@ def adsbThread(parentThreadName):
                         else:
                             formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
 
-                        if  Acft.callSign[:-1] == formAcft.callSign[:-1]:
+                        if  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX2 is False:
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                 distance = position.distance(formAcftPosition) * 69
                                 if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if (Acft.lastState is None and Acft.takeoffTime is not None) or (Acft.lastState == "lost signal" and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
                                         if closestFormation is None or distance < closestFormationDistance:
                                             closestFormation = formAcft
                                             closestFormationDistance = distance
 
-                        if closestFormation is not None:
-                            # for form in activeFormationX2:
-                            #     if form.tailNumber == closestFormation.tailNumber:
-                            activeFormationX2.remove(closestFormation)
-                            closestFormation.formationX2 = False
-                            closestFormation.formTimestamp = timezone.now()
-                            closestFormation.save()
+                    if closestFormation is not None:
+                        #     if form.tailNumber == closestFormation.tailNumber:
+                        activeFormationX2.remove(closestFormation)
+                        closestFormation.formationX2 = False
+                        closestFormation.formTimestamp = timezone.now()
+                        closestFormation.save()
 
 
                     Acft.save()
@@ -492,6 +491,7 @@ def adsbThreadTEST(parentThreadName):
                     # TODO still need to add takeoffTime null check for lastState == None form transitions
                         closestFormation = None
                         closestFormationDistance = None
+
                         for formAcft in activeFormationX2:
 
                             formAcftPosition = geometry.Point(0,0,0)
@@ -500,7 +500,7 @@ def adsbThreadTEST(parentThreadName):
                             else:
                                 formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
 
-                            if  Acft.callSign[:-1] == formAcft.callSign[:-1]:
+                            if  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX2 is False:
                                 if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                     distance = position.distance(formAcftPosition) * 69
                                     if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
@@ -510,8 +510,6 @@ def adsbThreadTEST(parentThreadName):
                                                 closestFormationDistance = distance
 
                         if closestFormation is not None:
-                            print("MADE IT HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                            print(closestFormation)# for form in activeFormationX2:
                             #     if form.tailNumber == closestFormation.tailNumber:
                             activeFormationX2.remove(closestFormation)
                             closestFormation.formationX2 = False
@@ -562,7 +560,7 @@ def adsbThreadTEST(parentThreadName):
                                 freshAcft.save()
 
                     
-                    if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
+                    if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 3: 
                         if Acft.landTime == None and Acft.state != "lost signal":
                             Acft.lastState = Acft.state
                             Acft.state = "lost signal"
