@@ -5,9 +5,9 @@
     "Emitter_category": 1,
     "SurfaceVehicleType": 0,
     "OnGround": false, //combine with Alt to get 'alt_baro' 
-    "Addr_type": 0,
-    "TargetType": 1,
-    "SignalLevel": -20.357875270301804,
+    "Addr_type": 0, //
+    "TargetType": 1, //'dbFlags'
+    "SignalLevel": -20.357875270301804, //'rssi'
     "SignalLevelHist": [
         -24.55188088242224,
         -22.256290401500834,
@@ -18,23 +18,23 @@
         -24.591701858889202,
         -26.332036167132703
     ],
-    "Squawk": 4301,
+    "Squawk": 4301, //'squawk'
     "Position_valid": true,
-    "Lat": 36.353348,
-    "Lng": -97.89047,
-    "Alt": 2575,
-    "GnssDiffFromBaroAlt": -350,
+    "Lat": 36.353348, //'lat'
+    "Lng": -97.89047, //'lon'
+    "Alt": 2575, //combine with OnGround above to get 'alt_baro'
+    "GnssDiffFromBaroAlt": -350, //'baro_rate'
     "AltIsGNSS": false,
-    "NIC": 10,
-    "NACp": 10,
-    "Track": 360,
-    "TurnRate": 0,
-    "Speed": 138, 
+    "NIC": 10, //'nic'
+    "NACp": 10, //'nac_p'
+    "Track": 360, //'track'
+    "TurnRate": 0, 
+    "Speed": 138, //'gs'
     "Speed_valid": true,
     "Vvel": -512,
     "Timestamp": "2022-04-04T17:27:12.721Z",
     "PriorityStatus": 0,
-    "Age": 0.35,
+    "Age": 0.35, //'seen'
     "AgeLastAlt": 0.35,
     "Last_seen": "0001-01-01T02:39:51.93Z",
     "Last_alt": "0001-01-01T02:39:51.93Z",
