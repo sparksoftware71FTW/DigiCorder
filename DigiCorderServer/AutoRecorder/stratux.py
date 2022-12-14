@@ -19,65 +19,26 @@ directly (after scrubbing their API response for duplicate
 entries - giving precedence to the newest data)
 
 """
-
-
-
+jsondata = {}
+mutex = threading.Lock()
 
 def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
-    logfile = open(r"./testFiles/Stratux/stratuxAggregate.json","a+")
-    stratuxAggregate = json.load(logfile)
-    jsondata = json.loads(message)
-
-    # Mary function call here on the jsondata variable
-    # Stratux_to_ADSBExchangeFormat(jsondata)
-
-    for acft in jsondata:
-        acft.update({"r": acft["Icao_addr"]})
-
-    ADSBExchangeFormat = {'ac': jsondata, 'ready': False}
-
-    for newAcft in ADSBExchangeFormat['ac']:
-        for oldAcft in stratuxAggregate['ac']:
-            if oldAcft['r'] == newAcft['r']:
-                oldAcft = newAcft
-                break
-        stratuxAggregate['ac'].append(newAcft)
-            
-
-    logfile.write(json.dumps(stratuxAggregate))
-    logfile.close
-    print(stratuxAggregate)
+    reformattedMessage = Stratux_to_ADSBExchangeFormat(message)
+    with mutex:
+        jsondata = aggregate(reformattedMessage)
+    with mutex:
+        jsondata = deleteOldAircraft()
 
 # create an aggregate .json file with all traffic every second infinitely
-def aggregate(parentThreadName):
-    killSignal = False
-    while killSignal is False:
-        logfile = open(r"./testFiles/Stratux/stratuxAggregate.json","w+")
-        stratuxAggregate = json.load(logfile)
-        stratuxAggregate["ready"] = True
-        logfile.write(json.dumps(stratuxAggregate))
-        logfile.close
+def aggregate(reformattedMessage):
+    print("yeehaw... This should work this time...")
+    # return jsondataWithTheNewAircraft
 
-        killSignal = True
-        threads_list = threading.enumerate()
-    
-        for thread in threads_list:
-            if thread.name is parentThreadName and thread.is_alive() is True:
-                killSignal = False
-        
-        if killSignal is False:
-            sleep(1)
-            continue
-        else:
-            return
+def deleteOldAircraft():
+    print("this function will delete all acft older than 1min from jsondata")
+    # return jsondataWithoutOldAircraft
 
-
-aggregateThread = threading.Thread(target=aggregate, args=(threading.current_thread().name,), name='aggregateThread')
-aggregateThread.start()
-
-wsapp = websocket.WebSocketApp("ws://192.168.10.1/traffic", on_message=on_message)
-wsapp.run_forever()
 
 def Stratux_to_ADSBExchangeFormat(inputJSON):
     inputJSON = """ 
@@ -141,5 +102,11 @@ def Stratux_to_ADSBExchangeFormat(inputJSON):
 }
     """
     print("do things with json and dictionaries such that outputJSON contains the input data in ADSB Exchange format") 
-    outputJSON = inputJSON
+    outputJSON = inputJSON 
     return outputJSON
+
+
+
+
+wsapp = websocket.WebSocketApp("ws://192.168.10.1/traffic", on_message=on_message)
+wsapp.run_forever()
