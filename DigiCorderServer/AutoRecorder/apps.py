@@ -591,7 +591,6 @@ def adsbThreadTEST(parentThreadName):
                 logger.info("ADSB Thread sleeping...")
                 time.sleep(0.5)
                 logger.info("ADSB Thread waking up...")
-
                 continue
             else:
                 logger.debug("Stopping ADSB Thread")
