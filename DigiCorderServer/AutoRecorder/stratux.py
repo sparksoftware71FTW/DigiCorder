@@ -22,6 +22,7 @@ entries - giving precedence to the newest data)
 jsondata = {}
 mutex = threading.Lock()
 
+
 def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
     reformattedMessage = Stratux_to_ADSBExchangeFormat(message)
@@ -101,6 +102,24 @@ def Stratux_to_ADSBExchangeFormat(inputJSON):
     "IsStratux": false
 }
     """
+    JSONdata = json.loads(inputJSON) 
+    USAircraft = json.loads(USAircraft.json)
+
+    hexKey = hex(JSONdata['Icao_addr'])
+
+    USAircraft[hexKey] 
+
+    #grab r & t from    USAircraft[hexKey] 
+    
+    JSONdata['r'] = JSONdata.pop['Icao_addr']   # replace 
+    JSONdata['flight'] = JSONdata.pop['Tail']   # replace "Tail" key with "flight" key 
+    #alt_baro 
+    JSONdata['dbFlags'] = JSONdata['TargetType']
+
+
+
+    outputJSON = json.dumps(inputJSON)
+
     print("do things with json and dictionaries such that outputJSON contains the input data in ADSB Exchange format") 
     outputJSON = inputJSON 
     return outputJSON
