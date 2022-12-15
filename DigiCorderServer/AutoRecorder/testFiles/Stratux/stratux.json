@@ -23,7 +23,7 @@
     "Lat": 36.353348, //'lat'
     "Lng": -97.89047, //'lon'
     "Alt": 2575, //combine with OnGround above to get 'alt_baro'
-    "GnssDiffFromBaroAlt": -350, //'baro_rate'
+    "GnssDiffFromBaroAlt": -350, 
     "AltIsGNSS": false,
     "NIC": 10, //'nic'
     "NACp": 10, //'nac_p'
@@ -31,7 +31,7 @@
     "TurnRate": 0, 
     "Speed": 138, //'gs'
     "Speed_valid": true,
-    "Vvel": -512,
+    "Vvel": -512, //'baro_rate'
     "Timestamp": "2022-04-04T17:27:12.721Z",
     "PriorityStatus": 0,
     "Age": 0.35, //'seen'

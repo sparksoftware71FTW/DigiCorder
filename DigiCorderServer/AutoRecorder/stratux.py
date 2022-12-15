@@ -5,7 +5,7 @@ from datetime import timedelta
 from dateutil import parser
 from time import sleep
 from django.utils import timezone
-websocket.enableTrace(True)
+#websocket.enableTrace(True)
 
 
 """
@@ -33,22 +33,37 @@ def on_message(ws, message):
     reformattedMessage = Stratux_to_ADSBExchangeFormat(message)
     with mutex:
         aggregate(reformattedMessage)
-    with mutex:
+    # with mutex:
         deleteOldAircraft()
 
 # create an aggregate .json file with all traffic every second infinitely
 def aggregate(reformattedMessage):
     print("yeehaw... This should work this time...")
     for acft in jsondata["ac"]:
+        print("entering loop")
+        print("acft is" + str(acft))
+        print("jsondata is: " + str(jsondata))
+        print("reformattedMessage is: " + str(reformattedMessage))
+        print("acft registration is: " + acft["r"])
+        print("reformatted registration is: " + reformattedMessage["r"])
         if acft["r"] == reformattedMessage["r"]:
+            print("!!!!!!!!!!!!!!!!!!!!")
             acft = reformattedMessage
+            print(jsondata)
             return
     # if acft does not currently have an entry in jsondata, then add it
     jsondata["ac"].append(reformattedMessage)
+    print(jsondata)
+    return
 
 def deleteOldAircraft():
     print("this function will delete all acft older than 1min from jsondata")
+    
     for acft in jsondata["ac"]:
+        print("made it")
+        print(jsondata)
+        if acft['seen'] >= 59.0:
+            jsondata["ac"].remove(acft)
         timestamp = parser.parse(acft["Timestamp"])
         if (timezone.now() - timestamp).seconds > 60:
             jsondata["ac"].remove(acft)
@@ -82,7 +97,7 @@ def Stratux_to_ADSBExchangeFormat(inputMessage):
 #     "Lat": 36.353348, //'lat'
 #     "Lng": -97.89047, //'lon'
 #     "Alt": 2575, //combine with OnGround above to get 'alt_baro'
-#     "GnssDiffFromBaroAlt": -350, //'baro_rate'
+#     "GnssDiffFromBaroAlt": -350, 
 #     "AltIsGNSS": false,
 #     "NIC": 10, //'nic'
 #     "NACp": 10, //'nac_p'
@@ -90,7 +105,7 @@ def Stratux_to_ADSBExchangeFormat(inputMessage):
 #     "TurnRate": 0, 
 #     "Speed": 138, //'gs'
 #     "Speed_valid": true,
-#     "Vvel": -512,
+#     "Vvel": -512, //'baro_rate'
 #     "Timestamp": "2022-04-04T17:27:12.721Z",
 #     "PriorityStatus": 0,
 #     "Age": 0.35, //'seen'
@@ -188,21 +203,27 @@ def Stratux_to_ADSBExchangeFormat(inputMessage):
     acft = USAircraft[hexKey] # successfully got this: {'r': '04-3756', 't': 'TEX2', 'f': '10', 'd': 'Raytheon T-6A Texan II'}
 
     #grab r & t from    USAircraft[hexKey] 
-    
-    JSONmessage['r'] = JSONmessage.pop['Icao_addr']   # replace 
-    JSONmessage['flight'] = JSONmessage.pop['Tail']   # replace "Tail" key with "flight" key 
-    #alt_baro 
+    JSONmessage['r'] = acft["r"]
+    JSONmessage['t'] = acft["t"]
+    JSONmessage['d'] = acft['d']
+    JSONmessage['hex'] = hex(JSONmessage.pop('Icao_addr'))[2:]   # replace 
+    JSONmessage['flight'] = JSONmessage.pop('Tail')   # replace "Tail" key with "flight" key 
     JSONmessage['dbFlags'] = JSONmessage['TargetType']
+    JSONmessage['alt_baro'] =  "ground" if JSONmessage.pop('OnGround') is True else str(JSONmessage.pop('Alt'))
+    JSONmessage['rssi'] = JSONmessage.pop('SignalLevel')
+    JSONmessage['squawk'] = JSONmessage.pop('Squawk')
+    JSONmessage['lat'] = JSONmessage.pop('Lat')
+    JSONmessage['lon'] = JSONmessage.pop('Lng')
+    JSONmessage['baro_rate'] = JSONmessage.pop('Vvel')
+    JSONmessage['nic'] = JSONmessage.pop('NIC')
+    JSONmessage['nac_p'] = JSONmessage.pop('NACp')
+    JSONmessage['track'] = JSONmessage.pop('Track')
+    JSONmessage['gs'] = JSONmessage.pop('Speed')
+    JSONmessage['seen'] = JSONmessage.pop('Age')
 
-
-
-    outputJSON = json.dumps(inputMessage)
-
-    print("do things with json and dictionaries such that outputJSON contains the input data in ADSB Exchange format") 
-    outputJSON = inputMessage 
+    # print(JSONmessage)
+    outputJSON = json.dumps(JSONmessage)
     return outputJSON
-
-
 
 
 wsapp = websocket.WebSocketApp("ws://192.168.10.1/traffic", on_message=on_message)
