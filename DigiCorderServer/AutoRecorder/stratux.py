@@ -5,7 +5,7 @@ from datetime import timedelta
 from dateutil import parser
 from time import sleep
 from django.utils import timezone
-#websocket.enableTrace(True)
+# websocket.enableTrace(True)
 
 
 """
@@ -27,6 +27,10 @@ jsondata = {
 } # dictionary...
 mutex = threading.Lock()
 
+USAircraft = {}
+with open("./static/AutoRecorder/USAaircraft.json") as acftFile:
+    USAircraft = json.load(acftFile)
+
 
 def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
@@ -35,38 +39,44 @@ def on_message(ws, message):
         aggregate(reformattedMessage)
     # with mutex:
         deleteOldAircraft()
+        # print(jsondata)
 
 # create an aggregate .json file with all traffic every second infinitely
 def aggregate(reformattedMessage):
+    reformattedMessage = json.loads(reformattedMessage)
     print("yeehaw... This should work this time...")
+    i = 0
     for acft in jsondata["ac"]:
-        print("entering loop")
-        print("acft is" + str(acft))
-        print("jsondata is: " + str(jsondata))
-        print("reformattedMessage is: " + str(reformattedMessage))
-        print("acft registration is: " + acft["r"])
-        print("reformatted registration is: " + reformattedMessage["r"])
+        # print("entering loop")
+        # print("acft is" + str(acft))
+        # print("jsondata is: " + str(jsondata))
+        # print("reformattedMessage is: " + str(reformattedMessage))
+        # print("acft registration is: " + acft["r"])
+        # print("reformatted registration is: " + reformattedMessage["r"])
         if acft["r"] == reformattedMessage["r"]:
-            print("!!!!!!!!!!!!!!!!!!!!")
-            acft = reformattedMessage
-            print(jsondata)
+            # print("!!!!!!!!!!!!!!!!!!!!")
+            jsondata['ac'][i] = reformattedMessage
+            # print(jsondata)
             return
+        i+=1
     # if acft does not currently have an entry in jsondata, then add it
     jsondata["ac"].append(reformattedMessage)
-    print(jsondata)
+    # print(jsondata)
     return
 
 def deleteOldAircraft():
-    print("this function will delete all acft older than 1min from jsondata")
+    # print("this function will delete all acft older than 1min from jsondata")
     
     for acft in jsondata["ac"]:
-        print("made it")
-        print(jsondata)
+        # print("made it")
         if acft['seen'] >= 59.0:
+            print("ABOUT TO REMOVE " + acft['flight'] + "from jsondata: " + str(jsondata))
             jsondata["ac"].remove(acft)
-        timestamp = parser.parse(acft["Timestamp"])
-        if (timezone.now() - timestamp).seconds > 60:
-            jsondata["ac"].remove(acft)
+            print("REMOVED " + acft['flight'] + "from jsondata: " + str(jsondata))
+
+        # timestamp = parser.parse(acft["Timestamp"])
+        # if (timezone.now() - timestamp).seconds > 60:
+        #     jsondata["ac"].remove(acft)
         
 
 def Stratux_to_ADSBExchangeFormat(inputMessage):
@@ -133,70 +143,67 @@ def Stratux_to_ADSBExchangeFormat(inputMessage):
 
 
 # This cannot have comments to be properly formatted json (sadly).
-    inputMessage = """ 
-{
-    "Icao_addr": 11408330,
-    "Reg": "",
-    "Tail": "FURY04", 
-    "Emitter_category": 1,
-    "SurfaceVehicleType": 0,
-    "OnGround": false, 
-    "Addr_type": 0, 
-    "TargetType": 1,
-    "SignalLevel": -20.357875270301804,
-    "SignalLevelHist": [
-        -24.55188088242224,
-        -22.256290401500834,
-        -20.497812333581365,
-        -20.357875270301804,
-        -20.743270060787594,
-        -24.96754228534887,
-        -24.591701858889202,
-        -26.332036167132703
-    ],
-    "Squawk": 4301, 
-    "Position_valid": true,
-    "Lat": 36.353348, 
-    "Lng": -97.89047, 
-    "Alt": 2575, 
-    "GnssDiffFromBaroAlt": -350, 
-    "AltIsGNSS": false,
-    "NIC": 10, 
-    "NACp": 10, 
-    "Track": 360, 
-    "TurnRate": 0, 
-    "Speed": 138, 
-    "Speed_valid": true,
-    "Vvel": -512,
-    "Timestamp": "2022-04-04T17:27:12.721Z",
-    "PriorityStatus": 0,
-    "Age": 0.35, 
-    "AgeLastAlt": 0.35,
-    "Last_seen": "0001-01-01T02:39:51.93Z",
-    "Last_alt": "0001-01-01T02:39:51.93Z",
-    "Last_GnssDiff": "0001-01-01T02:39:51.93Z",
-    "Last_GnssDiffAlt": 2575,
-    "Last_speed": "0001-01-01T02:39:51.93Z",
-    "Last_source": 1,
-    "ExtrapolatedPosition": false,
-    "Last_extrapolation": "0001-01-01T02:39:07.85Z",
-    "AgeExtrapolation": 43.17,
-    "Lat_fix": 36.33551,
-    "Lng_fix": -97.91074,
-    "Alt_fix": 1775,
-    "BearingDist_valid": false,
-    "Bearing": 0,
-    "Distance": 0,
-    "DistanceEstimated": 26273.559990842597,
-    "DistanceEstimatedLastTs": "2022-04-04T17:27:12.721Z",
-    "ReceivedMsgs": 1013,
-    "IsStratux": false
-}
-    """
+#     inputMessage = """ 
+# {
+#     "Icao_addr": 11408330,
+#     "Reg": "",
+#     "Tail": "FURY04", 
+#     "Emitter_category": 1,
+#     "SurfaceVehicleType": 0,
+#     "OnGround": false, 
+#     "Addr_type": 0, 
+#     "TargetType": 1,
+#     "SignalLevel": -20.357875270301804,
+#     "SignalLevelHist": [
+#         -24.55188088242224,
+#         -22.256290401500834,
+#         -20.497812333581365,
+#         -20.357875270301804,
+#         -20.743270060787594,
+#         -24.96754228534887,
+#         -24.591701858889202,
+#         -26.332036167132703
+#     ],
+#     "Squawk": 4301, 
+#     "Position_valid": true,
+#     "Lat": 36.353348, 
+#     "Lng": -97.89047, 
+#     "Alt": 2575, 
+#     "GnssDiffFromBaroAlt": -350, 
+#     "AltIsGNSS": false,
+#     "NIC": 10, 
+#     "NACp": 10, 
+#     "Track": 360, 
+#     "TurnRate": 0, 
+#     "Speed": 138, 
+#     "Speed_valid": true,
+#     "Vvel": -512,
+#     "Timestamp": "2022-04-04T17:27:12.721Z",
+#     "PriorityStatus": 0,
+#     "Age": 0.35, 
+#     "AgeLastAlt": 0.35,
+#     "Last_seen": "0001-01-01T02:39:51.93Z",
+#     "Last_alt": "0001-01-01T02:39:51.93Z",
+#     "Last_GnssDiff": "0001-01-01T02:39:51.93Z",
+#     "Last_GnssDiffAlt": 2575,
+#     "Last_speed": "0001-01-01T02:39:51.93Z",
+#     "Last_source": 1,
+#     "ExtrapolatedPosition": false,
+#     "Last_extrapolation": "0001-01-01T02:39:07.85Z",
+#     "AgeExtrapolation": 43.17,
+#     "Lat_fix": 36.33551,
+#     "Lng_fix": -97.91074,
+#     "Alt_fix": 1775,
+#     "BearingDist_valid": false,
+#     "Bearing": 0,
+#     "Distance": 0,
+#     "DistanceEstimated": 26273.559990842597,
+#     "DistanceEstimatedLastTs": "2022-04-04T17:27:12.721Z",
+#     "ReceivedMsgs": 1013,
+#     "IsStratux": false
+# }
+#     """
     JSONmessage = json.loads(inputMessage) 
-    USAircraft = {}
-    with open("./static/AutoRecorder/USAaircraft.json") as acftFile:
-        USAircraft = json.load(acftFile)
 
     hexKey = hex(JSONmessage['Icao_addr'])[2:].upper()
 
