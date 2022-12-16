@@ -738,6 +738,10 @@ def stratuxThread(parentThreadName):
                         else:
                             formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
 
+                        if Acft.callSign == '':
+                            break
+                        if formAcft.callSign == '':
+                            continue
                         if  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX2 is False:
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                 distance = position.distance(formAcftPosition) * 69
@@ -790,15 +794,15 @@ def stratuxThread(parentThreadName):
                     # 1ship to 2ship logic )
 
                     if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2: 
-                        position1 = geometry.Point(Acft.latitude, Acft.longitude)     #find position of 1st jet
-                        position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude)  #find position of 2nd jet 
+                        position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
+                        position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
                         
                         if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
                             freshAcft.formationX2 = True
                             freshAcft.formTimestamp = timezone.now()
                             freshAcft.save()
 
-                
+                position = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
                     if Acft.landTime == None and Acft.state != "lost signal":
                         Acft.lastState = Acft.state
@@ -854,7 +858,7 @@ def on_message(ws, message):
 # create an aggregate .json file with all traffic every second infinitely
 def aggregate(reformattedMessage):
     reformattedMessage = json.loads(reformattedMessage)
-    print("yeehaw... This should work this time...")
+    # print("yeehaw... This should work this time...")
     i = 0
     for acft in jsondata["ac"]:
         # print("entering loop")
