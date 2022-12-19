@@ -21,5 +21,25 @@
             "primaryAircraftType": "T-38",
             "airfield": "KEND"
         }
+    },
+    {
+        "model": "AutoRecorder.nexttakeoffdata",
+        "pk": 1,
+        "fields": {
+            "runway": "KEND 17L/35R",
+            "solo": false,
+            "formationX2": false,
+            "formationX4": false
+        }
+    },
+    {
+        "model": "AutoRecorder.nexttakeoffdata",
+        "pk": 2,
+        "fields": {
+            "runway": "KEND 35L/17R",
+            "solo": false,
+            "formationX2": false,
+            "formationX4": false
+        }
     }
 ] 

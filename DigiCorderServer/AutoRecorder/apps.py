@@ -848,6 +848,15 @@ def stratuxCommsThread():
 
 def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
+    print("got a message")
+    dictMessage = json.loads(message)
+    print(dictMessage["Lat"])
+
+    # Do nothing with signals that don't have a valid position
+    if dictMessage['Lat'] == 0 or dictMessage["Lng"] == 0:
+        deleteOldAircraft()
+        logger.info("Aircraft " + dictMessage["Tail"] + "not saved since it had a null position")
+        return
     reformattedMessage = Stratux_to_ADSBExchangeFormat(message)
     with mutex:
         aggregate(reformattedMessage)
