@@ -726,8 +726,6 @@ def stratuxThread(parentThreadName):
                     
                 #2ship to 1ship logic 
                 # Check if this aircraft is splitting from a 2 ship nearby
-                # TODO still need to add timestamp check to "lost signal" form transitions
-                # TODO still need to add takeoffTime null check for lastState == None form transitions
                     closestFormation = None
                     closestFormationDistance = None
 
@@ -760,6 +758,8 @@ def stratuxThread(parentThreadName):
                         Acft.formTimestamp = timezone.now()
                         closestFormation.save()
 
+
+                    #4 -> 2-ship logic
 
                     Acft.save()
                     logger.info("Success!") 
@@ -805,6 +805,8 @@ def stratuxThread(parentThreadName):
                             Acft.formTimestamp = timezone.now()
                             freshAcft.save()
                             Acft.save()
+
+                    # 2 -> 4-ship logic
 
                 position = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
