@@ -375,6 +375,7 @@ def resetNextTakeoffData(nextTOData):
     nextTOData.solo = False
     nextTOData.formationX2 = False
     nextTOData.formationX4 = False 
+    nextTOData.save()
         
 
 
@@ -628,8 +629,8 @@ def stratuxThread(parentThreadName):
     shoehornPatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Shoehorn")
     patterns = [eastsidePatternPolygon, shoehornPatternPolygon]
 
-    KEND35L = Runway.objects.filter(name='KEND 17R/35L')
-    KEND17L = Runway.objects.filter(name='KEND 17L/35R')
+    KEND35L = 'KEND 35L/17R'
+    KEND17L = 'KEND 17L/35R'
 
     i = 0
     while True:
@@ -690,18 +691,18 @@ def stratuxThread(parentThreadName):
                         Acft.lastState = Acft.state
                         Acft.state="in pattern"
                         Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
-                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) >= 1000 and int(Acft.alt_baro) < 1600):
+                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) >= 500 and int(Acft.alt_baro) < 1600):
                             Acft.takeoffTime = timezone.now()
                             match Acft.substate:
                                 case 'shoehorn':
-                                    nextTOData = NextTakeoffData.objects.filter(runway = KEND35L)
+                                    nextTOData = NextTakeoffData.objects.get(runway__name = KEND35L)
                                     Acft.solo = nextTOData.solo
                                     Acft.formationX2 = nextTOData.formationX2
                                     Acft.formationX4 = nextTOData.formationX4
                                     resetNextTakeoffData(nextTOData)
                                     logger.info("Next T/O Data applied!")
                                 case 'eastside':
-                                    nextTOData = NextTakeoffData.objects.filter(runway = KEND17L)
+                                    nextTOData = NextTakeoffData.objects.get(runway__name = KEND17L)
                                     Acft.solo = nextTOData.solo
                                     Acft.formationX2 = nextTOData.formationX2
                                     Acft.formationX4 = nextTOData.formationX4
@@ -848,9 +849,7 @@ def stratuxCommsThread():
 
 def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
-    print("got a message")
     dictMessage = json.loads(message)
-    print(dictMessage["Lat"])
 
     # Do nothing with signals that don't have a valid position
     if dictMessage['Lat'] == 0 or dictMessage["Lng"] == 0:
