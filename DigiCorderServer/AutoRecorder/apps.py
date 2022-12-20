@@ -41,7 +41,7 @@ class AutoRecorderConfig(AppConfig):
         threadName = threading.current_thread().name
         logger.debug("ready() thread is: " + threadName)
         ADSBThread = threading.Thread(target=adsbThread, args=(threadName,), name='ADSBThread')
-        MessageThread = threading.Thread(target=messageThread, args=(1, threadName,), name='MessageThread')
+        MessageThread = threading.Thread(target=messageThread, args=(.5, threadName,), name='MessageThread')
         StratuxThread = threading.Thread(target=stratuxThread, args=(threadName,), name="StratuxThread")
         StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
         # ADSBThread.start()
@@ -98,7 +98,7 @@ def adsbThread(parentThreadName):
     shoehornPatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Shoehorn")
     patterns = [eastsidePatternPolygon, shoehornPatternPolygon]
 
-    KEND35L = Runway.objects.filter(name='KEND 17R/35L')
+    KEND35L = Runway.objects.filter(name='KEND 35L/17R')
     KEND17L = Runway.objects.filter(name='KEND 17L/35R')
 
     i = 0
@@ -245,7 +245,7 @@ def adsbThread(parentThreadName):
                     # Departure 
                     # Flying Around
                     # Recovery
-                    # Four ships
+                    # Four ships``
                     # Robust splits and rejoins
 
 
@@ -255,7 +255,7 @@ def adsbThread(parentThreadName):
                 for freshAcft in updatedAircraftObjects:        #start form logic 
                     # 1ship to 2ship logic )
 
-                    if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2: 
+                    if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2 and freshAcft.callSign != '' and freshAcft.callSign != '': 
                         position1 = geometry.Point(Acft.latitude, Acft.longitude)     #find position of 1st jet
                         position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude)  #find position of 2nd jet 
                         
@@ -402,7 +402,7 @@ def adsbThreadTEST(parentThreadName):
     shoehornPatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Shoehorn")
     patterns = [eastsidePatternPolygon, shoehornPatternPolygon]
 
-    KEND35L = Runway.objects.filter(name='KEND 17R/35L')
+    KEND35L = Runway.objects.filter(name='KEND 35L/17R')
     KEND17L = Runway.objects.filter(name='KEND 17L/35R')
 
     i = 90
@@ -667,7 +667,7 @@ def stratuxThread(parentThreadName):
                         Acft = activeAircraftDict[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
                     except KeyError as e:
                         Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
-                        logger.info('KeyError in aircraft ' + str(e) + "; however, this is ok.")
+                        logger.info('KeyError in aircraft ' + str(e) + "; however, this is ok. We just need to create a new aircraft")
 
                     Acft.callSign=aircraft["flight"]
                     if "SMAL" in Acft.callSign:
@@ -747,7 +747,7 @@ def stratuxThread(parentThreadName):
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                 distance = position.distance(formAcftPosition) * 69
                                 if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and abs(Acft.timestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
                                         if closestFormation is None or distance < closestFormationDistance:
                                             closestFormation = formAcft
                                             closestFormationDistance = distance
@@ -757,6 +757,7 @@ def stratuxThread(parentThreadName):
                         activeFormationX2.remove(closestFormation)
                         closestFormation.formationX2 = False
                         closestFormation.formTimestamp = timezone.now()
+                        Acft.formTimestamp = timezone.now()
                         closestFormation.save()
 
 
@@ -801,7 +802,9 @@ def stratuxThread(parentThreadName):
                         if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
                             freshAcft.formationX2 = True
                             freshAcft.formTimestamp = timezone.now()
+                            Acft.formTimestamp = timezone.now()
                             freshAcft.save()
+                            Acft.save()
 
                 position = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
