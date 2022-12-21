@@ -800,11 +800,12 @@ def stratuxThread(parentThreadName):
                         position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
                         
                         if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
-                            freshAcft.formationX2 = True
-                            freshAcft.formTimestamp = timezone.now()
-                            Acft.formTimestamp = timezone.now()
-                            freshAcft.save()
-                            Acft.save()
+                            if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=15):
+                                freshAcft.formationX2 = True
+                                freshAcft.formTimestamp = timezone.now()
+                                Acft.formTimestamp = timezone.now()
+                                freshAcft.save()
+                                Acft.save()
 
                     # 2 -> 4-ship logic
 
