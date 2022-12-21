@@ -757,9 +757,40 @@ def stratuxThread(parentThreadName):
                         closestFormation.formTimestamp = timezone.now()
                         Acft.formTimestamp = timezone.now()
                         closestFormation.save()
-
-
+                        
                     #4 -> 2-ship logic
+
+                    closestFormation = None
+                    closestFormationDistance = None
+
+                    for formAcft in activeFormationX4:
+
+                        formAcftPosition = geometry.Point(0,0,0)
+                        if formAcft.alt_baro == "ground":
+                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 1300)
+                        else:
+                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
+
+                        if Acft.callSign == '':
+                            break
+                        if formAcft.callSign == '':
+                            continue
+                        if  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX4 is False:
+                            if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 3:
+                                distance = position.distance(formAcftPosition) * 69
+                                if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
+                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                        if closestFormation is None or distance < closestFormationDistance:
+                                            closestFormation = formAcft
+                                            closestFormationDistance = distance
+
+                    if closestFormation is not None:
+                        #     if form.tailNumber == closestFormation.tailNumber:
+                        activeFormationX2.remove(closestFormation)
+                        closestFormation.formationX2 = False
+                        closestFormation.formTimestamp = timezone.now()
+                        Acft.formTimestamp = timezone.now()
+                        closestFormation.save()
 
                     Acft.save()
                     logger.info("Success!") 
@@ -801,13 +832,27 @@ def stratuxThread(parentThreadName):
                         
                         if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
                             if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=15):
-                                freshAcft.formationX2 = True
-                                freshAcft.formTimestamp = timezone.now()
-                                Acft.formTimestamp = timezone.now()
-                                freshAcft.save()
-                                Acft.save()
+                                if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
+                                    freshAcft.formationX2 = True
+                                    freshAcft.formTimestamp = timezone.now()
+                                    Acft.formTimestamp = timezone.now()
+                                    freshAcft.save()
+                                    Acft.save()
 
                     # 2 -> 4-ship logic
+
+                    elif freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and freshAcft.formationX2 and Acft.formationX2: 
+                        position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
+                        position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
+                        
+                        if (position2.distance(position1) * 69 <= 3.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
+                            if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=15):
+                                if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 3:
+                                    freshAcft.formationX4 = True
+                                    freshAcft.formTimestamp = timezone.now()
+                                    Acft.formTimestamp = timezone.now()
+                                    freshAcft.save()
+                                    Acft.save()
 
                 position = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)
                 if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
