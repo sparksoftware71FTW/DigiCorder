@@ -832,7 +832,7 @@ def stratuxThread(parentThreadName):
                         
                         if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
                             if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=15):
-                                if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
+                                if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1:
                                     freshAcft.formationX2 = True
                                     freshAcft.formTimestamp = timezone.now()
                                     Acft.formTimestamp = timezone.now()
@@ -847,7 +847,7 @@ def stratuxThread(parentThreadName):
                         
                         if (position2.distance(position1) * 69 <= 3.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
                             if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=15):
-                                if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 3:
+                                if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 3:
                                     freshAcft.formationX4 = True
                                     freshAcft.formTimestamp = timezone.now()
                                     Acft.formTimestamp = timezone.now()
