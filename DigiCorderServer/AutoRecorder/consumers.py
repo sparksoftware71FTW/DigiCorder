@@ -16,6 +16,14 @@ logger = logging.getLogger(__name__)
 
 class DashboardConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+
+        self.user = self.scope["user"]
+        if self.user.is_staff is True:
+            pass
+        else:
+            logger.warn("Non-staff user tried to access the data feed...")
+            return
+
         self.room_group_name = 'test'
         await self.channel_layer.group_add(
             self.room_group_name,
