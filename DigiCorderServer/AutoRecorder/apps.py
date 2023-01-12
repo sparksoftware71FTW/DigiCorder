@@ -656,12 +656,12 @@ def stratuxThread(parentThreadName):
         activeFormationX2 = list(activeAircraftObjects.filter(formationX2=True))
         activeFormationX4 = list(activeAircraftObjects.filter(formationX4=True))
 
-        logger.info(newData)
+        # logger.info(newData)
         for aircraft in newData['ac']: #ac is aircraft in the database 
             try:
                 position = getPosition(aircraft)
                 if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
-                    logger.info(aircraft['r'] + " is about to be updated or created...")
+                    logger.debug(aircraft['r'] + " is about to be updated or created...")
 
                     try:
                         Acft = activeAircraftDict[aircraft["r"][:-3] + "--" + aircraft["r"][-3:]]
@@ -745,7 +745,7 @@ def stratuxThread(parentThreadName):
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                 distance = position.distance(formAcftPosition) * 69
                                 if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
                                         if closestFormation is None or distance < closestFormationDistance:
                                             closestFormation = formAcft
                                             closestFormationDistance = distance
@@ -779,7 +779,7 @@ def stratuxThread(parentThreadName):
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 3:
                                 distance = position.distance(formAcftPosition) * 69
                                 if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
                                         if closestFormation is None or distance < closestFormationDistance:
                                             closestFormation = formAcft
                                             closestFormationDistance = distance
@@ -793,9 +793,7 @@ def stratuxThread(parentThreadName):
                         closestFormation.save()
 
                     Acft.save()
-                    logger.info("Success!") 
-                    print("Acft is: ")  
-                    print(Acft)
+                    logger.debug("Success!, Acft is" + Acft.tailNumber) 
                     updatedAircraftList.append(Acft.tailNumber)     
                     updatedAircraftObjects.append(Acft)
 
@@ -803,7 +801,7 @@ def stratuxThread(parentThreadName):
                 logger.error('KeyError in aircraft ' + str(e) + "; however, this is ok.")
 
         aircraftNotUpdated = ActiveAircraft.objects.exclude(tailNumber__in=updatedAircraftList) # getAircraftNotUpdated(updatedAircraftList)
-        logger.info('aircraft not updated: ' + str(aircraftNotUpdated))
+        # logger.info('aircraft not updated: ' + str(aircraftNotUpdated))
 
 # TODO NEED TO THOROUGHLY TEST THE LOGIC ABOVE AND BELOW THIS LINE. STATE TRANSITIONS ARE CRITICAL TO GET RIGHT. 
 
@@ -895,17 +893,21 @@ def stratuxThread(parentThreadName):
 
 def stratuxCommsThread():
     import websocket
-    wsapp = websocket.WebSocketApp("ws://192.168.10.1/traffic", on_message=on_message)
+    wsapp = websocket.WebSocketApp("ws://192.168.10.1/traffic", on_message=on_message,)
     wsapp.run_forever()
-
+ 
 def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
     dictMessage = json.loads(message)
 
+    logfile = open(r"./AutoRecorder/testFiles/Stratux/ADSBsnapshots" + ".json", "a+")
+    logfile.write(json.dumps(dictMessage))
+    logfile.close
+    
     # Do nothing with signals that don't have a valid position
     if dictMessage['Lat'] == 0 or dictMessage["Lng"] == 0:
         deleteOldAircraft()
-        logger.info("Aircraft " + dictMessage["Tail"] + "not saved since it had a null position")
+        # logger.info("Aircraft " + dictMessage["Tail"] + "not saved since it had a null position")
         return
     reformattedMessage = Stratux_to_ADSBExchangeFormat(message)
     with mutex:
@@ -943,9 +945,9 @@ def deleteOldAircraft():
     for acft in jsondata["ac"]:
         # print("made it")
         if acft['seen'] >= 59.0:
-            print("ABOUT TO REMOVE " + acft['flight'] + "from jsondata: " + str(jsondata))
+            print("ABOUT TO REMOVE " + acft['flight'] + "from jsondata.")
             jsondata["ac"].remove(acft)
-            print("REMOVED " + acft['flight'] + "from jsondata: " + str(jsondata))
+            print("REMOVED " + acft['flight'] + "from jsondata.")
 
         # timestamp = parser.parse(acft["Timestamp"])
         # if (timezone.now() - timestamp).seconds > 60:
