@@ -1,0 +1,74 @@
+[
+    {
+        "model": "AutoRecorder.airfield",
+        "pk": "KEND",
+        "fields": {
+            "name": "Vance AFB"
+        }
+    },
+    {
+        "model": "AutoRecorder.aircrafttype",
+        "pk": "T38",
+        "fields": {
+            "formationDistThreshold": "3.000",
+            "formationLostSignalTimeThreshold": "15.000",
+            "fullStopThresholdSpeed": "100.000",
+            "rotateSpeed": "150.000"
+        }
+    },
+    {
+        "model": "AutoRecorder.aircrafttype",
+        "pk": "TEX2",
+        "fields": {
+            "formationDistThreshold": "2.000",
+            "formationLostSignalTimeThreshold": "15.000",
+            "fullStopThresholdSpeed": "70.000",
+            "rotateSpeed": "80.000"
+        }
+    },
+    {
+        "model": "AutoRecorder.runway",
+        "pk": "KEND 17L/35R",
+        "fields": {
+            "primaryAircraftType": "TEX2",
+            "airfield": "KEND",
+            "kmlPatternFile": "RoughPatternPoints_T3M7vUf.kml",
+            "displayedAircraftTypes": [
+                "TEX2"
+            ]
+        }
+    },
+    {
+        "model": "AutoRecorder.runway",
+        "pk": "KEND 35L/17R",
+        "fields": {
+            "primaryAircraftType": "T38",
+            "airfield": "KEND",
+            "kmlPatternFile": "RoughPatternPoints_esNpNpK.kml",
+            "displayedAircraftTypes": [
+                "TEX2",
+                "T38"
+            ]
+        }
+    },
+    {
+        "model": "AutoRecorder.nexttakeoffdata",
+        "pk": 3,
+        "fields": {
+            "runway": "KEND 17L/35R",
+            "solo": false,
+            "formationX2": false,
+            "formationX4": false
+        }
+    },
+    {
+        "model": "AutoRecorder.nexttakeoffdata",
+        "pk": 4,
+        "fields": {
+            "runway": "KEND 35L/17R",
+            "solo": false,
+            "formationX2": false,
+            "formationX4": false
+        }
+    },
+]
