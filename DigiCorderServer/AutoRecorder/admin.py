@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import ActiveAircraft, CompletedSortie, Runway, Airfield, Callsigns, RsuCrew, NextTakeoffData
+from .models import ActiveAircraft, CompletedSortie, Runway, Airfield, Callsigns, RsuCrew, NextTakeoffData, AircraftType
 
 class ActiveAircraftAdmin(admin.ModelAdmin):
     list_display = ('aircraftType', 'tailNumber', 'callSign', 'state', 'lastState', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formationX2', 'formationX4','formTimestamp','timestamp', 'emergency', 'natureOfEmergency')
@@ -12,6 +12,11 @@ class CompletedT6SortieAdmin(admin.ModelAdmin):
     list_display = ('aircraftType', 'tailNumber', 'callSign', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formationX2', 'formationX4','formTimestamp','timestamp', 'emergency', 'natureOfEmergency')
     list_filter = ['solo', 'emergency', 'takeoffTime', 'state', 'lastState']
 admin.site.register(CompletedSortie, CompletedT6SortieAdmin)
+
+class AircraftTypeAdmin(admin.ModelAdmin):
+    list_display = ('aircraftType', 'formationDistThreshold', 'formationLostSignalTimeThreshold', 'fullStopThresholdSpeed', 'rotateSpeed')
+    list_filter = ['aircraftType', 'formationDistThreshold', 'formationLostSignalTimeThreshold', 'fullStopThresholdSpeed', 'rotateSpeed']
+admin.site.register(AircraftType , AircraftTypeAdmin)
 
 class RunwayAdmin(admin.ModelAdmin):
     list_display = ('name', 'primaryAircraftType', 'airfield')

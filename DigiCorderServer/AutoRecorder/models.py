@@ -33,14 +33,24 @@ class Tails(models.Model):
     def __str__(self):
         return "callsign " + str(self.callsign) 
 
+
+class AircraftType(models.Model):
+    aircraftType = models.CharField('Type', max_length=20, primary_key=True)
+    formationDistThreshold = models.DecimalField('Form Threshold', decimal_places=3, max_digits=8)
+    formationLostSignalTimeThreshold = models.DecimalField('Lost Signal Time Threshold (sec)', decimal_places=3, max_digits=8)
+    fullStopThresholdSpeed = models.DecimalField('Full Stop Threshold', decimal_places=3, max_digits=8)
+    rotateSpeed = models.DecimalField('Rotate Speed', decimal_places=3, max_digits=8)
+
 class Runway(models.Model):
     name = models.CharField('Name', max_length=15, primary_key=True)
-    primaryAircraftType = models.CharField('Primary Aircraft Type', max_length=20, blank=True, null=True)
+    primaryAircraftType = models.ForeignKey(AircraftType, on_delete=models.CASCADE, related_name='+')
+    displayedAircraftTypes = models.ManyToManyField(AircraftType)
     airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE)
     kmlPatternFile = models.FileField(null=True)
 
     def __str__(self):
         return str(self.name) 
+
 
 class RsuCrew(models.Model):
     runway = models.ForeignKey(Runway, on_delete=models.CASCADE, blank=True, null=True)

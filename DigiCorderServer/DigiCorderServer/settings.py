@@ -160,9 +160,9 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'NAME': 'AutoRecorder',
+        'USER': 'AutoRecorder',
+        'PASSWORD': 'AutoRecorder',
         'HOST': 'localhost',
         'PORT': '5432',
         # 'OPTIONS': {
