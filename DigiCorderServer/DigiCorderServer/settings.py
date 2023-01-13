@@ -27,6 +27,13 @@ SECRET_KEY = 'django-insecure-bpx%t#w_(^_h0yt#xqbit0(p%9!5bctf2ai4@-kryin+x0%=@5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+MEDIA_ROOT = ''
+
+if DEBUG:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'AutoRecorder', 'media')
+else:
+    MEDIA_ROOT = '/some/absolute/path/on/production/server'
+
 LOGGING = {
     'version': 1,                       # the dictConfig format version
     'disable_existing_loggers': False,  # retain the default loggers
@@ -101,7 +108,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
-    'register.apps.RegisterConfig'
+    'register.apps.RegisterConfig',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 ASGI_APPLICATION = 'DigiCorderServer.asgi.application'

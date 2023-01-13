@@ -37,6 +37,7 @@ class Runway(models.Model):
     name = models.CharField('Name', max_length=15, primary_key=True)
     primaryAircraftType = models.CharField('Primary Aircraft Type', max_length=20, blank=True, null=True)
     airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE)
+    kmlPatternFile = models.FileField(null=True)
 
     def __str__(self):
         return str(self.name) 
@@ -53,9 +54,7 @@ class RsuCrew(models.Model):
     #     return "RSU Crew"
 
 class Pattern(models.Model):
-    lat = models.DecimalField("lat", decimal_places=10, max_digits=13)
-    lon = models.DecimalField("lon", decimal_places=10, max_digits=13)
-    alt = models.DecimalField("altitude", decimal_places=2, max_digits=7)
+    kmlPatternFile = models.FileField(null=True)
     runway = models.OneToOneField(Runway, on_delete=models.CASCADE)
 
     def __str__(self):
