@@ -9,7 +9,7 @@ from channels import layers
 from channels.db import database_sync_to_async
 from django.core import serializers
 
-from .models import ActiveAircraft, CompletedSortie, Message, NextTakeoffData, Runway
+from .models import ActiveAircraft, ActiveAircraftManager, CompletedSortie, Message, NextTakeoffData, Runway, RunwayManager
 
 import logging
 logger = logging.getLogger(__name__)
@@ -21,9 +21,12 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         if self.user.is_staff is True:
             pass
         else:
-            logger.warn("Non-staff user tried to access the data feed...")
+            logger.warn("Non-staff user tried to access the data feed... " + str(self.user))
+            self.close()
             return
 
+        # TODO Check user's per-runway permissions, and add/create message groups per runway based on those permissions.
+        # 'test' group gets all runway permissions
         self.room_group_name = 'test'
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -31,27 +34,22 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
 
-        t6message, t6metadata = await database_sync_to_async(self.get_T6_queryset_update_message)()
-        t38message, t38metadata = await database_sync_to_async(self.get_T38_queryset_update_message)()
-        nextTOMessages = await database_sync_to_async(self.get_next_takeoff_update_messages)()
-         
         channel_layer = layers.get_channel_layer()
-        await channel_layer.group_send(
-        'test',
-            {
-                'type':'t6Update',
-                'message':t6message,
-                'meta': t6metadata
-            }
-        )
-        await channel_layer.group_send(
-        'test',
-            {
-                'type':'t38Update',
-                'message':t38message,
-                'meta':t38metadata
-            }
-        )
+        nextTOMessages = await database_sync_to_async(self.get_next_takeoff_update_messages)()
+
+        # runways = await database_sync_to_async(RunwayManager.getAllRunways)()
+
+        async for runway in Runway.objects.all():
+            rwyMessage, rwyMetaData = await database_sync_to_async(ActiveAircraftManager.get_Acft_queryset_update_message)(runway)
+            rwy = 't6Update' if runway.name == 'KEND 17L/35R' else 't38Update'   #TODO make this the runway name, and rework the frontend to accept that........
+            await channel_layer.group_send(
+            'test',
+                {
+                    'type': rwy,
+                    'message': rwyMessage,
+                    'meta': rwyMetaData
+                }
+            )
         
         for msg in nextTOMessages:
             await channel_layer.group_send(
@@ -74,7 +72,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         data = text_data_json['data']
         # await database_sync_to_async(self.saveMessage)(txmessage)
         logger.info(text_data_json)
-        print(data)
+        logger.debug(data)
 
         if msgType == 'nextTOMessage':
             flags, created = await NextTakeoffData.objects.aget_or_create(runway=await Runway.objects.aget(name=text_data_json['runway']))
@@ -82,16 +80,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
             flags.solo = data['solo']
             flags.formationX2 = data['formationX2']
             flags.formationX4 = data['formationX4']
-            # match data:
-            #     case '2-ship':
-            #         flags.formationX2 = self.toggle(flags.formationX2)
-            #         logger.info("2-ship triggered")
-            #     case '4-ship':
-            #         flags.formationX4 = self.toggle(flags.formationX2)
-            #         logger.info("4-ship triggered")
-            #     case 'solo':
-            #         flags.solo = toggle(flags.solo)
-            #         logger.info("solo triggered")
+
             await database_sync_to_async(self.saveNextTOMessage)(flags)
             logger.info("we did the thing...")
 
@@ -106,7 +95,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
     async def nextTOMessage(self, event):
         runway = event['runway']
         data = event['data']
-        #logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(data))
+        logger.debug(str(data))
         await self.send(text_data=json.dumps({
             'type':'nextTOMessage',
             'runway': runway,
@@ -125,7 +114,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
     async def t6Update(self, event):
         txmessage = event['message']
         txmetadata = event['meta']
-        #logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(txmessage))
+        logger.debug(str(txmessage))
         await self.send(text_data=json.dumps({
             'type':'t6Update',
             'message':txmessage,

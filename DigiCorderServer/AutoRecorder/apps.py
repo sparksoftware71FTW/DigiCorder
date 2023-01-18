@@ -80,7 +80,7 @@ def adsbThread(parentThreadName):
     logger.info("Starting ADSB Thread")
     import http.client
     import json
-    from AutoRecorder.models import ActiveAircraft, NextTakeoffData, Runway
+    from AutoRecorder.models import ActiveAircraft, NextTakeoffData, Runway, AircraftType
     import time
 
     conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
@@ -120,6 +120,9 @@ def adsbThread(parentThreadName):
         activeAircraftObjects = ActiveAircraft.objects.all()
         activeAircraftDict = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in activeAircraftObjects}
 
+        aircraftTypes = AircraftType.objects.all()
+        aircraftTypeDict = {AircraftType.aircraftType: AircraftType for AircraftType in aircraftTypes}
+
         activeFormationX2 = list(activeAircraftObjects.filter(formationX2=True))
         activeFormationX4 = list(activeAircraftObjects.filter(formationX4=True))
 
@@ -136,10 +139,17 @@ def adsbThread(parentThreadName):
                         Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
                         logger.debug('KeyError in aircraft ' + str(e) + "; however, this is ok.")
 
+                    try:
+                        Acft.aircraftType = aircraftTypeDict[aircraft["t"]]
+                    except KeyError as e:
+                        newType = AircraftType.objects.create(aircraftType=aircraft["t"])
+                        aircraftTypeDict[aircraft["t"]] = newType
+                        Acft.aircraftType = newType
+
+
                     Acft.callSign=aircraft["flight"]
                     if "SMAL" in Acft.callSign:
                         Acft.solo = True
-                    Acft.aircraftType=aircraft['t']
                     #formation=aircraft[""],                need form callsign db?
                     Acft.emergency=False if aircraft["emergency"] == "none" else True
                     Acft.alt_baro=aircraft['alt_baro']
@@ -617,7 +627,7 @@ def stratuxThread(parentThreadName):
     logger.info("Starting ADSB Thread")
     import http.client
     import json
-    from AutoRecorder.models import ActiveAircraft, NextTakeoffData, Runway
+    from AutoRecorder.models import ActiveAircraft, NextTakeoffData, Runway, AircraftType
     import time
     import copy
 
@@ -653,6 +663,9 @@ def stratuxThread(parentThreadName):
         activeAircraftObjects = ActiveAircraft.objects.all()
         activeAircraftDict = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in activeAircraftObjects}
 
+        aircraftTypes = AircraftType.objects.all()
+        aircraftTypeDict = {AircraftType.aircraftType: AircraftType for AircraftType in aircraftTypes}
+
         activeFormationX2 = list(activeAircraftObjects.filter(formationX2=True))
         activeFormationX4 = list(activeAircraftObjects.filter(formationX4=True))
 
@@ -669,10 +682,19 @@ def stratuxThread(parentThreadName):
                         Acft = ActiveAircraft.objects.create(tailNumber=aircraft["r"][:-3] + "--" + aircraft["r"][-3:])
                         logger.info('KeyError in aircraft ' + str(e) + "; however, this is ok. We just need to create a new aircraft")
 
+                    
+                    try:
+                        Acft.aircraftType = aircraftTypeDict[aircraft["t"]]
+                    except KeyError as e:
+                        newType = AircraftType.objects.create(aircraftType=aircraft["t"])
+                        aircraftTypeDict[aircraft["t"]] = newType
+                        Acft.aircraftType = newType
+                        logger.info('KeyError in aircraft ' + str(e) + "; however, this is ok. We just need to create a new aircraft TYPE")
+
+
                     Acft.callSign=aircraft["flight"]
                     if "SMAL" in Acft.callSign:
                         Acft.solo = True
-                    Acft.aircraftType=aircraft['t']
                     #formation=aircraft[""],                need form callsign db?
                     # Acft.emergency=False if aircraft["emergency"] == "none" else True
                     Acft.alt_baro=aircraft['alt_baro']

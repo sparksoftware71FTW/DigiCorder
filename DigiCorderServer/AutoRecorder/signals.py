@@ -6,10 +6,9 @@ from asgiref.sync import async_to_sync
 from django.db.models.signals import post_save
 from django.db.models import Q
 from django.dispatch import receiver
-from django.utils import timezone
 from django.core import serializers
 
-from .models import ActiveAircraft, CompletedSortie, Message, Trigger, NextTakeoffData
+from .models import ActiveAircraft, ActiveAircraftManager, CompletedSortie, Message, Trigger, NextTakeoffData, Runway, RunwayManager
 
 import logging
 logger = logging.getLogger(__name__)
@@ -72,26 +71,43 @@ def nextTODisplayUpdate(sender, instance, created, **kwargs):
 def displayActiveAircraft(sender, instance, created, **kwargs):
 
     channel_layer = layers.get_channel_layer()
-    t6message, t6metadata = get_T6_queryset_update_message()
-    async_to_sync(channel_layer.group_send)(
-    'test',
-        {
-            'type':'t6Update',
-            'message':t6message,
-            'meta': t6metadata
-        }
-    )
-    
-    t38message, t38metadata = get_T38_queryset_update_message()
-    async_to_sync(channel_layer.group_send)(
-    'test',
-        {
-            'type':'t38Update',
-            'message':t38message,
-            'meta': t38metadata
 
-        }
-    )
+    for runway in Runway.objects.all():
+        rwyMessage, rwyMetaData = ActiveAircraftManager.get_Acft_queryset_update_message(runway)
+        rwy = 't6Update' if runway.name == 'KEND 17L/35R' else 't38Update'   #TODO make this the runway name, and rework the frontend to accept that........
+        async_to_sync(channel_layer.group_send)(
+        'test',
+            {
+                'type': rwy,
+                'message': rwyMessage,
+                'meta': rwyMetaData
+            }
+        )
+
+
+    # t6message, t6metadata = get_T6_queryset_update_message()
+    # async_to_sync(channel_layer.group_send)(
+    # 'test',
+    #     {
+    #         'type':'t6Update',
+    #         'message':t6message,
+    #         'meta': t6metadata
+    #     }
+    # )
+    
+    # t38message, t38metadata = get_T38_queryset_update_message()
+    # async_to_sync(channel_layer.group_send)(
+    # 'test',
+    #     {
+    #         'type':'t38Update',
+    #         'message':t38message,
+    #         'meta': t38metadata
+
+    #     }
+    # )
+
+################
+
     #logger.info("Active Aircraft Signal Triggered")
 
 
