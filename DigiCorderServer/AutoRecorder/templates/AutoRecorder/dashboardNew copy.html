@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+{% extends 'AutoRecorder/bootbase.html' %}
+
+{% block title %}Recorder Dashboard{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript">
+    var url = `ws://${window.location.host}/ws/socket-server/`
+    console.log(url)
+    
+    var csrf_token = '{{ csrf_token }}'
+
+    const chatSocket = new WebSocket(url)
+
+    chatSocket.addEventListener('message', function(e){
+        let data = JSON.parse(e.data)
+        
+        if(data.type == 'rwyUpdate'){
+            console.log("rwy meta is: ", data.meta)
+        }
+
+        if(data.type == 't38Update'){
+            console.log("t38 meta is: ", data.meta)
+        }
+        if(data.type == 't6Update'){
+            console.log("t6 meta is: ", data.meta)
+        }
+        if(data.type == 'rwyUpdate'){
+            console.log("runway field is: ", data.runway)
+        }
+    }
+    )
+
+
+    // chatSocket.onmessage = function(e){
+    //     let data = JSON.parse(e.data)
+    //     console.log('Data: ', data)
+
+    //     if(data.type === 't6Update'){
+
+    //     let T6s = document.getElementById('T6s')
+    //         removeAllChildNodes(T6s)
+    //         T6s.insertAdjacentHTML('beforeend', `<div>
+    //                                     <p>${data.message}</p>
+    //                                 </div>`)
+    //     }
+    // }
+
+    function removeAllChildNodes(parent) {
+        if(parent != null) {
+            if(parent.firstChild != null){
+                while (parent.firstChild) {
+                    parent.removeChild(parent.firstChild);
+                }
+            }
+        }
+    }
+
+</script>
+
+
+
+{% include 'AutoRecorder/Tables.html' %}
+<script> loadKEND17L(chatSocket, csrf_token) </script>
+<script> rxNextTOMessageKEND17L(chatSocket) </script>
+{% load static %}
+<script type="text/javascript" media-url="{% get_media_prefix %}">
+
+    var myCustomGroup = L.geoJSON(null, {
+        style: getStyle
+    });
+
+    function getStyle(feature) {
+        return {
+                    color: '#ff6e6e6e',
+                    // weight: 7
+                }
+        // if (feature.properties.styleUrl === '#PolyStyleOGreen') {
+        //     if (feature.geometry.type === 'LineString') {
+        //         return {
+        //             color: '#ff6e6e6e',
+        //             weight: 4
+        //         }
+        //     }
+        // }
+    }
+
+    console.log("AutoRecorder{{runways.kmlPatternFile.url}}")
+
+    omnivore.kml('{% static "AutoRecorder/kml/Eckho Recovery.kml" %}').addTo(KEND17Lmap)
+    // omnivore.kml('{% static "AutoRecorder/kml/RoughPatternPoints.kml" %}').addTo(KEND17Lmap)
+    omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}', null, myCustomGroup).addTo(KEND17Lmap) 
+    omnivore.kml('{% static "AutoRecorder/kml/FOXTR Recoery.kml" %}').addTo(KEND17Lmap)
+    omnivore.kml("{{runways.kmlPatternFile.url}}").addTo(KEND17Lmap)
+    KEND17Lmap.invalidateSize() //?????????????????????????????????????????????????????????
+     
+</script>
+
+
+        <div id="messages"></div>
+        <div id="T6s"></div>
+
+{% endblock %}

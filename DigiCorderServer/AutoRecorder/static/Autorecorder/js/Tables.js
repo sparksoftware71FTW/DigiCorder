@@ -1,23 +1,23 @@
-var KEND17Lmap = L.map('KEND17Lmap').setView([36.3393, -97.9131], 10);
+var map = L.map('map').setView([36.3393, -97.9131], 10);
 
-function rxNextTOMessageKEND17L(chatSocket) {
+function rxNextTOMessage(chatSocket) {
 
     chatSocket.addEventListener('message', function(e){
 
         let msg = JSON.parse(e.data)
         if(msg.type == 'nextTOMessage' && msg.runway == "KEND 17L/35R"){
                 let data = msg.data
-                document.getElementById('nextTO-KEND17L-solo').checked = data.solo
-                document.getElementById('nextTO-KEND17L-formationX2').checked = data.formationX2
-                document.getElementById('nextTO-KEND17L-formationX4').checked = data.formationX4
+                document.getElementById('nextTO--solo').checked = data.solo
+                document.getElementById('nextTO--formationX2').checked = data.formationX2
+                document.getElementById('nextTO--formationX4').checked = data.formationX4
         }
     })
 }
 
-function nextTOMessageKEND17L(chatSocket, id) {
-    solo = document.getElementById('nextTO-KEND17L-solo').checked
-    formationX2 = document.getElementById('nextTO-KEND17L-formationX2').checked
-    formationX4 = document.getElementById('nextTO-KEND17L-formationX4').checked
+function nextTOMessage(chatSocket, id) {
+    solo = document.getElementById('nextTO--solo').checked
+    formationX2 = document.getElementById('nextTO--formationX2').checked
+    formationX4 = document.getElementById('nextTO--formationX4').checked
 
     if(formationX2 == true && id == 'formationX4') {
         formationX4 = false
@@ -27,6 +27,7 @@ function nextTOMessageKEND17L(chatSocket, id) {
         formationX2 = false
     }
 
+    console.log(window.location.href)
     chatSocket.send(JSON.stringify({
       'type': 'nextTOMessage',
       'runway': 'KEND 17L/35R',
@@ -40,23 +41,23 @@ function nextTOMessageKEND17L(chatSocket, id) {
 
 
 
-function loadKEND17L(chatSocket, csrf_token) {
+function load(chatSocket, csrf_token) {
 
-    //var KEND17Lmap = L.map('KEND17Lmap').setView([36.3393, -97.9131], 13);
+    //var map = L.map('map').setView([36.3393, -97.9131], 13);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(KEND17Lmap);
+    }).addTo(map);
 
-    L.marker([36.3393, -97.9131]).addTo(KEND17Lmap)
+    L.marker([36.3393, -97.9131]).addTo(map)
         .bindPopup('KEND')
         .openPopup();
 
-    var KEND17LMapAcft = {}
-    var KEND17LMapAcftNotUpdated = []
+    var MapAcft = {}
+    var MapAcftNotUpdated = []
 
     let legacyT6Icon = L.icon({
-        iconUrl: '../static/AutoRecorder/images/LegacyT6Icon.png',
+        iconUrl: '../../../static/AutoRecorder/images/LegacyT6Icon.png',
         //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
 
         iconSize:     [30, 30], // size of the icon
@@ -68,7 +69,7 @@ function loadKEND17L(chatSocket, csrf_token) {
     })
 
     let inactiveLegacyT6Icon = L.icon({
-        iconUrl: '../static/AutoRecorder/images/40-LegacyT6Icon.png',
+        iconUrl: '../../../static/AutoRecorder/images/40-LegacyT6Icon.png',
         //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
 
         iconSize:     [30, 30], // size of the icon
@@ -80,7 +81,7 @@ function loadKEND17L(chatSocket, csrf_token) {
     })
 
     let UFO = L.icon({
-        iconUrl: '../static/AutoRecorder/images/UFO.png',
+        iconUrl: '../../../static/AutoRecorder/images/UFO.png',
         //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
 
         iconSize:     [20, 20], // size of the icon
@@ -92,7 +93,7 @@ function loadKEND17L(chatSocket, csrf_token) {
     })
 
     let inactiveUFO = L.icon({
-        iconUrl: '../static/AutoRecorder/images/30-UFO.png',
+        iconUrl: '../../../static/AutoRecorder/images/30-UFO.png',
         //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
 
         iconSize:     [30, 30], // size of the icon
@@ -107,399 +108,399 @@ function loadKEND17L(chatSocket, csrf_token) {
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
 
-        if(data.type == 't6Update'){
+        if(data.type == 'rwyUpdate'){
 
-            let t6Update = JSON.parse(data.message)
+            let rwyUpdate = JSON.parse(data.message)
             let t6Meta = JSON.parse(data.meta)
             console.log("HELLLOOOOOOOOOOOOOO")
 
 
-            let KEND17LPattern = document.getElementById('KEND17L In Pattern')
-            removeAllChildNodes(KEND17LPattern)
-            let KEND17LTaxiing = document.getElementById('KEND17L Taxiing')
-            removeAllChildNodes(KEND17LTaxiing)
-            let KEND17LOffStation = document.getElementById('KEND17L Off Station')
-            removeAllChildNodes(KEND17LOffStation)
-            let KEND17LLostSignal = document.getElementById('KEND17L Lost Signal')
-            removeAllChildNodes(KEND17LLostSignal)
-            let numKEND17LPattern = document.getElementById('numKEND17L In Pattern')
-            removeAllChildNodes(numKEND17LPattern)
-            let numKEND17LTaxiing = document.getElementById('numKEND17L Taxiing')
-            removeAllChildNodes(numKEND17LTaxiing)
-            let numKEND17LOffStation = document.getElementById('numKEND17L Off Station')
-            removeAllChildNodes(numKEND17LOffStation)
-            let numKEND17LLostSignal = document.getElementById('numKEND17L Lost Signal')
-            removeAllChildNodes(numKEND17LLostSignal)
+            let Pattern = document.getElementById(' In Pattern')
+            removeAllChildNodes(Pattern)
+            let Taxiing = document.getElementById(' Taxiing')
+            removeAllChildNodes(Taxiing)
+            let OffStation = document.getElementById(' Off Station')
+            removeAllChildNodes(OffStation)
+            let LostSignal = document.getElementById(' Lost Signal')
+            removeAllChildNodes(LostSignal)
+            let numPattern = document.getElementById('num In Pattern')
+            removeAllChildNodes(numPattern)
+            let numTaxiing = document.getElementById('num Taxiing')
+            removeAllChildNodes(numTaxiing)
+            let numOffStation = document.getElementById('num Off Station')
+            removeAllChildNodes(numOffStation)
+            let numLostSignal = document.getElementById('num Lost Signal')
+            removeAllChildNodes(numLostSignal)
 
 
-            let KEND17Ldual145 = document.getElementById('KEND17L Dual Aircraft Outside the Pattern > 1+45')
-            removeAllChildNodes(KEND17Ldual145)
-            let KEND17Lsolo120 = document.getElementById('KEND17L Solo Aircraft Outside the Pattern > 1+20')
-            removeAllChildNodes(KEND17Lsolo120)
-            let KEND17LsolosOffStation = document.getElementById('KEND17L Solos Off Station')
-            removeAllChildNodes(KEND17LsolosOffStation)
-            let KEND17LsolosInPattern = document.getElementById('KEND17L Solos in the Pattern')
-            removeAllChildNodes(KEND17LsolosInPattern)
+            let dual145 = document.getElementById(' Dual Aircraft Outside the Pattern > 1+45')
+            removeAllChildNodes(dual145)
+            let solo120 = document.getElementById(' Solo Aircraft Outside the Pattern > 1+20')
+            removeAllChildNodes(solo120)
+            let solosOffStation = document.getElementById(' Solos Off Station')
+            removeAllChildNodes(solosOffStation)
+            let solosInPattern = document.getElementById(' Solos in the Pattern')
+            removeAllChildNodes(solosInPattern)
 
-            let numKEND17Ldual145 = document.getElementById('numKEND17L Dual Aircraft Outside the Pattern > 1+45')
-            removeAllChildNodes(numKEND17Ldual145)
-            let numKEND17Lsolo120 = document.getElementById('numKEND17L Solo Aircraft Outside the Pattern > 1+20')
-            removeAllChildNodes(numKEND17Lsolo120)
-            let numKEND17LsolosOffStation = document.getElementById('numKEND17L Solos Off Station')
-            removeAllChildNodes(numKEND17LsolosOffStation)
-            let numKEND17LsolosInPattern = document.getElementById('numKEND17L Solos in the Pattern')
-            removeAllChildNodes(numKEND17LsolosInPattern)
+            let numdual145 = document.getElementById('num Dual Aircraft Outside the Pattern > 1+45')
+            removeAllChildNodes(numdual145)
+            let numsolo120 = document.getElementById('num Solo Aircraft Outside the Pattern > 1+20')
+            removeAllChildNodes(numsolo120)
+            let numsolosOffStation = document.getElementById('num Solos Off Station')
+            removeAllChildNodes(numsolosOffStation)
+            let numsolosInPattern = document.getElementById('num Solos in the Pattern')
+            removeAllChildNodes(numsolosInPattern)
 
-            numKEND17Ldual145.insertAdjacentHTML('beforeend', `
+            numdual145.insertAdjacentHTML('beforeend', `
             <span class="badge bg-primary rounded-pill">${t6Meta.dual145.length}</span>
             `)
             
-            numKEND17Lsolo120.insertAdjacentHTML('beforeend', `
+            numsolo120.insertAdjacentHTML('beforeend', `
             <span class="badge bg-primary rounded-pill">${t6Meta.solo120.length}</span>
             `)
             
-            numKEND17LsolosOffStation.insertAdjacentHTML('beforeend', `
+            numsolosOffStation.insertAdjacentHTML('beforeend', `
             <span class="badge bg-primary rounded-pill">${t6Meta.solosOffStation.length}</span>
             `)
             
-            numKEND17LsolosInPattern.insertAdjacentHTML('beforeend', `
+            numsolosInPattern.insertAdjacentHTML('beforeend', `
             <span class="badge bg-primary rounded-pill">${t6Meta.solosInPattern.length}</span>
             `)
 
             //update the badge displaying the number of aircraft in each major state
             if(t6Meta.In_Pattern < 8) { //blue background
-                numKEND17LPattern.insertAdjacentHTML('beforeend', `
+                numPattern.insertAdjacentHTML('beforeend', `
                 <span class="badge bg-primary rounded-pill">${t6Meta.In_Pattern}</span>
                 `)
             }
             else if (t6Meta.In_Pattern >= 12) { //red background
-                numKEND17LPattern.insertAdjacentHTML('beforeend', `
+                numPattern.insertAdjacentHTML('beforeend', `
                 <span class="badge bg-danger rounded-pill">${t6Meta.In_Pattern}</span>
                 `)
             }
             else { //yellow background
-                numKEND17LPattern.insertAdjacentHTML('beforeend', `
+                numPattern.insertAdjacentHTML('beforeend', `
                 <span class="badge bg-warning rounded-pill">${t6Meta.In_Pattern}</span>
                 `)
             }
 
-            numKEND17LTaxiing.insertAdjacentHTML('beforeend', `
+            numTaxiing.insertAdjacentHTML('beforeend', `
             <span class="badge bg-primary rounded-pill">${t6Meta.Taxiing}</span>
             `)
 
-            numKEND17LOffStation.insertAdjacentHTML('beforeend', `
+            numOffStation.insertAdjacentHTML('beforeend', `
             <span class="badge bg-primary rounded-pill">${t6Meta.Off_Station}</span>
             `)
 
-            numKEND17LLostSignal.insertAdjacentHTML('beforeend', `
+            numLostSignal.insertAdjacentHTML('beforeend', `
             <span class="badge bg-primary rounded-pill">${t6Meta.Lost_Signal}</span>
             `)
 
             for (let i = 0; i < t6Meta.dual145.length; i++) {
-                KEND17Ldual145.insertAdjacentHTML('beforeend', `
+                dual145.insertAdjacentHTML('beforeend', `
                 <span class="badge text-bg-secondary">${t6Meta.dual145[i]}</span>
                 `
                 )   
             }
 
             for (let i = 0; i < t6Meta.solo120.length; i++) {
-                KEND17Lsolo120.insertAdjacentHTML('beforeend', `
+                solo120.insertAdjacentHTML('beforeend', `
                 <span class="badge text-bg-danger">${t6Meta.solo120[i]}</span>
                 `
                 )   
             }
 
             for (let i = 0; i < t6Meta.solosOffStation.length; i++) {
-                KEND17LsolosOffStation.insertAdjacentHTML('beforeend', `
+                solosOffStation.insertAdjacentHTML('beforeend', `
                 <span class="badge text-bg-warning">${t6Meta.solosOffStation[i]}</span>
                 `
                 )   
             }
 
             for (let i = 0; i < t6Meta.solosInPattern.length; i++) {
-                KEND17LsolosInPattern.insertAdjacentHTML('beforeend', `
+                solosInPattern.insertAdjacentHTML('beforeend', `
                 <span class="badge text-bg-info">${t6Meta.solosInPattern[i]}</span>
                 `
                 )   
             }
 
-            KEND17LMapAcftNotUpdated = {...KEND17LMapAcft}
-            console.log(KEND17LMapAcftNotUpdated)
+            MapAcftNotUpdated = {...MapAcft}
+            console.log(MapAcftNotUpdated)
                             
-            for (let i = 0; i < t6Update.length; i++) {
+            for (let i = 0; i < rwyUpdate.length; i++) {
 
-                delete KEND17LMapAcftNotUpdated[t6Update[i].pk]
+                delete MapAcftNotUpdated[rwyUpdate[i].pk]
 
                 let formX2Checkmark = ""
                 let formX4Checkmark = ""
                 let soloCheckmark = ""
-                if (t6Update[i].fields.solo) {soloCheckmark = "checked"}
-                if (t6Update[i].fields.formationX2) {formX2Checkmark = "checked"}
-                if (t6Update[i].fields.formationX4) {formX4Checkmark = "checked"}
+                if (rwyUpdate[i].fields.solo) {soloCheckmark = "checked"}
+                if (rwyUpdate[i].fields.formationX2) {formX2Checkmark = "checked"}
+                if (rwyUpdate[i].fields.formationX4) {formX4Checkmark = "checked"}
                 
 
-                if (t6Update[i].fields.substate == "eastside") {
-                    if (!KEND17LMapAcft[t6Update[i].pk]) {
+                if (rwyUpdate[i].fields.substate == "eastside") {
+                    if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
 
-                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                        if(rwyUpdate[i].fields.aircraftType != "TEX2") {
                             //If it's not a T-6, then it's a UFO!
-                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: UFO}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                            MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: UFO}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);
                         }
                         else { //It's a T-6...
-                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: legacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                            MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: legacyT6Icon}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);
                         }
                           
                       } else {
                         // If there is already a marker with this id, simply modify its position.
-                        KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign);
 
-                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                        if(rwyUpdate[i].fields.aircraftType != "TEX2") {
                             //If it's not a T-6, then it's a UFO!
-                            KEND17LMapAcft[t6Update[i].pk].setIcon(UFO);
+                            MapAcft[rwyUpdate[i].pk].setIcon(UFO);
                         }
                         else { //It's a T-6...
-                            KEND17LMapAcft[t6Update[i].pk].setIcon(legacyT6Icon);
+                            MapAcft[rwyUpdate[i].pk].setIcon(legacyT6Icon);
                         }
                       }
 
-                    KEND17LPattern.insertAdjacentHTML('beforeend',       
+                    Pattern.insertAdjacentHTML('beforeend',       
                             `<tr>
-                            <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
-                            <td>${t6Update[i].pk.slice(-3)}</td>
-                            <td>${t6Update[i].fields.callSign}</td>
-                            <td>${t6Update[i].fields.alt_baro}</td>
-                            <td>${t6Update[i].fields.groundSpeed}</td>
-                            <td>${String(t6Update[i].fields.takeoffTime).slice(11, -8).concat(String(t6Update[i].fields.takeoffTime).slice(23))}</td>
-                            <td>${String(t6Update[i].fields.landTime).slice(11, -8).concat(String(t6Update[i].fields.landTime).slice(23))}</td>
+                            <th scope="row"><a href="dashboard/edit/${rwyUpdate[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
+                            <td>${rwyUpdate[i].pk.slice(-3)}</td>
+                            <td>${rwyUpdate[i].fields.callSign}</td>
+                            <td>${rwyUpdate[i].fields.alt_baro}</td>
+                            <td>${rwyUpdate[i].fields.groundSpeed}</td>
+                            <td>${String(rwyUpdate[i].fields.takeoffTime).slice(11, -8).concat(String(rwyUpdate[i].fields.takeoffTime).slice(23))}</td>
+                            <td>${String(rwyUpdate[i].fields.landTime).slice(11, -8).concat(String(rwyUpdate[i].fields.landTime).slice(23))}</td>
 
                             <td style="padding-top: 0px; padding-bottom: 0px; white-space: nowrap;">
                                 <table><tr><td>
-                                    <form method="POST" action="dashboard/formX2/${t6Update[i].pk}" class="form-group">    
+                                    <form method="POST" action="${window.location.href}/formX2/${rwyUpdate[i].pk}" class="form-group">    
                                         <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formX2Checkmark}>  
-                                        <label class="form-check-label" for="flexCheck${t6Update[i].pk}">2-Ship</label>     
+                                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${formX2Checkmark}>  
+                                        <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">2-Ship</label>     
                                     </form>
                                 </td></tr>
                                 <tr><td>
-                                    <form method="POST" action="dashboard/formX4/${t6Update[i].pk}" class="form-group">
+                                    <form method="POST" action="${window.location.href}/formX4/${rwyUpdate[i].pk}" class="form-group">
                                         <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formX4Checkmark}>  
-                                        <label class="form-check-label" for="flexCheck${t6Update[i].pk}">4-Ship</label>
+                                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${formX4Checkmark}>  
+                                        <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">4-Ship</label>
                                     </form>
                                 </td></tr></table>
                             </td>
 
                             <td>
-                            <form method="POST" action="dashboard/solo/${t6Update[i].pk}" class="form-group">
+                            <form method="POST" action="${window.location.href}/solo/${rwyUpdate[i].pk}" class="form-group">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${soloCheckmark}>  
-                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Solo</label>
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${soloCheckmark}>  
+                                <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">Solo</label>
                             </form>
                             </td>
 
-                            <td><center><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
+                            <td><center><a href="dashboard/355/${rwyUpdate[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
                             </tr>`
                             )
 
                 }
-                if (t6Update[i].fields.state == "taxiing") {
-                    if (!KEND17LMapAcft[t6Update[i].pk]) {
+                if (rwyUpdate[i].fields.state == "taxiing") {
+                    if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
 
-                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                        if(rwyUpdate[i].fields.aircraftType != "TEX2") {
                             //If it's not a T-6, then it's a UFO!
-                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: inactiveUFO}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                            MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: inactiveUFO}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);
                         }
                         else { //It's a T-6...
-                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: inactiveLegacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                            MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: inactiveLegacyT6Icon}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);
                         }
                           
                     } else {
                         // If there is already a marker with this id, simply modify its position.
-                        KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign);
 
-                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                        if(rwyUpdate[i].fields.aircraftType != "TEX2") {
                             //If it's not a T-6, then it's a UFO!
-                            KEND17LMapAcft[t6Update[i].pk].setIcon(inactiveUFO);
+                            MapAcft[rwyUpdate[i].pk].setIcon(inactiveUFO);
                         }
                         else { //It's a T-6...
-                            KEND17LMapAcft[t6Update[i].pk].setIcon(inactiveLegacyT6Icon);
+                            MapAcft[rwyUpdate[i].pk].setIcon(inactiveLegacyT6Icon);
                         }
                       }
 
-                    KEND17LTaxiing.insertAdjacentHTML('beforeend',       
+                    Taxiing.insertAdjacentHTML('beforeend',       
                     `<tr>
-                    <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
-                    <td>${t6Update[i].pk.slice(-3)}</td>
-                    <td>${t6Update[i].fields.callSign}</td>
-                    <td>${t6Update[i].fields.alt_baro}</td>
-                    <td>${t6Update[i].fields.groundSpeed}</td>
-                    <td>${String(t6Update[i].fields.takeoffTime).slice(11, -8).concat(String(t6Update[i].fields.takeoffTime).slice(23))}</td>
-                    <td>${String(t6Update[i].fields.landTime).slice(11, -8).concat(String(t6Update[i].fields.landTime).slice(23))}</td>
+                    <th scope="row"><a href="dashboard/edit/${rwyUpdate[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
+                    <td>${rwyUpdate[i].pk.slice(-3)}</td>
+                    <td>${rwyUpdate[i].fields.callSign}</td>
+                    <td>${rwyUpdate[i].fields.alt_baro}</td>
+                    <td>${rwyUpdate[i].fields.groundSpeed}</td>
+                    <td>${String(rwyUpdate[i].fields.takeoffTime).slice(11, -8).concat(String(rwyUpdate[i].fields.takeoffTime).slice(23))}</td>
+                    <td>${String(rwyUpdate[i].fields.landTime).slice(11, -8).concat(String(rwyUpdate[i].fields.landTime).slice(23))}</td>
 
                     <td style="padding-top: 0px; padding-bottom: 0px; white-space: nowrap;">
                         <table><tr><td>
-                            <form method="POST" action="dashboard/formX2/${t6Update[i].pk}" class="form-group">    
+                            <form method="POST" action="${window.location.href}/formX2/${rwyUpdate[i].pk}" class="form-group">    
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formX2Checkmark}>  
-                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">2-Ship</label>     
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${formX2Checkmark}>  
+                                <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">2-Ship</label>     
                             </form>
                         </td></tr>
                         <tr><td>
-                            <form method="POST" action="dashboard/formX4/${t6Update[i].pk}" class="form-group">
+                            <form method="POST" action="${window.location.href}/formX4/${rwyUpdate[i].pk}" class="form-group">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formX4Checkmark}>  
-                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">4-Ship</label>
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${formX4Checkmark}>  
+                                <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">4-Ship</label>
                             </form>
                         </td></tr></table>
                     </td>
 
                     <td>
-                    <form method="POST" action="dashboard/solo/${t6Update[i].pk}" class="form-group">
+                    <form method="POST" action="${window.location.href}/solo/${rwyUpdate[i].pk}" class="form-group">
                         <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${soloCheckmark}>  
-                        <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Solo</label>
+                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${soloCheckmark}>  
+                        <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">Solo</label>
                     </form>
                     </td>
 
-                    <td><center><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
+                    <td><center><a href="dashboard/355/${rwyUpdate[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
                     </tr>`
                     )
                 }
-                if (t6Update[i].fields.state == "off station") {
-                    if (!KEND17LMapAcft[t6Update[i].pk]) {
+                if (rwyUpdate[i].fields.state == "off station") {
+                    if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
 
-                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                        if(rwyUpdate[i].fields.aircraftType != "TEX2") {
                             //If it's not a T-6, then it's a UFO!
-                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: UFO}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                            MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: UFO}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);
                         }
                         else { //It's a T-6...
-                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: legacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                            MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: legacyT6Icon}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);
                         }
                           
                     } else {
                         // If there is already a marker with this id, simply modify its position.
-                        KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign);
 
-                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                        if(rwyUpdate[i].fields.aircraftType != "TEX2") {
                             //If it's not a T-6, then it's a UFO!
-                            KEND17LMapAcft[t6Update[i].pk].setIcon(UFO);
+                            MapAcft[rwyUpdate[i].pk].setIcon(UFO);
                         }
                         else { //It's a T-6...
-                            KEND17LMapAcft[t6Update[i].pk].setIcon(legacyT6Icon);
+                            MapAcft[rwyUpdate[i].pk].setIcon(legacyT6Icon);
                         }
                       }
 
-                    KEND17LOffStation.insertAdjacentHTML('beforeend',       
+                    OffStation.insertAdjacentHTML('beforeend',       
                     `<tr>
-                    <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
-                    <td>${t6Update[i].pk.slice(-3)}</td>
-                    <td>${t6Update[i].fields.callSign}</td>
-                    <td>${t6Update[i].fields.alt_baro}</td>
-                    <td>${t6Update[i].fields.groundSpeed}</td>
-                    <td>${String(t6Update[i].fields.takeoffTime).slice(11, -8).concat(String(t6Update[i].fields.takeoffTime).slice(23))}</td>
-                    <td>${String(t6Update[i].fields.landTime).slice(11, -8).concat(String(t6Update[i].fields.landTime).slice(23))}</td>
+                    <th scope="row"><a href="dashboard/edit/${rwyUpdate[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
+                    <td>${rwyUpdate[i].pk.slice(-3)}</td>
+                    <td>${rwyUpdate[i].fields.callSign}</td>
+                    <td>${rwyUpdate[i].fields.alt_baro}</td>
+                    <td>${rwyUpdate[i].fields.groundSpeed}</td>
+                    <td>${String(rwyUpdate[i].fields.takeoffTime).slice(11, -8).concat(String(rwyUpdate[i].fields.takeoffTime).slice(23))}</td>
+                    <td>${String(rwyUpdate[i].fields.landTime).slice(11, -8).concat(String(rwyUpdate[i].fields.landTime).slice(23))}</td>
 
                     <td style="padding-top: 0px; padding-bottom: 0px; white-space: nowrap;">
                         <table><tr><td>
-                            <form method="POST" action="dashboard/formX2/${t6Update[i].pk}" class="form-group">    
+                            <form method="POST" action="${window.location.href}/formX2/${rwyUpdate[i].pk}" class="form-group">    
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formX2Checkmark}>  
-                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">2-Ship</label>     
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${formX2Checkmark}>  
+                                <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">2-Ship</label>     
                             </form>
                         </td></tr>
                         <tr><td>
-                            <form method="POST" action="dashboard/formX4/${t6Update[i].pk}" class="form-group">
+                            <form method="POST" action="${window.location.href}/formX4/${rwyUpdate[i].pk}" class="form-group">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formX4Checkmark}>  
-                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">4-Ship</label>
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${formX4Checkmark}>  
+                                <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">4-Ship</label>
                             </form>
                         </td></tr></table>
                     </td>
 
                     <td>
-                    <form method="POST" action="dashboard/solo/${t6Update[i].pk}" class="form-group">
+                    <form method="POST" action="${window.location.href}/solo/${rwyUpdate[i].pk}" class="form-group">
                         <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${soloCheckmark}>  
-                        <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Solo</label>
+                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${soloCheckmark}>  
+                        <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">Solo</label>
                     </form>
                     </td>
 
-                    <td><center><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
+                    <td><center><a href="dashboard/355/${rwyUpdate[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
                     </tr>`
                     )
                 }
-                if (t6Update[i].fields.state == "lost signal") {
-                    if (!KEND17LMapAcft[t6Update[i].pk]) {
+                if (rwyUpdate[i].fields.state == "lost signal") {
+                    if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
 
-                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                        if(rwyUpdate[i].fields.aircraftType != "TEX2") {
                             //If it's not a T-6, then it's a UFO!
-                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: inactiveUFO}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                            MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: inactiveUFO}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);
                         }
                         else { //It's a T-6...
-                            KEND17LMapAcft[t6Update[i].pk] = L.marker([t6Update[i].fields.latitude, t6Update[i].fields.longitude], {rotationAngle: t6Update[i].fields.track, icon: inactiveLegacyT6Icon}).addTo(KEND17Lmap).bindPopup(t6Update[i].fields.callSign);
+                            MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: inactiveLegacyT6Icon}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);
                         }
                           
                     } else {
                         // If there is already a marker with this id, simply modify its position.
-                        KEND17LMapAcft[t6Update[i].pk].setLatLng([t6Update[i].fields.latitude, t6Update[i].fields.longitude]).setRotationAngle(t6Update[i].fields.track).setPopupContent(t6Update[i].fields.callSign);
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign);
 
-                        if(t6Update[i].fields.aircraftType != "TEX2") {
+                        if(rwyUpdate[i].fields.aircraftType != "TEX2") {
                             //If it's not a T-6, then it's a UFO!
-                            KEND17LMapAcft[t6Update[i].pk].setIcon(inactiveUFO);
+                            MapAcft[rwyUpdate[i].pk].setIcon(inactiveUFO);
                         }
                         else { //It's a T-6...
-                            KEND17LMapAcft[t6Update[i].pk].setIcon(inactiveLegacyT6Icon);
+                            MapAcft[rwyUpdate[i].pk].setIcon(inactiveLegacyT6Icon);
                         }
                       }
 
-                    KEND17LLostSignal.insertAdjacentHTML('beforeend',       
+                    LostSignal.insertAdjacentHTML('beforeend',       
                     `<tr>
-                    <th scope="row"><a href="dashboard/edit/${t6Update[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
-                    <td>${t6Update[i].pk.slice(-3)}</td>
-                    <td>${t6Update[i].fields.callSign}</td>
-                    <td>${t6Update[i].fields.alt_baro}</td>
-                    <td>${t6Update[i].fields.groundSpeed}</td>
-                    <td>${String(t6Update[i].fields.takeoffTime).slice(11, -8).concat(String(t6Update[i].fields.takeoffTime).slice(23))}</td>
-                    <td>${String(t6Update[i].fields.landTime).slice(11, -8).concat(String(t6Update[i].fields.landTime).slice(23))}</td>
+                    <th scope="row"><a href="dashboard/edit/${rwyUpdate[i].pk}" class="btn btn-primary btn-sm">edit</a></th>
+                    <td>${rwyUpdate[i].pk.slice(-3)}</td>
+                    <td>${rwyUpdate[i].fields.callSign}</td>
+                    <td>${rwyUpdate[i].fields.alt_baro}</td>
+                    <td>${rwyUpdate[i].fields.groundSpeed}</td>
+                    <td>${String(rwyUpdate[i].fields.takeoffTime).slice(11, -8).concat(String(rwyUpdate[i].fields.takeoffTime).slice(23))}</td>
+                    <td>${String(rwyUpdate[i].fields.landTime).slice(11, -8).concat(String(rwyUpdate[i].fields.landTime).slice(23))}</td>
 
                     <td style="padding-top: 0px; padding-bottom: 0px; white-space: nowrap;">
                         <table><tr><td>
-                            <form method="POST" action="dashboard/formX2/${t6Update[i].pk}" class="form-group">    
+                            <form method="POST" action="${window.location.href}/formX2/${rwyUpdate[i].pk}" class="form-group">    
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formX2Checkmark}>  
-                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">2-Ship</label>     
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${formX2Checkmark}>  
+                                <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">2-Ship</label>     
                             </form>
                         </td></tr>
                         <tr><td>
-                            <form method="POST" action="dashboard/formX4/${t6Update[i].pk}" class="form-group">
+                            <form method="POST" action="${window.location.href}/formX4/${rwyUpdate[i].pk}" class="form-group">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${formX4Checkmark}>  
-                                <label class="form-check-label" for="flexCheck${t6Update[i].pk}">4-Ship</label>
+                                <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${formX4Checkmark}>  
+                                <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">4-Ship</label>
                             </form>
                         </td></tr></table>
                     </td>
 
                     <td>
-                    <form method="POST" action="dashboard/solo/${t6Update[i].pk}" class="form-group">
+                    <form method="POST" action="${window.location.href}/solo/${rwyUpdate[i].pk}" class="form-group">
                         <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
-                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${t6Update[i].pk}" ${soloCheckmark}>  
-                        <label class="form-check-label" for="flexCheck${t6Update[i].pk}">Solo</label>
+                        <input onChange="this.form.submit()" class="form-check-input" type="checkbox" value="" id="flexCheck${rwyUpdate[i].pk}" ${soloCheckmark}>  
+                        <label class="form-check-label" for="flexCheck${rwyUpdate[i].pk}">Solo</label>
                     </form>
                     </td>
 
-                    <td><center><a href="dashboard/355/${t6Update[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
+                    <td><center><a href="dashboard/355/${rwyUpdate[i].pk}" class="btn btn-primary btn-sm btn-danger">355</a></center></td>
                     </tr>`
                     )
                 }
             }
                         //remove all aircraft on the map that were not in the update message
-            for (const[tailNumber, data] of Object.entries(KEND17LMapAcftNotUpdated)) {
-                KEND17Lmap.removeLayer(KEND17LMapAcft[tailNumber])
-                delete KEND17LMapAcft[tailNumber]
+            for (const[tailNumber, data] of Object.entries(MapAcftNotUpdated)) {
+                map.removeLayer(MapAcft[tailNumber])
+                delete MapAcft[tailNumber]
             }
 
         }

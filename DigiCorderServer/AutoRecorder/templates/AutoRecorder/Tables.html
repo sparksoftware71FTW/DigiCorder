@@ -2,7 +2,7 @@
             <div class="row g-0">
             
               <!-- <div class="col-md-6" id="map" style="height: 350px; width: 50%;"> -->
-                <div class="col-md-6" id="KEND17Lmap" width="100%" style="height: auto; min-height: 400px;" preserveAspectRatio="xMidYMid slice", onresize="KEND17Lmap.invalidateSize()">
+                <div class="col-md-6" id="map" width="100%" style="height: auto; min-height: 400px;" preserveAspectRatio="xMidYMid slice", onresize="map.invalidateSize()">
 
                 <!-- <svg class="bd-placeholder-img" width="100%" height="350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Map</text></svg> -->
               </div>
@@ -13,56 +13,56 @@
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                       <div class="ms-2 me-auto" >
                         <div class="fw-bold" >Dual Aircraft Outside the Pattern > 1+45: </div>
-                        <div id="KEND17L Dual Aircraft Outside the Pattern > 1+45">
+                        <div id=" Dual Aircraft Outside the Pattern > 1+45">
                         </div>
                         <!-- Callsigns here -->
                       </div>
-                      <span id="numKEND17L Dual Aircraft Outside the Pattern > 1+45"></span>
+                      <span id="num Dual Aircraft Outside the Pattern > 1+45"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                       <div class="ms-2 me-auto" >
                         <div class="fw-bold">Solo Aircraft Outside the Pattern > 1+20:</div>
-                        <div id="KEND17L Solo Aircraft Outside the Pattern > 1+20">
+                        <div id=" Solo Aircraft Outside the Pattern > 1+20">
                         </div>
                       </div>
-                      <span id="numKEND17L Solo Aircraft Outside the Pattern > 1+20"></span>
+                      <span id="num Solo Aircraft Outside the Pattern > 1+20"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                       <div class="ms-2 me-auto">
                         <div class="fw-bold">Solos Off Station:</div>
-                        <div id="KEND17L Solos Off Station">
+                        <div id=" Solos Off Station">
                         </div>
                         <!-- Callsigns here -->
                       </div>
-                      <span id="numKEND17L Solos Off Station"></span>
+                      <span id="num Solos Off Station"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                       <div class="ms-2 me-auto">
                         <div class="fw-bold">Solos in the Pattern:</div>
-                        <div id="KEND17L Solos in the Pattern">
+                        <div id=" Solos in the Pattern">
                         </div>
                         <!-- Callsigns here -->
                       </div>
-                      <span id="numKEND17L Solos in the Pattern"></span>
+                      <span id="num Solos in the Pattern"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                       <div class="ms-2 me-auto">
                         <div class="fw-bold">Next T/O:</div>
-                        <div id="KEND17L Next T/O is:">
+                        <div id=" Next T/O is:">
                         </div>
                         <div class="container-fluid justify-content-center">
                           <div class="row ">
                             <div class=" col-4 form-check form-switch">
-                              <input class="form-check-input" type="checkbox" role="switch" id="nextTO-KEND17L-solo" onclick="nextTOMessageKEND17L(chatSocket, 'solo')">
-                              <label class="form-check-label" for="nextTO-KEND17L-solo">Solo</label>
+                              <input class="form-check-input" type="checkbox" role="switch" id="nextTO--solo" onclick="nextTOMessage(chatSocket, 'solo')">
+                              <label class="form-check-label" for="nextTO--solo">Solo</label>
                             </div>                            
                             <div class=" col-4 form-check form-switch">
-                              <input class="form-check-input" type="checkbox" role="switch" id="nextTO-KEND17L-formationX2" onclick="nextTOMessageKEND17L(chatSocket, 'formationX2')">
-                              <label class="form-check-label" for="nextTO-KEND17L-formationX2" style="white-space: nowrap;">2-Ship</label>
+                              <input class="form-check-input" type="checkbox" role="switch" id="nextTO--formationX2" onclick="nextTOMessage(chatSocket, 'formationX2')">
+                              <label class="form-check-label" for="nextTO--formationX2" style="white-space: nowrap;">2-Ship</label>
                             </div>
                             <div class=" col-4 form-check form-switch">
-                              <input class="form-check-input" type="checkbox" role="switch" id="nextTO-KEND17L-formationX4" onclick="nextTOMessageKEND17L(chatSocket, 'formationX4')">
-                              <label class="form-check-label" for="nextTO-KEND17L-formationX4" style="white-space: nowrap;">4-Ship</label>
+                              <input class="form-check-input" type="checkbox" role="switch" id="nextTO--formationX4" onclick="nextTOMessage(chatSocket, 'formationX4')">
+                              <label class="form-check-label" for="nextTO--formationX4" style="white-space: nowrap;">4-Ship</label>
                             </div>
                           </div>
                         </div>
@@ -127,7 +127,7 @@
           <div class="card">
               <div class="card-header">
                 In Pattern
-                <span id="numKEND17L In Pattern"><!-- NUMBER of callsigns here --></span>
+                <span id="num In Pattern"><!-- NUMBER of callsigns here --></span>
               </div>
 
               <div class="card-body" style="overflow-x: scroll;">
@@ -147,7 +147,7 @@
                         <th scope="col">355</th> 
                       </tr>
                       </thead>
-                      <tbody id="KEND17L In Pattern">
+                      <tbody id=" In Pattern">
 
                       </tbody>
                     </table>
@@ -158,7 +158,7 @@
             <div class="card">
               <div class="card-header" >
                 Taxiing
-                <span id="numKEND17L Taxiing"><!-- NUMBER of callsigns here --></span>
+                <span id="num Taxiing"><!-- NUMBER of callsigns here --></span>
               </div>
               <div class="card-body" style="overflow-x: scroll;">
                   <div class="container-fluid">
@@ -177,7 +177,7 @@
                         <th scope="col">355</th> 
                       </tr>
                       </thead>
-                      <tbody id="KEND17L Taxiing">
+                      <tbody id=" Taxiing">
 
                       </tbody>
                     </table>
@@ -187,7 +187,7 @@
             <div class="card">
               <div class="card-header">
                 Off Station
-                <span id="numKEND17L Off Station"><!-- NUMBER of callsigns here --></span>
+                <span id="num Off Station"><!-- NUMBER of callsigns here --></span>
               </div>
               <div class="card-body" style="overflow-x: scroll;">
                   <div class="container-fluid">
@@ -206,7 +206,7 @@
                         <th scope="col">355</th> 
                       </tr>
                       </thead>
-                      <tbody id="KEND17L Off Station">
+                      <tbody id=" Off Station">
 
                       </tbody>
                       </table>
@@ -216,7 +216,7 @@
             <div class="card">
               <div class="card-header">
                 Lost Signal
-                <span id="numKEND17L Lost Signal"><!-- NUMBER of callsigns here --></span>
+                <span id="num Lost Signal"><!-- NUMBER of callsigns here --></span>
               </div>
               <div class="card-body" style="overflow-x: scroll;">
                   <div class="container-fluid">
@@ -235,7 +235,7 @@
                         <th scope="col">355</th> 
                       </tr>
                       </thead>
-                      <tbody id="KEND17L Lost Signal">
+                      <tbody id=" Lost Signal">
 
                       </tbody>
                     </table>

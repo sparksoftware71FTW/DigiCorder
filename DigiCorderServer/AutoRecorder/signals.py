@@ -160,12 +160,14 @@ def createUserGroupForEachAirfield(sender, instance, created, **kwargs):
     airfieldGroup, created = Group.objects.get_or_create(name=instance.FAAcode)
     if created:
         logger.info("Created user group for airfield: " + airfieldGroup.name)
+        instance.userGroup = airfieldGroup
+        instance.save()
     
-@receiver(post_save, sender=Runway, dispatch_uid="createUserGroupForEachRunway")
-def createUserGroupForEachRunway(sender, instance, created, **kwargs):
-    runwayGroup, created = Group.objects.get_or_create(name=instance.name)
-    if created:
-        logger.info("Created user group for runway: " + runwayGroup.name)
+# @receiver(post_save, sender=Runway, dispatch_uid="createUserGroupForEachRunway")
+# def createUserGroupForEachRunway(sender, instance, created, **kwargs):
+#     runwayGroup, created = Group.objects.get_or_create(name=instance.name)
+#     if created:
+#         logger.info("Created user group for runway: " + runwayGroup.name)
 
 
 def get_ActiveAircraft_queryset():

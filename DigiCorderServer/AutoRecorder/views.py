@@ -19,8 +19,31 @@ from .models import ActiveAircraft, CompletedSortie, Airfield, RsuCrew, Runway
 def index(request):
     return render(request, 'AutoRecorder/bootbase.html')
 
+# @staff_member_required(login_url='/AutoRecorder')
+# def runway(request):
+#     RsuCrewFormFactory = modelform_factory(model=RsuCrew, exclude=('timestamp',))
+#     if request.method == 'POST':
+#         crew = RsuCrew.objects.create(timestamp=timezone.now())
+#         crewformset = RsuCrewFormFactory(request.POST, instance=crew)
+#         if crewformset.is_valid():
+#             crewformset.timestamp = timezone.now()
+#             crewformset.save()
+#             return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+#     else:
+#         try:
+#             crew = RsuCrew.objects.latest('timestamp')
+#             print(str(crew.controller) + "!!!!!!")
+#         except RsuCrew.DoesNotExist:
+#             crew = RsuCrew.objects.create(timestamp=timezone.now())
+#             print(str(crew.controller) + "Created initial blank RSU Crew!!!!")
+
+#         crewformset = RsuCrewFormFactory(instance=crew)
+#         runways = list(Runway.objects.all())
+#         return render(request, 'AutoRecorder/dashboardNew.html', {"crewformset": crewformset, "runways": runways[0]})
+
+
 @staff_member_required(login_url='/AutoRecorder')
-def dashboard(request):
+def runway(request, airfield, runway):
     RsuCrewFormFactory = modelform_factory(model=RsuCrew, exclude=('timestamp',))
     if request.method == 'POST':
         crew = RsuCrew.objects.create(timestamp=timezone.now())
@@ -39,7 +62,21 @@ def dashboard(request):
 
         crewformset = RsuCrewFormFactory(instance=crew)
         runways = list(Runway.objects.all())
-        return render(request, 'AutoRecorder/dashboardNew.html', {"crewformset": crewformset, "runways": runways[0]})
+        return render(request, 'AutoRecorder/runwayDisplay.html', {"crewformset": crewformset, "runways": runways, "runway": runway, "host": request.get_host()})
+
+@staff_member_required(login_url='/AutoRecorder')
+def dashboard(request):
+    airfields = []
+    runways = []
+    #Get all the airfields and the associated runway objects that a user has access to...
+    for group in request.user.groups.all():
+        if hasattr(group, 'airfield'):
+            airfields.append(group.airfield)
+    for airfield in airfields:
+        for runway in Runway.objects.filter(airfield=airfield):
+            runways.append(runway)
+    
+    return render(request, 'AutoRecorder/dashboardNew.html', {"runways": runways, "host": request.get_host()})
     #return render(request, 'AutoRecorder/dashboard.html')
 
 
@@ -169,34 +206,34 @@ def formSolo(request, tailNumber):
 
 
 @staff_member_required(login_url='/AutoRecorder')
-def formX2(request, tailNumber):
+def formX2(request, airfield, runway, tailNumber):
 
     if request.method == 'POST':
         acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
         toggleFormX2(acft)
-        return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+        return HttpResponseRedirect(reverse('AutoRecorder:runway', args=[airfield, runway]))
     else:
         return render(request, 'AutoRecorder/dashboard.html')
 
 
 @staff_member_required(login_url='/AutoRecorder')
-def formX4(request, tailNumber):
+def formX4(request, airfield, runway, tailNumber):
 
     if request.method == 'POST':
         acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
         toggleFormX4(acft)
-        return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+        return HttpResponseRedirect(reverse('AutoRecorder:runway', args=[airfield, runway]))
     else:
         return render(request, 'AutoRecorder/dashboard.html')
 
 
 @staff_member_required(login_url='/AutoRecorder')
-def solo(request, tailNumber):
+def solo(request, airfield, runway, tailNumber):
 
     if request.method == 'POST':
         acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
         toggleSolo(acft)
-        return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+        return HttpResponseRedirect(reverse('AutoRecorder:runway', args=[airfield, runway]))
     else:
         return render(request, 'AutoRecorder/dashboard.html')
 

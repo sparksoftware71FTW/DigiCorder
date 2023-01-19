@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+{% extends 'AutoRecorder/dashboardNew.html' %}
+
+{% block runway %}
+
+<script type="text/javascript">
+    var url = `ws://${window.location.host}/ws/socket-server/`
+    console.log(url)
+
+    console.log("{{runway}} !!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    
+    var csrf_token = '{{ csrf_token }}'
+
+    const chatSocket = new WebSocket(url)
+
+    chatSocket.addEventListener('message', function(e){
+        let data = JSON.parse(e.data)
+        
+        if(data.type == 'rwyUpdate'){
+            console.log("rwy meta is: ", data.meta)
+        }
+        if(data.type == 'rwyUpdate'){
+            console.log("runway field is: ", data.runway)
+        }
+    }
+    )
+
+    function removeAllChildNodes(parent) {
+        if(parent != null) {
+            if(parent.firstChild != null){
+                while (parent.firstChild) {
+                    parent.removeChild(parent.firstChild);
+                }
+            }
+        }
+    }
+
+</script>
+
+
+{% include 'AutoRecorder/Tables.html' %}
+<script> load(chatSocket, csrf_token) </script>
+<script> rxNextTOMessage(chatSocket) </script>
+{% load static %}
+<script type="text/javascript">
+
+    var myCustomGroup = L.geoJSON(null, {
+        style: getStyle
+    });
+
+    function getStyle(feature) {
+        return {
+                    color: '#ff6e6e6e',
+                    // weight: 7
+                }
+        // if (feature.properties.styleUrl === '#PolyStyleOGreen') {
+        //     if (feature.geometry.type === 'LineString') {
+        //         return {
+        //             color: '#ff6e6e6e',
+        //             weight: 4
+        //         }
+        //     }
+        // }
+    }
+
+    console.log("AutoRecorder{{runways.kmlPatternFile.url}}")
+
+    omnivore.kml('{% static "AutoRecorder/kml/Eckho Recovery.kml" %}').addTo(map)
+    // omnivore.kml('{% static "AutoRecorder/kml/RoughPatternPoints.kml" %}').addTo(map)
+    omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}', null, myCustomGroup).addTo(map) 
+    omnivore.kml('{% static "AutoRecorder/kml/FOXTR Recoery.kml" %}').addTo(map)
+    omnivore.kml("{{runways.kmlPatternFile.url}}").addTo(map)
+    map.invalidateSize() //?????????????????????????????????????????????????????????
+     
+</script>
+
+
+        <div id="messages"></div>
+        <div id="T6s"></div>
+
+{% endblock %}

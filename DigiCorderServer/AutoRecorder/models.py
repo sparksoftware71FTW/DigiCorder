@@ -2,7 +2,7 @@ from email.policy import default
 from unittest.util import _MAX_LENGTH
 from django.db import models
 import json
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.timezone import timedelta
@@ -21,6 +21,7 @@ class Trigger(models.Model):
 class Airfield(models.Model):
     FAAcode = models.CharField('FAA Code', max_length=4, primary_key=True)
     name = models.CharField('Name', max_length=40, blank=True, null=True)
+    userGroup = models.OneToOneField(Group, on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name="User Group (note: this will automatically set itself to a group with an identical name to 'FAA Code')")
 
 class GroupExtras(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE, primary_key=True)
@@ -170,7 +171,7 @@ class ActiveAircraft(models.Model):
     
 
 class CompletedSortie(models.Model):
-    aircraftType = models.CharField('Type', max_length=20, blank=True, null=True)
+    aircraftType = models.ForeignKey(AircraftType, on_delete=models.CASCADE, blank=True, null=True)
     tailNumber = models.CharField('Tail', max_length=15)
     callSign = models.CharField('Callsign', max_length=12, blank=True, null=True)
     takeoffTime = models.DateTimeField('Takeoff Time', blank=True, null=True)
