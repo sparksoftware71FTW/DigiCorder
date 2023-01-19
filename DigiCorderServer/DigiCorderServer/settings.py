@@ -28,11 +28,14 @@ SECRET_KEY = 'django-insecure-bpx%t#w_(^_h0yt#xqbit0(p%9!5bctf2ai4@-kryin+x0%=@5
 DEBUG = True
 
 MEDIA_ROOT = ''
+MEDIA_URL = '/media/AutoRecorder/'
 
 if DEBUG:
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'AutoRecorder', 'media')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'AutoRecorder', 'media', 'AutoRecorder')
 else:
     MEDIA_ROOT = '/some/absolute/path/on/production/server'
+
+print(MEDIA_ROOT)
 
 LOGGING = {
     'version': 1,                       # the dictConfig format version

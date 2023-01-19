@@ -50,6 +50,15 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                     'meta': rwyMetaData
                 }
             )
+            await channel_layer.group_send(
+            'test',
+                {
+                    'type': 'rwyUpdate',
+                    'runway': runway.name, 
+                    'message': rwyMessage,
+                    'meta': rwyMetaData
+                }
+            )
         
         for msg in nextTOMessages:
             await channel_layer.group_send(
@@ -108,6 +117,19 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type':'lolmessage',
             'message':txmessage
+        }))
+
+
+    async def rwyUpdate(self, event):
+        txmessage = event['message']
+        txmetadata = event['meta']
+        runway = event['runway']
+        logger.debug(str(txmessage))
+        await self.send(text_data=json.dumps({
+            'type':'rwyUpdate',
+            'runway': runway,
+            'message':txmessage,
+            'meta':txmetadata
         }))
 
 

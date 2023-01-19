@@ -2,11 +2,11 @@ from email.policy import default
 from unittest.util import _MAX_LENGTH
 from django.db import models
 import json
+from django.contrib.auth.models import Group
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from django.core import serializers
-
 
 
 class Message(models.Model):
@@ -21,6 +21,10 @@ class Trigger(models.Model):
 class Airfield(models.Model):
     FAAcode = models.CharField('FAA Code', max_length=4, primary_key=True)
     name = models.CharField('Name', max_length=40, blank=True, null=True)
+
+class GroupExtras(models.Model):
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, primary_key=True)
+    airfield = models.OneToOneField(Airfield, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.FAAcode)

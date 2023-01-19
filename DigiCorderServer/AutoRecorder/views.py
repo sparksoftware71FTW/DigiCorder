@@ -38,7 +38,8 @@ def dashboard(request):
             print(str(crew.controller) + "Created initial blank RSU Crew!!!!")
 
         crewformset = RsuCrewFormFactory(instance=crew)
-        return render(request, 'AutoRecorder/dashboard.html', {"crewformset": crewformset})
+        runways = list(Runway.objects.all())
+        return render(request, 'AutoRecorder/dashboardNew.html', {"crewformset": crewformset, "runways": runways[0]})
     #return render(request, 'AutoRecorder/dashboard.html')
 
 

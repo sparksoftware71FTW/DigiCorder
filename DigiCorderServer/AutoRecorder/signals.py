@@ -7,8 +7,10 @@ from django.db.models.signals import post_save
 from django.db.models import Q
 from django.dispatch import receiver
 from django.core import serializers
+from django.contrib.auth.models import Group
 
-from .models import ActiveAircraft, ActiveAircraftManager, CompletedSortie, Message, Trigger, NextTakeoffData, Runway, RunwayManager
+
+from .models import ActiveAircraft, ActiveAircraftManager, CompletedSortie, Message, Trigger, NextTakeoffData, Runway, RunwayManager, Airfield
 
 import logging
 logger = logging.getLogger(__name__)
@@ -83,6 +85,17 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
                 'meta': rwyMetaData
             }
         )
+        async_to_sync(channel_layer.group_send)(
+        'test',
+            {
+                'type': 'rwyUpdate',
+                'runway': runway.name,
+                'message': rwyMessage,
+                'meta': rwyMetaData
+            }
+        )
+
+
 
 
     # t6message, t6metadata = get_T6_queryset_update_message()
@@ -140,6 +153,19 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
     #     )
     #logger.info("Active Aircraft Signal Triggered")
 
+
+
+@receiver(post_save, sender=Airfield, dispatch_uid="createUserGroupForEachAirfield")
+def createUserGroupForEachAirfield(sender, instance, created, **kwargs):
+    airfieldGroup, created = Group.objects.get_or_create(name=instance.FAAcode)
+    if created:
+        logger.info("Created user group for airfield: " + airfieldGroup.name)
+    
+@receiver(post_save, sender=Runway, dispatch_uid="createUserGroupForEachRunway")
+def createUserGroupForEachRunway(sender, instance, created, **kwargs):
+    runwayGroup, created = Group.objects.get_or_create(name=instance.name)
+    if created:
+        logger.info("Created user group for runway: " + runwayGroup.name)
 
 
 def get_ActiveAircraft_queryset():
