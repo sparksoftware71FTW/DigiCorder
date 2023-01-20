@@ -8,7 +8,7 @@
     var url = `ws://${window.location.host}/ws/socket-server/`
     console.log(url)
 
-    console.log("{{runway}} !!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    var displayedAcftTypes = JSON.parse("{{displayedAcftTypes | escapejs}}")
     
     var csrf_token = '{{ csrf_token }}'
 
@@ -24,6 +24,7 @@
             console.log("runway field is: ", data.runway)
         }
     }
+
     )
 
     function removeAllChildNodes(parent) {
@@ -38,10 +39,9 @@
 
 </script>
 
-
 {% include 'AutoRecorder/Tables.html' %}
-<script> load(chatSocket, csrf_token) </script>
-<script> rxNextTOMessage(chatSocket) </script>
+<script> load(chatSocket, csrf_token, '{{field.lat}}', '{{field.lon}}', '{{field.FAAcode}}', '{{runway}}', '{{displayedRunwayObject.patternName}}') </script>
+<script> rxNextTOMessage(chatSocket, '{{runway}}') </script>
 {% load static %}
 <script type="text/javascript">
 

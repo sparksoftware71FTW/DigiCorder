@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>SR-247.kml</name>
+	<Schema name="MTRSR_OK_KS_TX_Footprints" id="S_MTRSR_OK_KS_TX_Footprints_ISSSSSSSDD">
+		<SimpleField type="int" name="OBJECTID"><displayName>&lt;b&gt;OBJECTID&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="MTR_IDENT"><displayName>&lt;b&gt;MTR_IDENT&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_USIN"><displayName>&lt;b&gt;FIRST_USIN&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_US_1"><displayName>&lt;b&gt;FIRST_US_1&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_US_2"><displayName>&lt;b&gt;FIRST_US_2&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SCHE"><displayName>&lt;b&gt;FIRST_SCHE&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SC_1"><displayName>&lt;b&gt;FIRST_SC_1&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SC_2"><displayName>&lt;b&gt;FIRST_SC_2&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Shape_Leng"><displayName>&lt;b&gt;Shape_Leng&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Shape_Area"><displayName>&lt;b&gt;Shape_Area&lt;/b&gt;</displayName>
+</SimpleField>
+	</Schema>
+	<Style id="falseColor">
+		<BalloonStyle>
+			<text><![CDATA[<table border="0">
+  <tr><td><b>OBJECTID</b></td><td>$[MTRSR_OK_KS_TX_Footprints/OBJECTID]</td></tr>
+  <tr><td><b>MTR_IDENT</b></td><td>$[MTRSR_OK_KS_TX_Footprints/MTR_IDENT]</td></tr>
+  <tr><td><b>FIRST_USIN</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_USIN]</td></tr>
+  <tr><td><b>FIRST_US_1</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_US_1]</td></tr>
+  <tr><td><b>FIRST_US_2</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_US_2]</td></tr>
+  <tr><td><b>FIRST_SCHE</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SCHE]</td></tr>
+  <tr><td><b>FIRST_SC_1</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SC_1]</td></tr>
+  <tr><td><b>FIRST_SC_2</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SC_2]</td></tr>
+  <tr><td><b>Shape_Leng</b></td><td>$[MTRSR_OK_KS_TX_Footprints/Shape_Leng]</td></tr>
+  <tr><td><b>Shape_Area</b></td><td>$[MTRSR_OK_KS_TX_Footprints/Shape_Area]</td></tr>
+</table>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff0000ff</color>
+			<width>6</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>00d4bc00</color>
+		</PolyStyle>
+	</Style>
+	<Style id="falseColor1">
+		<BalloonStyle>
+			<text><![CDATA[<table border="0">
+  <tr><td><b>OBJECTID</b></td><td>$[MTRSR_OK_KS_TX_Footprints/OBJECTID]</td></tr>
+  <tr><td><b>MTR_IDENT</b></td><td>$[MTRSR_OK_KS_TX_Footprints/MTR_IDENT]</td></tr>
+  <tr><td><b>FIRST_USIN</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_USIN]</td></tr>
+  <tr><td><b>FIRST_US_1</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_US_1]</td></tr>
+  <tr><td><b>FIRST_US_2</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_US_2]</td></tr>
+  <tr><td><b>FIRST_SCHE</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SCHE]</td></tr>
+  <tr><td><b>FIRST_SC_1</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SC_1]</td></tr>
+  <tr><td><b>FIRST_SC_2</b></td><td>$[MTRSR_OK_KS_TX_Footprints/FIRST_SC_2]</td></tr>
+  <tr><td><b>Shape_Leng</b></td><td>$[MTRSR_OK_KS_TX_Footprints/Shape_Leng]</td></tr>
+  <tr><td><b>Shape_Area</b></td><td>$[MTRSR_OK_KS_TX_Footprints/Shape_Area]</td></tr>
+</table>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff0000ff</color>
+			<width>6</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>00d4bc00</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="falseColor0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#falseColor</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#falseColor1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark>
+		<name>SR-247</name>
+		<open>1</open>
+		<styleUrl>#falseColor0</styleUrl>
+		<ExtendedData>
+			<SchemaData schemaUrl="#S_MTRSR_OK_KS_TX_Footprints_ISSSSSSSDD">
+				<SimpleData name="OBJECTID">69</SimpleData>
+				<SimpleData name="MTR_IDENT">SR247</SimpleData>
+				<SimpleData name="FIRST_USIN">71 OSS</SimpleData>
+				<SimpleData name="FIRST_US_1">Vance AFB</SimpleData>
+				<SimpleData name="FIRST_US_2"></SimpleData>
+				<SimpleData name="FIRST_SCHE">71 OSS</SimpleData>
+				<SimpleData name="FIRST_SC_1">Vance AFB</SimpleData>
+				<SimpleData name="FIRST_SC_2"></SimpleData>
+				<SimpleData name="Shape_Leng">511059</SimpleData>
+				<SimpleData name="Shape_Area">2.6858e+09</SimpleData>
+			</SchemaData>
+		</ExtendedData>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-96.65031111507534,37.13280167833777,0 -96.68779538913496,37.11373419338501,0 -96.90436186962407,36.86361785375857,0 -96.91547819213837,36.84080710959038,0 -96.95720864471792,36.60322938079207,0 -97.28347787574093,36.6031428733666,0 -97.28333299982222,36.54999900029084,0 -97.28318834258836,36.49685840981819,0 -96.90014465688623,36.49685840984269,0 -96.8593898479391,36.51214794137394,0 -96.8347940180814,36.54251707181907,0 -96.78675454654574,36.81335737747198,0 -96.60749054784958,37.02008872588831,0 -96.39186005658971,36.96082753631212,0 -96.54292225434918,36.70618666500192,0 -96.54822441556293,36.69301385749357,0 -96.63261061048601,36.3234524253628,0 -96.76778986417084,36.28559747529502,0 -96.99728691804818,36.45587758517279,0 -97.04166699950389,36.41666800015979,0 -97.07122629429071,36.39051916979035,0 -96.81290758400522,36.19892822477893,0 -96.76185287996526,36.17481418139867,0 -96.55365020862647,36.23310207049725,0 -96.52813404112476,36.25067304500048,0 -96.51048130570521,36.27367397768105,0 -96.42004764394666,36.66675055885375,0 -96.2402472468892,36.96867361675975,0 -96.24240801766693,37.01097308033161,0 -96.27835839042656,37.0419246578585,0 -96.61190309084469,37.13366032900366,0 -96.65031111507534,37.13280167833777,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>

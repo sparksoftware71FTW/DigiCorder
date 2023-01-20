@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.db.models import F, Q
 from django.views import generic
 from django.utils import timezone
+from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.context_processors import csrf
@@ -62,7 +63,13 @@ def runway(request, airfield, runway):
 
         crewformset = RsuCrewFormFactory(instance=crew)
         runways = list(Runway.objects.all())
-        return render(request, 'AutoRecorder/runwayDisplay.html', {"crewformset": crewformset, "runways": runways, "runway": runway, "host": request.get_host()})
+        field = Airfield.objects.get(FAAcode=airfield)
+        displayedAcftTypes = serializers.serialize('json', Runway.objects.get(name=runway).displayedAircraftTypes.all())
+        displayedRunwayObject = Runway.objects.get(name=runway)
+        print(displayedAcftTypes)
+        return render(request, 'AutoRecorder/runwayDisplay.html', {"crewformset": crewformset,
+        "runways": runways, "runway": runway, "host": request.get_host(), "field": field,
+        "displayedAcftTypes": displayedAcftTypes, "displayedRunwayObject": displayedRunwayObject})
 
 @staff_member_required(login_url='/AutoRecorder')
 def dashboard(request):

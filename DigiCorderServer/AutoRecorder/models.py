@@ -22,6 +22,9 @@ class Airfield(models.Model):
     FAAcode = models.CharField('FAA Code', max_length=4, primary_key=True)
     name = models.CharField('Name', max_length=40, blank=True, null=True)
     userGroup = models.OneToOneField(Group, on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name="User Group (note: this will automatically set itself to a group with an identical name to 'FAA Code')")
+    lat = models.DecimalField('Latitude', blank=True, null=True, decimal_places=7, max_digits=10)
+    lon = models.DecimalField('Longitude', blank=True, null=True, decimal_places=7, max_digits=10)
+    fieldElevation = models.DecimalField('Field Elevation', decimal_places=3, max_digits=8, blank=True)
 
 class GroupExtras(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE, primary_key=True)
@@ -54,10 +57,11 @@ class AircraftType(models.Model):
     dualSortieTimeLimitMinutes = models.IntegerField(null=True, blank=True)
     soloSortieTimeLimitHours = models.IntegerField(null=True, blank=True)
     soloSortieTimeLimitMinutes = models.IntegerField(null=True, blank=True)
-    mapIconFile = models.FileField(null=True, blank=True)
-    lostSignalIconFile = models.FileField(null=True, blank=True)
-    soloIconFile = models.FileField(null=True, blank=True)
-    troubleIconFile = models.FileField(null=True, blank=True)
+    mapIconFile = models.ImageField(default='images/UFO.png', upload_to='images')
+    lostSignalIconFile = models.ImageField(default='images/30-UFO.png', upload_to='images')
+    soloIconFile = models.ImageField(null=True, blank=True, upload_to='images')
+    troubleIconFile = models.ImageField(null=True, blank=True, upload_to='images')
+    iconSize = models.IntegerField(default=20)
 
 
 class RunwayManager(models.Manager):
@@ -71,7 +75,7 @@ class Runway(models.Model):
     displayedAircraftTypes = models.ManyToManyField(AircraftType)
     airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE)
     kmlPatternFile = models.FileField(null=True)
-    patternAltitudeCeiling = models.IntegerField(null=True)
+    patternAltitudeCeiling = models.IntegerField(null=True, blank=True)
     patternName = models.CharField('Pattern Name (e.g. "shoehorn")', max_length=30, null=True)
 
     def __str__(self):
@@ -108,17 +112,17 @@ class ActiveAircraftManager(models.Manager):
         activeAcftMetadata['Off_Station'] = activeAcftquery.filter(state="off station").count() + activeAcftquery.filter(formationX2=True).filter(state="off station").count() + activeAcftquery.filter(formationX4=True).filter(state="off station").count()*3
         activeAcftMetadata['Lost_Signal'] = activeAcftquery.filter(state="lost signal").count() + activeAcftquery.filter(formationX2=True).filter(state="lost signal").count() + activeAcftquery.filter(formationX4=True).filter(state="lost signal").count()*3
 
-        activeAcftMetadata['dual145'] = []
-        for acft in activeAcftquery.filter(
-            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=45)).exclude(
-                solo=True).exclude(state='taxiing'):
-            activeAcftMetadata['dual145'].append(acft.callSign)
+        activeAcftMetadata['dualLimit'] = []
+        for acft in activeAcftquery.exclude(solo=True).exclude(state='taxiing'):
+            if acft.takeoffTime is not None and acft.takeoffTime < timezone.now() - timedelta(hours=acft.aircraftType.dualSortieTimeLimitHours, minutes=acft.aircraftType.dualSortieTimeLimitMinutes):
+                flightTime = timezone.now() - acft.takeoffTime
+                activeAcftMetadata['dualLimit'].append(acft.callSign + "\n" + str(flightTime)[:4])
 
-        activeAcftMetadata['solo120'] = []
-        for acft in activeAcftquery.filter(
-            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).filter(
-                solo=True).exclude(state='taxiing'):
-                activeAcftMetadata['solo120'].append(acft.callSign)
+        activeAcftMetadata['soloLimit'] = []
+        for acft in activeAcftquery.filter(solo=True).exclude(state='taxiing'):
+            if acft.takeoffTime is not None and acft.takeoffTime < timezone.now() - timedelta(hours=acft.aircraftType.soloSortieTimeLimitHours, minutes=acft.aircraftType.soloSortieTimeLimitMinutes):
+                flightTime = timezone.now() - acft.takeoffTime
+                activeAcftMetadata['soloLimit'].append(acft.callSign + "\n" + str(flightTime)[:4])
 
         activeAcftMetadata['solosOffStation'] = []
         for acft in activeAcftquery.filter(solo=True).exclude(state='in pattern').exclude(state='taxiing'):

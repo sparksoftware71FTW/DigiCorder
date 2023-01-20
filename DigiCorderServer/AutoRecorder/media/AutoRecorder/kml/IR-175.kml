@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>IR-175.kml</name>
+	<Schema name="MTRIR_OK_KS_TX_Footprints" id="S_MTRIR_OK_KS_TX_Footprints_ISSSSSSSDD">
+		<SimpleField type="int" name="OBJECTID"><displayName>&lt;b&gt;OBJECTID&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="MTR_IDENT"><displayName>&lt;b&gt;MTR_IDENT&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_USIN"><displayName>&lt;b&gt;FIRST_USIN&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_US_1"><displayName>&lt;b&gt;FIRST_US_1&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_US_2"><displayName>&lt;b&gt;FIRST_US_2&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SCHE"><displayName>&lt;b&gt;FIRST_SCHE&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SC_1"><displayName>&lt;b&gt;FIRST_SC_1&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="string" name="FIRST_SC_2"><displayName>&lt;b&gt;FIRST_SC_2&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Shape_Leng"><displayName>&lt;b&gt;Shape_Leng&lt;/b&gt;</displayName>
+</SimpleField>
+		<SimpleField type="double" name="Shape_Area"><displayName>&lt;b&gt;Shape_Area&lt;/b&gt;</displayName>
+</SimpleField>
+	</Schema>
+	<Style id="falseColor">
+		<BalloonStyle>
+			<text><![CDATA[<table border="0">
+  <tr><td><b>OBJECTID</b></td><td>$[MTRIR_OK_KS_TX_Footprints/OBJECTID]</td></tr>
+  <tr><td><b>MTR_IDENT</b></td><td>$[MTRIR_OK_KS_TX_Footprints/MTR_IDENT]</td></tr>
+  <tr><td><b>FIRST_USIN</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_USIN]</td></tr>
+  <tr><td><b>FIRST_US_1</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_US_1]</td></tr>
+  <tr><td><b>FIRST_US_2</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_US_2]</td></tr>
+  <tr><td><b>FIRST_SCHE</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_SCHE]</td></tr>
+  <tr><td><b>FIRST_SC_1</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_SC_1]</td></tr>
+  <tr><td><b>FIRST_SC_2</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_SC_2]</td></tr>
+  <tr><td><b>Shape_Leng</b></td><td>$[MTRIR_OK_KS_TX_Footprints/Shape_Leng]</td></tr>
+  <tr><td><b>Shape_Area</b></td><td>$[MTRIR_OK_KS_TX_Footprints/Shape_Area]</td></tr>
+</table>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff0000ff</color>
+			<width>6</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>0039dccd</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="falseColor0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#falseColor</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#falseColor1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="falseColor1">
+		<BalloonStyle>
+			<text><![CDATA[<table border="0">
+  <tr><td><b>OBJECTID</b></td><td>$[MTRIR_OK_KS_TX_Footprints/OBJECTID]</td></tr>
+  <tr><td><b>MTR_IDENT</b></td><td>$[MTRIR_OK_KS_TX_Footprints/MTR_IDENT]</td></tr>
+  <tr><td><b>FIRST_USIN</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_USIN]</td></tr>
+  <tr><td><b>FIRST_US_1</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_US_1]</td></tr>
+  <tr><td><b>FIRST_US_2</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_US_2]</td></tr>
+  <tr><td><b>FIRST_SCHE</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_SCHE]</td></tr>
+  <tr><td><b>FIRST_SC_1</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_SC_1]</td></tr>
+  <tr><td><b>FIRST_SC_2</b></td><td>$[MTRIR_OK_KS_TX_Footprints/FIRST_SC_2]</td></tr>
+  <tr><td><b>Shape_Leng</b></td><td>$[MTRIR_OK_KS_TX_Footprints/Shape_Leng]</td></tr>
+  <tr><td><b>Shape_Area</b></td><td>$[MTRIR_OK_KS_TX_Footprints/Shape_Area]</td></tr>
+</table>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff0000ff</color>
+			<width>6</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>0039dccd</color>
+		</PolyStyle>
+	</Style>
+	<Placemark>
+		<name>IR-175</name>
+		<open>1</open>
+		<styleUrl>#falseColor0</styleUrl>
+		<ExtendedData>
+			<SchemaData schemaUrl="#S_MTRIR_OK_KS_TX_Footprints_ISSSSSSSDD">
+				<SimpleData name="OBJECTID">85</SimpleData>
+				<SimpleData name="MTR_IDENT">IR175</SimpleData>
+				<SimpleData name="FIRST_USIN">71 OSS</SimpleData>
+				<SimpleData name="FIRST_US_1">Vance AFB</SimpleData>
+				<SimpleData name="FIRST_US_2"></SimpleData>
+				<SimpleData name="FIRST_SCHE">71 OSS</SimpleData>
+				<SimpleData name="FIRST_SC_1">Vance AFB</SimpleData>
+				<SimpleData name="FIRST_SC_2"></SimpleData>
+				<SimpleData name="Shape_Leng">722325</SimpleData>
+				<SimpleData name="Shape_Area">4.35406e+09</SimpleData>
+			</SchemaData>
+		</ExtendedData>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-99.26347408347291,37.21667729895313,0 -99.66380519417497,37.09989118923217,0 -99.67512939416893,37.07462458498225,0 -100.1585584333575,36.75775842410491,0 -100.1788539902846,36.71630122820866,0 -100.1577455059434,36.67506471543119,0 -100.157745337935,36.67506460887854,0 -99.92446174358207,36.52515947653377,0 -99.88975369283091,36.50579944508483,0 -99.84449920136703,36.50311888285074,0 -99.84449771920623,36.50311847323115,0 -99.83803260344121,36.50569081760083,0 -99.27040073231846,36.72933893590408,0 -99.14929497416787,36.77649420156427,0 -99.10957047859505,36.79191911718147,0 -99.10955789766622,36.7918123002763,0 -99.10170170752751,36.72504564879897,0 -99.07778364223577,36.52101811568968,0 -99.07066763045239,36.46009586929347,0 -99.07066258830272,36.46005259275488,0 -99.02915897641199,36.41111819799863,0 -98.97378648405004,36.40790515913555,0 -98.95730108831721,36.39901520821234,0 -98.86623889976634,36.42184767164127,0 -98.83579264254391,36.42946131189045,0 -98.75095666462457,36.45062248832467,0 -98.72417072610197,36.4572875006653,0 -98.72392893440889,36.45734793770932,0 -98.72392852852026,36.4573480398118,0 -98.66717482082848,36.47158860474478,0 -98.49079869580324,36.51561925583038,0 -98.49079904459768,36.51562016826459,0 -98.51666699955082,36.58333200042053,0 -98.52961984026811,36.61718803686644,0 -98.70572040643366,36.57321539258572,0 -98.76299382754283,36.55884088772894,0 -98.76299390385667,36.55884086759508,0 -98.789611471767,36.55221606397272,0 -98.82760420233599,36.54274668179666,0 -98.91394674613191,36.52116771228383,0 -98.92320613810341,36.5188487281888,0 -98.92324137453606,36.51883990128032,0 -98.92487405377131,36.53307346333187,0 -98.94582186348568,36.71520373257629,0 -98.94765991960159,36.73114129075816,0 -98.95782470380182,36.81915287020446,0 -98.96775718385577,36.90494729925516,0 -99.00293919138379,36.94345799616385,0 -99.07184854578279,36.96378777007124,0 -99.07198432442353,36.96386439523501,0 -99.17347428895781,36.92454697039275,0 -99.37921246743416,36.84442132319062,0 -99.89384944581123,36.64150209311995,0 -99.89385019218162,36.64150179621829,0 -100.011600148502,36.71724524662062,0 -100.0115999387034,36.7172453846407,0 -99.60015818767226,36.98645589426108,0 -99.51915450680436,37.0102179642798,0 -99.40771624613991,37.04278393848183,0 -99.23406920392273,37.09324390016099,0 -98.80196797431023,36.95881619033603,0 -98.80168636837807,36.95872845271662,0 -98.51571927081074,36.86974767770911,0 -98.43959775046386,36.82408600651623,0 -98.40000000035103,36.86666700039051,0 -98.37357475391559,36.89504737483728,0 -98.4569226742755,36.94507015430719,0 -98.46729376277801,36.94968974386784,0 -98.76172385446971,37.0413429742188,0 -98.7455998232594,37.07435098837512,0 -99.20146599630857,37.2161614863236,0 -99.26347408347291,37.21667729895313,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>
