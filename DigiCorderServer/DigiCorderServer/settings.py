@@ -72,7 +72,7 @@ LOGGING = {
     'loggers': {
         'AutoRecorder.consumers': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'AutoRecorder.apps': {
             'handlers': ['console'],
