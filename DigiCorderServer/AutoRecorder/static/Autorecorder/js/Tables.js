@@ -84,55 +84,6 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
     }
     console.log(displayedAcftTypes)
     console.log(iconDict)
-
-    let legacyT6Icon = L.icon({
-        iconUrl: '../../../static/AutoRecorder/images/LegacyT6Icon.png',
-        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
-
-        iconSize:     [30, 30], // size of the icon
-        shadowSize:   [20, 20], // size of the shadow
-        iconAnchor:   [15, 15], // point of the icon which will correspond to marker's location
-        shadowAnchor: [0, 0],  // the same for the shadow
-        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
-
-    })
-
-    let inactiveLegacyT6Icon = L.icon({
-        iconUrl: '../../../static/AutoRecorder/images/40-LegacyT6Icon.png',
-        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
-
-        iconSize:     [30, 30], // size of the icon
-        shadowSize:   [20, 20], // size of the shadow
-        iconAnchor:   [15, 15], // point of the icon which will correspond to marker's location
-        shadowAnchor: [0, 0],  // the same for the shadow
-        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
-
-    })
-
-    let UFO = L.icon({
-        iconUrl: '../../../static/AutoRecorder/images/UFO.png',
-        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
-
-        iconSize:     [20, 20], // size of the icon
-        shadowSize:   [20, 20], // size of the shadow
-        iconAnchor:   [10, 10], // point of the icon which will correspond to marker's location
-        shadowAnchor: [0, 0],  // the same for the shadow
-        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
-
-    })
-
-    let inactiveUFO = L.icon({
-        iconUrl: '../../../static/AutoRecorder/images/30-UFO.png',
-        //shadowUrl: '../static/AutoRecorder/leaflet/images/marker-shadow.png',
-
-        iconSize:     [30, 30], // size of the icon
-        shadowSize:   [20, 20], // size of the shadow
-        iconAnchor:   [15, 15], // point of the icon which will correspond to marker's location
-        shadowAnchor: [0, 0],  // the same for the shadow
-        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
-
-    })
-
     
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
