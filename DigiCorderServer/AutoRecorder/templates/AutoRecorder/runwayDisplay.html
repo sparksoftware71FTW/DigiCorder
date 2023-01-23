@@ -45,35 +45,46 @@
 {% load static %}
 <script type="text/javascript">
 
-    var myCustomGroup = L.geoJSON(null, {
-        style: getStyle
-    });
 
-    function getStyle(feature) {
-        return {
-                    color: '#ff6e6e6e',
-                    // weight: 7
-                }
-        // if (feature.properties.styleUrl === '#PolyStyleOGreen') {
-        //     if (feature.geometry.type === 'LineString') {
-        //         return {
-        //             color: '#ff6e6e6e',
-        //             weight: 4
-        //         }
-        //     }
-        // }
-    }
+// if (feature.properties.styleUrl === '#PolyStyleOGreen') {
+//     if (feature.geometry.type === 'LineString') {
+//         return {
+//             color: '#ff6e6e6e',
+//             weight: 4
+//         }
+//     }
+// }
 
-    console.log("AutoRecorder{{runways.kmlPatternFile.url}}")
-
-    omnivore.kml('{% static "AutoRecorder/kml/Eckho Recovery.kml" %}').addTo(map)
+    // omnivore.kml('{% static "AutoRecorder/kml/Eckho Recovery.kml" %}').addTo(map)
     // omnivore.kml('{% static "AutoRecorder/kml/RoughPatternPoints.kml" %}').addTo(map)
-    omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}', null, myCustomGroup).addTo(map) 
-    omnivore.kml('{% static "AutoRecorder/kml/FOXTR Recoery.kml" %}').addTo(map)
-    omnivore.kml("{{runways.kmlPatternFile.url}}").addTo(map)
+    //omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}', null, myCustomGroup).addTo(map) 
+    // omnivore.kml('{% static "AutoRecorder/kml/FOXTR Recoery.kml" %}').addTo(map)
+    omnivore.kml("{{displayedRunwayObject.kmlPatternFile.url}}").addTo(map)
     map.invalidateSize() //?????????????????????????????????????????????????????????
+    var myCustomGroup
      
 </script>
+{% for file in additionalKML %}
+    <script> 
+        let myCustomGroup{{file.pk}} = L.geoJSON(null, {
+            style: {
+                        color: '{{file.color}}',
+                        weight: {{file.weight}}
+                    }
+        });
+
+        // function getStyle(feature) {
+        //     return {
+        //                 color: '#{{file.color}}',
+        //                 weight: {{file.transparency}}
+        //             }
+        // }
+
+        omnivore.kml('{{file.file.url}}', null, myCustomGroup{{file.pk}}).addTo(map)
+    </script>
+{% endfor %}
+<script>map.invalidateSize()</script>
+
 
 
         <div id="messages"></div>

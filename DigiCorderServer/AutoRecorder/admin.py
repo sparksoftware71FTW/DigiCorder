@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import ActiveAircraft, CompletedSortie, Runway, Airfield, Callsigns, RsuCrew, NextTakeoffData, AircraftType
+from .models import *
 
 class ActiveAircraftAdmin(admin.ModelAdmin):
     list_display = ('aircraftType', 'tailNumber', 'callSign', 'state', 'lastState', 'solo', 'takeoffTime', 'three55Code', 'Comments', 'landTime', 'formationX2', 'formationX4','formTimestamp','timestamp', 'emergency', 'natureOfEmergency')
@@ -17,6 +17,11 @@ class AircraftTypeAdmin(admin.ModelAdmin):
     list_display = ('aircraftType', 'formationDistThreshold', 'formationLostSignalTimeThreshold', 'fullStopThresholdSpeed', 'rotateSpeed')
     list_filter = ['aircraftType', 'formationDistThreshold', 'formationLostSignalTimeThreshold', 'fullStopThresholdSpeed', 'rotateSpeed']
 admin.site.register(AircraftType , AircraftTypeAdmin)
+
+class AdditionalKMLAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'file', 'color', 'weight')
+    list_filter = ['file', 'color', 'weight']
+admin.site.register(AdditionalKML, AdditionalKMLAdmin)
 
 class RunwayAdmin(admin.ModelAdmin):
     list_display = ('name', 'primaryAircraftType', 'airfield')
@@ -37,3 +42,8 @@ class NextTakeoffAdmin(admin.ModelAdmin):
     list_display = ('runway', 'solo', 'formationX2', 'formationX4')
     list_filter = ['runway', 'solo', 'formationX2', 'formationX4']
 admin.site.register(NextTakeoffData, NextTakeoffAdmin)
+
+class UserDisplayExtraAdmin(admin.ModelAdmin):
+    list_display = ('user',)
+    # list_filter = ['user', ]
+admin.site.register(UserDisplayExtra, UserDisplayExtraAdmin)

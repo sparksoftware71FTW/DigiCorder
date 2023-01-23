@@ -3,7 +3,8 @@
         "model": "AutoRecorder.airfield",
         "pk": "KEND",
         "fields": {
-            "name": "Vance AFB"
+            "name": "Vance AFB",
+            "fieldElevation": 1300
         }
     },
     {

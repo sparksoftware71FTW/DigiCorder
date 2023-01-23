@@ -26,6 +26,18 @@ class Airfield(models.Model):
     lon = models.DecimalField('Longitude', blank=True, null=True, decimal_places=7, max_digits=10)
     fieldElevation = models.DecimalField('Field Elevation', decimal_places=3, max_digits=8, blank=True)
 
+
+WEIGHTS = ((1, 'Low'), (3, 'Medium'), (5, 'High'))
+COLORS = [('#00ffff', 'aqua'), ('#000000', 'black'), ('#0000ff', 'blue'), ('#ff00ff', 'fuchsia'), ('#008000', 'green'), ('#808080', 'gray'), ('#00ff00', 'lime'), ('#800000', 'maroon'), ('#000080', 'navy'), ('#808000', 'olive'), ('#800080', 'purple'), ('#ff0000', 'red'), ('#c0c0c0', 'silver'), ('#008080', 'teal'), ('#ffffff', 'white'), ('#ffff00', 'yellow')]
+
+class AdditionalKML(models.Model):
+    file = models.FileField(upload_to='kml')
+    color = models.CharField(max_length=9, choices=COLORS,  default="#00ffff")
+    weight = models.IntegerField(default=3, choices=WEIGHTS)
+
+
+
+
 class GroupExtras(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE, primary_key=True)
     airfield = models.OneToOneField(Airfield, on_delete=models.CASCADE)
@@ -75,11 +87,19 @@ class Runway(models.Model):
     displayedAircraftTypes = models.ManyToManyField(AircraftType)
     airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE)
     kmlPatternFile = models.FileField(null=True)
+    # additionalKML = models.ManyToManyField(AdditionalKML)
     patternAltitudeCeiling = models.IntegerField(null=True, blank=True)
     patternName = models.CharField('Pattern Name (e.g. "shoehorn")', max_length=30, null=True)
 
     def __str__(self):
         return str(self.name) 
+
+class UserDisplayExtra(models.Model):
+    runway = models.ForeignKey(Runway, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    additionalKML = models.ManyToManyField(AdditionalKML)
+    class Meta:
+        constraints = [ models.UniqueConstraint(fields=["runway", "user"], name="One runway per user")]
 
 
 class RsuCrew(models.Model):

@@ -8,8 +8,8 @@
 
 <div class="container d-flex justify-content-center">
     <div class="btn-group" style="flex-wrap: wrap" >
-        {%for runway in runways%}
-            <a href="http://{{host}}/AutoRecorder/dashboard/{{runway.airfield.FAAcode}}/{{runway.name}}" class="btn btn-secondary" id="{{runway.airfield.FAAcode}}/{{runway.name}}">{{runway.airfield.FAAcode}}/{{runway.name}}</a>
+        {%for rwy in runways%}
+            <a href="http://{{host}}/AutoRecorder/dashboard/{{rwy.airfield.FAAcode}}/{{rwy.name}}" class="btn btn-secondary" id="{{rwy.airfield.FAAcode}}/{{rwy.name}}">{{rwy.airfield.FAAcode}}/{{rwy.name}}</a>
         {% endfor %}
     </div>
 </div>

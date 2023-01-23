@@ -7,10 +7,10 @@ from django.db.models.signals import post_save
 from django.db.models import Q
 from django.dispatch import receiver
 from django.core import serializers
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 
 
-from .models import ActiveAircraft, ActiveAircraftManager, CompletedSortie, Message, Trigger, NextTakeoffData, Runway, RunwayManager, Airfield
+from .models import ActiveAircraft, ActiveAircraftManager, CompletedSortie, Message, Trigger, NextTakeoffData, Runway, RunwayManager, Airfield, UserDisplayExtra
 
 import logging
 logger = logging.getLogger(__name__)
@@ -153,6 +153,14 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
     #     )
     #logger.info("Active Aircraft Signal Triggered")
 
+
+
+@receiver(post_save, sender=User, dispatch_uid="createUserExtras")
+def createUserDisplayExtras(sender, instance, created, **kwargs):
+
+    if created:
+        extras = UserDisplayExtra.objects.create(user=instance)
+        extras.save()
 
 
 @receiver(post_save, sender=Airfield, dispatch_uid="createUserGroupForEachAirfield")

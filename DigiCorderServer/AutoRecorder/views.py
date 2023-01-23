@@ -45,31 +45,55 @@ def index(request):
 
 @staff_member_required(login_url='/AutoRecorder')
 def runway(request, airfield, runway):
+
+    airfields = []
+    runways = []
+    rejectRequest = True # Make sure this user is actually a member of the authorized users group...
+
+    #Get all the airfields and the associated runway objects that a user has access to...
+    for group in request.user.groups.all():
+        if hasattr(group, 'airfield'):
+            airfields.append(group.airfield)
+            if group.airfield.FAAcode == airfield:
+                rejectRequest = False
+    
+    # if the user was not in the respective group, kick them back to a list of runways that they CAN access...
+    if rejectRequest is True:
+        for airfield in airfields:
+            for runway in Runway.objects.filter(airfield=airfield):
+                runways.append(runway)
+        render(request, 'AutoRecorder/dashboardNew.html', {"runways": runways, "host": request.get_host()})
+
+
     RsuCrewFormFactory = modelform_factory(model=RsuCrew, exclude=('timestamp',))
+
+    runways = list(Runway.objects.all())
+    field = Airfield.objects.get(FAAcode=airfield)
+    displayedRunwayObject = Runway.objects.get(name=runway)
+    displayedAcftTypes = serializers.serialize('json', displayedRunwayObject.displayedAircraftTypes.all())
+    displayExtras = request.user.userdisplayextra_set.get(runway__name__contains=runway)
+    additionalKML = list(displayExtras.additionalKML.all())
     if request.method == 'POST':
         crew = RsuCrew.objects.create(timestamp=timezone.now())
         crewformset = RsuCrewFormFactory(request.POST, instance=crew)
         if crewformset.is_valid():
             crewformset.timestamp = timezone.now()
             crewformset.save()
-            return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+            return HttpResponseRedirect(reverse('AutoRecorder:runway', args=(airfield, runway)))
     else:
         try:
-            crew = RsuCrew.objects.latest('timestamp')
+            crew = RsuCrew.objects.filter(runway=displayedRunwayObject).latest('timestamp')
             print(str(crew.controller) + "!!!!!!")
         except RsuCrew.DoesNotExist:
-            crew = RsuCrew.objects.create(timestamp=timezone.now())
+            crew = RsuCrew.objects.create(timestamp=timezone.now(), runway=displayedRunwayObject)
             print(str(crew.controller) + "Created initial blank RSU Crew!!!!")
 
         crewformset = RsuCrewFormFactory(instance=crew)
-        runways = list(Runway.objects.all())
-        field = Airfield.objects.get(FAAcode=airfield)
-        displayedAcftTypes = serializers.serialize('json', Runway.objects.get(name=runway).displayedAircraftTypes.all())
-        displayedRunwayObject = Runway.objects.get(name=runway)
-        print(displayedAcftTypes)
+       
         return render(request, 'AutoRecorder/runwayDisplay.html', {"crewformset": crewformset,
         "runways": runways, "runway": runway, "host": request.get_host(), "field": field,
-        "displayedAcftTypes": displayedAcftTypes, "displayedRunwayObject": displayedRunwayObject})
+        "displayedAcftTypes": displayedAcftTypes, "displayedRunwayObject": displayedRunwayObject,
+        "additionalKML": additionalKML})
 
 @staff_member_required(login_url='/AutoRecorder')
 def dashboard(request):
