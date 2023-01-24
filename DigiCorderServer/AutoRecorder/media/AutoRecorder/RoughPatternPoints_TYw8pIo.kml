@@ -109,7 +109,7 @@
 		</Pair>
 	</StyleMap>
 	<Placemark id="05044D4CF824B63C6A54">
-		<name>Eastside</name>
+		<name>eastside</name>
 		<LookAt>
 			<longitude>-97.95432177146063</longitude>
 			<latitude>36.38399499906387</latitude>
@@ -132,7 +132,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark id="0605BF819024FD717411">
-		<name>Shoehorn</name>
+		<name>shoehorn</name>
 		<LookAt>
 			<longitude>-97.2611112941071</longitude>
 			<latitude>36.37855904592259</latitude>

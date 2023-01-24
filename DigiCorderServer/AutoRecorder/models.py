@@ -45,11 +45,6 @@ class GroupExtras(models.Model):
     def __str__(self):
         return str(self.FAAcode)
 
-class Callsigns(models.Model):
-    callsign = models.CharField('Callsigns', max_length=20, primary_key=True)
-    aircraftType = models.CharField('Aircraft Type', max_length=20, blank=True, null=True)
-    type = models.CharField('Type', max_length=20, default="dual")
-    homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE)
 
 class Tails(models.Model):
     tail = models.CharField('Tail', max_length=15, primary_key=True)
@@ -61,10 +56,10 @@ class Tails(models.Model):
 
 class AircraftType(models.Model):
     aircraftType = models.CharField('Type', max_length=20, primary_key=True)
-    formationDistThreshold = models.DecimalField('Form Threshold (mi)', decimal_places=3, max_digits=8, blank=True)
-    formationLostSignalTimeThreshold = models.DecimalField('Lost Signal Time Threshold (sec)', decimal_places=3, max_digits=8, blank=True)
-    fullStopThresholdSpeed = models.DecimalField('Full Stop Threshold (knots)', decimal_places=3, max_digits=8, blank=True)
-    rotateSpeed = models.DecimalField('Rotate Speed (knots)', decimal_places=3, max_digits=8, blank=True)
+    formationDistThreshold = models.DecimalField('Form Threshold (mi)', decimal_places=3, max_digits=8, default=2.0)
+    formationLostSignalTimeThreshold = models.DecimalField('Lost Signal Time Threshold (sec)', decimal_places=3, max_digits=8, default=15)
+    fullStopThresholdSpeed = models.DecimalField('Full Stop Threshold (knots)', decimal_places=3, max_digits=8, default=70.0)
+    rotateSpeed = models.DecimalField('Rotate Speed (knots)', decimal_places=3, max_digits=8, default=80.0)
     dualSortieTimeLimitHours = models.IntegerField(default=1)
     dualSortieTimeLimitMinutes = models.IntegerField(default=0)
     soloSortieTimeLimitHours = models.IntegerField(default=1)
@@ -80,6 +75,13 @@ class RunwayManager(models.Manager):
     def getAllRunways():
         return list(Runway.objects.all())
 
+CALLSIGN_TYPES = [('solo', 'solo'), ('form', 'form')]
+
+class Callsign(models.Model):
+    callsign = models.CharField('Callsign', max_length=20, primary_key=True)
+    aircraftType = models.ForeignKey(AircraftType, null=True, blank=True, on_delete=models.CASCADE)
+    type = models.CharField('Type', max_length=20, choices=CALLSIGN_TYPES, default="solo")
+
 
 class Runway(models.Model):
     name = models.CharField('Name', max_length=15, primary_key=True)
@@ -89,7 +91,9 @@ class Runway(models.Model):
     kmlPatternFile = models.FileField(null=True)
     # additionalKML = models.ManyToManyField(AdditionalKML)
     patternAltitudeCeiling = models.IntegerField(null=True, blank=True)
-    patternName = models.CharField('Pattern Name (e.g. "shoehorn")', max_length=30, null=True)
+    patternName = models.CharField("""Pattern Name """, max_length=30, null=True, help_text="""(e.g. "shoehorn"); this value must match the pattern placemark's 'name' tag value in the pattern file exactly (case sensitive!).""")
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["patternName"], name="patternName must be unique!")]
 
     def __str__(self):
         return str(self.name) 

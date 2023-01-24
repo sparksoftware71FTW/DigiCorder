@@ -15,6 +15,9 @@ from fastkml import kml
 import logging
 logger = logging.getLogger(__name__)
 
+LOST_SIGNAL_TIME_THRESHOLD_SECONDS = 5
+LOST_SIGNAL_TO_COMPLETED_SORTIE_TIME_THRESHOLD_HOURS = 4
+
 jsondata = {
     "ac": [] #add/remove aircraft to list here
 } # dictionary...
@@ -41,10 +44,12 @@ class AutoRecorderConfig(AppConfig):
         threadName = threading.current_thread().name
         logger.debug("ready() thread is: " + threadName)
         MessageThread = threading.Thread(target=messageThread, args=(.5, threadName,), name='MessageThread')
-        StratuxThread = threading.Thread(target=stratuxThread, args=(threadName,), name="StratuxThread")
-        StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
+        StratuxThread = threading.Thread(target=adsbProcessing, args=(threadName,), name="StratuxThread")
+        AdsbExchangeCommsThread = threading.Thread(target=adsbExchangeCommsThread, args=(threadName, 36.3393, -97.9131, 250))
+        #StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
         MessageThread.start()
-        StratuxCommsThread.start()
+        #StratuxCommsThread.start()
+        AdsbExchangeCommsThread.start()
         StratuxThread.start()
 
 
@@ -76,24 +81,28 @@ def messageThread(freq, parentThreadName):
 
 
 
-def stratuxThread(parentThreadName):
-    logger.info("Starting ADSB Thread")
+def adsbProcessing(parentThreadName):
+    logger.info("Starting ADSB Processing Thread")
     import http.client
     import json
-    from AutoRecorder.models import ActiveAircraft, NextTakeoffData, Runway, AircraftType
+    from AutoRecorder.models import ActiveAircraft, NextTakeoffData, Airfield, AircraftType, Runway, AircraftType, Callsign
     import time
     import copy
+    from fuzzywuzzy import fuzz
 
     # New pattern logic:
     # If any aircraft is in a pattern, add it to active aircraft for displaying
     # Once non-T1/T6/T38 aircraft depart the pattern, delete from active aircraft
+ 
+    
+    patternDict = {}
+    for runway in Runway.objects.all():
+        patternPolygon = getKMLplacemark("./AutoRecorder" + runway.kmlPatternFile.url, runway.patternName)
+        patternDict[runway.patternName] = (patternPolygon, runway.patternAltitudeCeiling, runway.airfield.fieldElevation)        
 
-    eastsidePatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Eastside")
-    shoehornPatternPolygon = getKMLplacemark("./AutoRecorder/static/Autorecorder/kml/RoughPatternPoints.kml", "Shoehorn")
-    patterns = [eastsidePatternPolygon, shoehornPatternPolygon]
-
-    KEND35L = 'KEND 35L/17R'
-    KEND17L = 'KEND 17L/35R'
+    soloCallsignList = []
+    for callsign in Callsign.objects.filter(type='solo'):
+        soloCallsignList.append(callsign.callsign)
 
     i = 0
     while True:
@@ -126,7 +135,7 @@ def stratuxThread(parentThreadName):
         for aircraft in newData['ac']: #ac is aircraft in the database 
             try:
                 position = getPosition(aircraft)
-                if str(aircraft["t"]) == 'TEX2' or str(aircraft["t"]) == 'T38' or inPattern(position, patterns):
+                if str(aircraft["t"]) in aircraftTypeDict or inPattern(position, patternDict):
                     logger.debug(aircraft['r'] + " is about to be updated or created...")
 
                     try:
@@ -146,8 +155,10 @@ def stratuxThread(parentThreadName):
 
 
                     Acft.callSign=aircraft["flight"]
-                    if "SMAL" in Acft.callSign:
-                        Acft.solo = True
+
+                    for callsign in soloCallsignList:
+                        if fuzz.ratio(Acft.callSign, callsign) >= 80:
+                            Acft.solo = True
                     #formation=aircraft[""],                need form callsign db?
                     # Acft.emergency=False if aircraft["emergency"] == "none" else True
                     Acft.alt_baro=aircraft['alt_baro']
@@ -156,45 +167,39 @@ def stratuxThread(parentThreadName):
                     Acft.longitude=aircraft['lon']
                     Acft.track=aircraft['track']
                     Acft.squawk=aircraft['squawk']
+                    Acft.emergency = True if Acft.squawk == "7700" or Acft.squawk == "7600" or Acft.squawk == "7500" else False
                     Acft.seen=aircraft['seen']
                     Acft.rssi=aircraft['rssi']
                     if Acft.alt_baro == "ground":
-                        position = geometry.Point(Acft.latitude, Acft.longitude, 1300)
+                        position = geometry.Point(Acft.latitude, Acft.longitude, 0)
                     else:
                         position = geometry.Point(Acft.latitude, Acft.longitude, int(Acft.alt_baro))
-                    if inPattern(position, patterns) and Acft.groundSpeed > 70 and Acft.alt_baro != "ground" and Acft.state != "in pattern": # TODO: test removing ground to fix T-38 bug
+                    if inPattern(position, patternDict) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and Acft.alt_baro != "ground" and Acft.state != "in pattern": 
                         Acft.lastState = Acft.state
                         Acft.state="in pattern"
-                        Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
-                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) >= 500 and int(Acft.alt_baro) < 1600):
+                        Acft.substate=setSubstate(position, Acft.state, patternDict)
+                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 200)): # field elevation is the [2]nd element in each tuple within patternDict - this hard-codes a 200 ft threshold to deal with low-altitude adsb signal loss
                             Acft.takeoffTime = timezone.now()
-                            match Acft.substate:
-                                case 'shoehorn':
-                                    nextTOData = NextTakeoffData.objects.get(runway__name = KEND35L)
-                                    Acft.solo = nextTOData.solo
-                                    Acft.formationX2 = nextTOData.formationX2
-                                    Acft.formationX4 = nextTOData.formationX4
-                                    resetNextTakeoffData(nextTOData)
-                                    logger.info("Next T/O Data applied!")
-                                case 'eastside':
-                                    nextTOData = NextTakeoffData.objects.get(runway__name = KEND17L)
-                                    Acft.solo = nextTOData.solo
-                                    Acft.formationX2 = nextTOData.formationX2
-                                    Acft.formationX4 = nextTOData.formationX4
-                                    resetNextTakeoffData(nextTOData)
-                                    logger.info("Next T/O Data applied!")
-                                case other:
-                                    logger.info("No runway found with recent aircraft's T/O")
-                    elif inPattern(position, patterns) and Acft.groundSpeed < 70 and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or (int(Acft.alt_baro) >= 1200 and int(Acft.alt_baro) < 1350)):
+                            try:
+                                nextTOData = NextTakeoffData.objects.get(runway__patternName = Acft.substate)
+                                Acft.solo = nextTOData.solo
+                                Acft.formationX2 = nextTOData.formationX2
+                                Acft.formationX4 = nextTOData.formationX4
+                                resetNextTakeoffData(nextTOData)
+                                logger.info("Next T/O Data applied!")
+                            except:
+                                logger.error("Error processing next T/O data for acft with substate: " + Acft.substate)
+                        
+                    elif inPattern(position, patternDict) and Acft.groundSpeed < Acft.aircraftType.fullStopThresholdSpeed and Acft.state != "taxiing" and (Acft.alt_baro == "ground" and int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 150)):
                         Acft.lastState = Acft.state
                         Acft.state="taxiing"
-                        Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
+                        Acft.substate=setSubstate(position, Acft.state, patternDict)
                         if Acft.lastState == "in pattern":
                             Acft.landTime = timezone.now()
-                    elif inPattern(position, patterns) == False and Acft.state != "off station":
+                    elif inPattern(position, patternDict) == False and Acft.state != "off station":
                         Acft.lastState = Acft.state
                         Acft.state="off station"
-                        Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon) 
+                        Acft.substate=setSubstate(position, Acft.state, patternDict) 
                     Acft.timestamp=timezone.now()
                     
                    #form logic 
@@ -208,7 +213,7 @@ def stratuxThread(parentThreadName):
 
                         formAcftPosition = geometry.Point(0,0,0)
                         if formAcft.alt_baro == "ground":
-                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 1300)
+                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 0)
                         else:
                             formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
 
@@ -218,9 +223,9 @@ def stratuxThread(parentThreadName):
                             continue
                         if  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX2 is False:
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
-                                distance = position.distance(formAcftPosition) * 69
-                                if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                distance = position.distance(formAcftPosition) * 69 #approx lat/lon -> miles conversion factor for CONUS
+                                if (distance <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and formAcft.groundSpeed > formAcft.aircraftType.fullStopThresholdSpeed:
+                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold)):
                                         if closestFormation is None or distance < closestFormationDistance:
                                             closestFormation = formAcft
                                             closestFormationDistance = distance
@@ -242,7 +247,7 @@ def stratuxThread(parentThreadName):
 
                         formAcftPosition = geometry.Point(0,0,0)
                         if formAcft.alt_baro == "ground":
-                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 1300)
+                            formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, 0)
                         else:
                             formAcftPosition = geometry.Point(formAcft.latitude, formAcft.longitude, int(formAcft.alt_baro))
 
@@ -253,8 +258,8 @@ def stratuxThread(parentThreadName):
                         if  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX4 is False:
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 3:
                                 distance = position.distance(formAcftPosition) * 69
-                                if (distance <= 3.0) and Acft.groundSpeed > 70 and formAcft.groundSpeed > 70:
-                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=15)):
+                                if (distance <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and formAcft.groundSpeed > formAcft.aircraftType.fullStopThresholdSpeed:
+                                    if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold)):
                                         if closestFormation is None or distance < closestFormationDistance:
                                             closestFormation = formAcft
                                             closestFormationDistance = distance
@@ -273,7 +278,7 @@ def stratuxThread(parentThreadName):
                     updatedAircraftObjects.append(Acft)
 
             except KeyError as e:
-                logger.error('KeyError in aircraft ' + str(e) + "; however, this is ok.")
+                logger.error('KeyError in aircraft ' + str(e) + "; however, this is probably okay...")
 
         aircraftNotUpdated = ActiveAircraft.objects.exclude(tailNumber__in=updatedAircraftList) # getAircraftNotUpdated(updatedAircraftList)
         # logger.info('aircraft not updated: ' + str(aircraftNotUpdated))
@@ -303,8 +308,8 @@ def stratuxThread(parentThreadName):
                         position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
                         position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
                         
-                        if (position2.distance(position1) * 69 <= 2.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
-                            if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=15):
+                        if (position2.distance(position1) * 69 <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and freshAcft.groundSpeed > freshAcft.aircraftType.fullStopThresholdSpeed:           # :)  degrees of lat & long to miles
+                            if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold):
                                 if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1:
                                     freshAcft.formationX2 = True
                                     freshAcft.formTimestamp = timezone.now()
@@ -318,8 +323,8 @@ def stratuxThread(parentThreadName):
                         position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
                         position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
                         
-                        if (position2.distance(position1) * 69 <= 3.0) and Acft.groundSpeed > 70 and freshAcft.groundSpeed > 70:           # :)  degrees of lat & long to miles
-                            if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=15):
+                        if (position2.distance(position1) * 69 <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and freshAcft.groundSpeed > freshAcft.aircraftType.fullStopThresholdSpeed:           # :)  degrees of lat & long to miles
+                            if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold):
                                 if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 3:
                                     freshAcft.formationX4 = True
                                     freshAcft.formTimestamp = timezone.now()
@@ -328,23 +333,23 @@ def stratuxThread(parentThreadName):
                                     Acft.save()
 
                 position = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)
-                if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 5: 
+                if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > LOST_SIGNAL_TIME_THRESHOLD_SECONDS: # 5 sec
                     if Acft.landTime == None and Acft.state != "lost signal":
                         Acft.lastState = Acft.state
                         Acft.state = "lost signal"
-                        Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
+                        Acft.substate=Acft.substate=setSubstate(position, Acft.state, patternDict)
                         Acft.save()
                         logger.info("lost signal")
                     elif Acft.landTime != None and Acft.state != "completed sortie":
                         Acft.lastState = Acft.state
                         Acft.state = "completed sortie"
-                        Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
+                        Acft.substate=Acft.substate=setSubstate(position, Acft.state, patternDict)
                         Acft.save()
                         logger.info("completed sortie")
-                if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > 14400: #4 hrs
+                if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > LOST_SIGNAL_TO_COMPLETED_SORTIE_TIME_THRESHOLD_HOURS*3600: #4 hrs
                     Acft.lastState = Acft.state
                     Acft.state = "completed sortie"
-                    Acft.substate=Acft.substate=setSubstate(position, Acft.state, eastsidePatternPolygon, shoehornPatternPolygon)
+                    Acft.substate=Acft.substate=setSubstate(position, Acft.state, patternDict)
                     Acft.save()
                     logger.info("completed sortie")
 
@@ -370,14 +375,61 @@ def stratuxCommsThread():
     import websocket
     wsapp = websocket.WebSocketApp("ws://192.168.10.1/traffic", on_message=on_message,)
     wsapp.run_forever()
+
+def adsbExchangeCommsThread(parentThreadName, lat, lon, radius):
+    import http.client
+    import json
+    import time
+
+    conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
+
+    headers = {
+        'X-RapidAPI-Key': "e7a36b9597msh0954cc7e057677dp160f6fjsn5e333eceedc4",
+        'X-RapidAPI-Host': "adsbexchange-com1.p.rapidapi.com"
+        }
+
+    while True:
+
+        request = "/v2/lat/" + str(lat) + "/lon/" + str(lon) + "/dist/" + str(radius) + "/"
+        conn.request("GET", request, headers=headers)
+        print(request)
+        
+        res = conn.getresponse()
+        data = res.read()
+
+        with mutex:
+            jsondata = json.loads(data)
+            print(jsondata)
+
+        killSignal = True
+        threads_list = threading.enumerate()
+        
+        for thread in threads_list:
+            if thread.name is parentThreadName and thread.is_alive() is True:
+                killSignal = False
+        
+        if killSignal is False:
+            logger.info("ADSB Exchange Comms Thread sleeping...")
+            time.sleep(1)
+            logger.info("ADSB Exchange Comms Thread waking up...")
+
+            continue
+        else:
+            logger.debug("Stopping ADSB Exchange Comms Thread")
+            os.environ['ENABLE_ADSB'] = 'True'
+            return
+
+        
+
+
  
 def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
     dictMessage = json.loads(message)
 
-    logfile = open(r"./AutoRecorder/testFiles/Stratux/ADSBsnapshots" + ".json", "a+")
-    logfile.write(json.dumps(dictMessage))
-    logfile.close
+    # logfile = open(r"./AutoRecorder/testFiles/Stratux/ADSBsnapshots" + ".json", "a+")
+    # logfile.write(json.dumps(dictMessage))
+    # logfile.close
     
     # Do nothing with signals that don't have a valid position
     if dictMessage['Lat'] == 0 or dictMessage["Lng"] == 0:
@@ -582,11 +634,11 @@ def Stratux_to_ADSBExchangeFormat(inputMessage):
     outputJSON = json.dumps(JSONmessage)
     return outputJSON
 
-def inPattern(position, patterns):
+def inPattern(position, patternDict):
     alt = position.z
     position2d = geometry.Point(position.x, position.y)  
-    for pattern in patterns:
-        if position2d.within(pattern) and alt < 4600:
+    for pattern in patternDict:
+        if position2d.within(patternDict[pattern][0]) and alt < patternDict[pattern][1]: #[0] is the geometric shape, [1] is the altitudeCeiling
             return True
         else:
             continue
@@ -641,13 +693,12 @@ def getPosition(aircraft):
     return position
 
 
-def setSubstate(position, state, eastside, shoehorn):
-    if position.within(eastside) and state == "in pattern":
-        return "eastside"
-    elif position.within(shoehorn) and state == "in pattern":
-        return "shoehorn"
-    else:
-        return "null"
+def setSubstate(position, state, patternDict):
+    for pattern in patternDict and state=="in pattern":
+        if position.within(patternDict[pattern][0]):
+            return patternDict[pattern][1]
+    return "null"
+
 
 def resetNextTakeoffData(nextTOData):
     nextTOData.solo = False

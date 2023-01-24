@@ -158,9 +158,16 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User, dispatch_uid="createUserExtras")
 def createUserDisplayExtras(sender, instance, created, **kwargs):
 
-    if created:
-        extras = UserDisplayExtra.objects.create(user=instance)
-        extras.save()
+    userGroups = instance.groups.all()
+    airfields = []
+    for group in userGroups:
+        if hasattr(group, 'airfield'):
+            airfields.append(group.airfield)
+    for airfield in airfields:
+        for runway in Runway.objects.filter(airfield=airfield):
+            userDisplayExtra, fresh = UserDisplayExtra.objects.get_or_create(runway=runway, user=instance)
+            if fresh:
+                userDisplayExtra.save()
 
 
 @receiver(post_save, sender=Airfield, dispatch_uid="createUserGroupForEachAirfield")
@@ -170,8 +177,28 @@ def createUserGroupForEachAirfield(sender, instance, created, **kwargs):
         logger.info("Created user group for airfield: " + airfieldGroup.name)
         instance.userGroup = airfieldGroup
         instance.save()
+
+
+@receiver(post_save, sender=Runway, dispatch_uid="addRunwayDependencies")
+def createRunwayDependencies(sender, instance, created, **kwargs): 
+
+    if created:
+        nextTOdata = NextTakeoffData.objects.create(runway=instance,)
+        nextTOdata.save()
+
+        airfieldUserGroup = Group.objects.get(name=instance.airfield.FAAcode)
+        for user in airfieldUserGroup:
+            userDisplayExtras = UserDisplayExtra.objects.create(user=user, runway=instance)
+            userDisplayExtras.save()
+
     
-# @receiver(post_save, sender=Runway, dispatch_uid="createUserGroupForEachRunway")
+
+
+
+
+
+
+#@receiver(post_save, sender=Runway, dispatch_uid="createUserGroupForEachRunway")
 # def createUserGroupForEachRunway(sender, instance, created, **kwargs):
 #     runwayGroup, created = Group.objects.get_or_create(name=instance.name)
 #     if created:

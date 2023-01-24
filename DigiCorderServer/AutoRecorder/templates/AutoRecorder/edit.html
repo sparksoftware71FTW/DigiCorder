@@ -10,6 +10,10 @@
     {% csrf_token %}
     {{ acfteditformset|crispy }}
     <button type="submit" class="btn btn-danger">Save</button>
+    {%for runway in runways%}
+    <button type="button" class="btn btn-secondary" id="{{runway.name}}">{{runway.name}}</button>
+    {% endfor %}
+
 </form>
 {% endblock %}
 

@@ -43,7 +43,12 @@ class NextTakeoffAdmin(admin.ModelAdmin):
     list_filter = ['runway', 'solo', 'formationX2', 'formationX4']
 admin.site.register(NextTakeoffData, NextTakeoffAdmin)
 
+class CallsignAdmin(admin.ModelAdmin):
+    list_display = ('callsign', 'aircraftType', 'type')
+    list_filter = ['callsign', 'aircraftType', 'type']
+admin.site.register(Callsign, CallsignAdmin)
+
 class UserDisplayExtraAdmin(admin.ModelAdmin):
-    list_display = ('user',)
+    list_display = ('user','runway')
     # list_filter = ['user', ]
 admin.site.register(UserDisplayExtra, UserDisplayExtraAdmin)
