@@ -44,15 +44,15 @@ class AutoRecorderConfig(AppConfig):
         threadName = threading.current_thread().name
         logger.debug("ready() thread is: " + threadName)
         MessageThread = threading.Thread(target=messageThread, args=(.5, threadName,), name='MessageThread')
-        StratuxThread = threading.Thread(target=adsbProcessing, args=(threadName,), name="StratuxThread")
+        ADSBProcessingThread = threading.Thread(target=adsbProcessing, args=(threadName,), name="ADSBProcessingThread")
         # AdsbExchangeCommsThread = threading.Thread(target=adsbExchangeCommsThread, args=(threadName, 36.3393, -97.9131, 250))
-        StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
-        # CommsTestThread = threading.Thread(target=commsTestThread, args=(threadName,), name="CommsTestThread")
+        # StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
+        CommsTestThread = threading.Thread(target=commsTestThread, args=(threadName,), name="CommsTestThread")
         MessageThread.start()
-        # CommsTestThread.start()
-        StratuxCommsThread.start()
+        CommsTestThread.start()
+        # StratuxCommsThread.start()
         # AdsbExchangeCommsThread.start()
-        StratuxThread.start()
+        ADSBProcessingThread.start()
 
 
 def messageThread(freq, parentThreadName):
@@ -121,7 +121,7 @@ def adsbProcessing(parentThreadName):
         # logfile.close
         # i+=1
 
-        print(jsondata)
+        #print(jsondata)
 
         updatedAircraftList = []
         updatedAircraftObjects = [] 
@@ -736,12 +736,12 @@ def getPosition(aircraft):
 
 def setSubstate(position, state, patternDict):
 
-    if state=="in pattern":
+    if state=="in pattern" or state=="taxiing":
 
         for pattern in patternDict:
             if position.within(patternDict[pattern][0]):
                 return patternDict[pattern][3]
-        return "null"
+    return "null"
 
 
 def resetNextTakeoffData(nextTOData):

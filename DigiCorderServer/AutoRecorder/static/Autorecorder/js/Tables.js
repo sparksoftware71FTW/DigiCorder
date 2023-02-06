@@ -1,4 +1,4 @@
-var map = L.map('map').setView([36.3393, -97.9131], 10);
+// var map = L.map('map').setView([36.3393, -97.9131], 10);
 
 function rxNextTOMessage(chatSocket, runway) {
 
@@ -43,7 +43,7 @@ function nextTOMessage(chatSocket, id, runway) {
 
 function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
 
-    //var map = L.map('map').setView([36.3393, -97.9131], 13);
+    // var map = L.map('map').setView([lat, lon], 10);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -88,11 +88,14 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
 
-        if(data.type == 'rwyUpdate'){
+
+        
+        if(data.type == 'rwyUpdate' && data.runway == runway){
+            console.log(data.runway + " matched: " + runway)
+
 
             let rwyUpdate = JSON.parse(data.message)
             let rwyMeta = JSON.parse(data.meta)
-            console.log("HELLLOOOOOOOOOOOOOO")
 
 
             let Pattern = document.getElementById(' In Pattern')

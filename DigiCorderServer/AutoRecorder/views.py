@@ -67,8 +67,8 @@ def runway(request, airfield, runway):
     else:
         # otherwise, serve all runways that the user has access to
         for field in airfields:
-            for runway in Runway.objects.filter(airfield=field):
-                runways.append(runway)
+            for rwy in Runway.objects.filter(airfield=field):
+                runways.append(rwy)
         print(runways)
         RsuCrewFormFactory = modelform_factory(model=RsuCrew, exclude=('timestamp',))
 

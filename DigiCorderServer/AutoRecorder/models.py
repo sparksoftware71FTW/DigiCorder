@@ -134,8 +134,8 @@ class ActiveAircraftManager(models.Manager):
         activeAcftquery = ActiveAircraft.objects.filter(Q(aircraftType__in=list(runway.displayedAircraftTypes.all())) | Q(substate=runway.patternName)).order_by('tailNumber')
 
         activeAcftMetadata = {}
-        activeAcftMetadata['In_Pattern'] = activeAcftquery.filter(state="in pattern").count() + activeAcftquery.filter(formationX2=True).filter(state="in pattern").count() + activeAcftquery.filter(formationX4=True).filter(state="in pattern").count()*3
-        activeAcftMetadata['Taxiing'] = activeAcftquery.filter(state="taxiing").count() + activeAcftquery.filter(formationX2=True).filter(state="taxiing").count() + activeAcftquery.filter(formationX4=True).filter(state="taxiing").count()*3
+        activeAcftMetadata['In_Pattern'] = activeAcftquery.filter(state='in pattern').filter(substate=runway.patternName).count() + activeAcftquery.filter(formationX2=True).filter(state='in pattern').filter(substate=runway.patternName).count() + activeAcftquery.filter(state='in pattern').filter(formationX4=True).filter(substate=runway.patternName).count()*3
+        activeAcftMetadata['Taxiing'] = activeAcftquery.filter(state="taxiing").filter(substate=runway.patternName).count() + activeAcftquery.filter(formationX2=True).filter(substate=runway.patternName).filter(state="taxiing").count() + activeAcftquery.filter(formationX4=True).filter(substate=runway.patternName).filter(state="taxiing").count()*3
         activeAcftMetadata['Off_Station'] = activeAcftquery.filter(state="off station").count() + activeAcftquery.filter(formationX2=True).filter(state="off station").count() + activeAcftquery.filter(formationX4=True).filter(state="off station").count()*3
         activeAcftMetadata['Lost_Signal'] = activeAcftquery.filter(state="lost signal").count() + activeAcftquery.filter(formationX2=True).filter(state="lost signal").count() + activeAcftquery.filter(formationX4=True).filter(state="lost signal").count()*3
 

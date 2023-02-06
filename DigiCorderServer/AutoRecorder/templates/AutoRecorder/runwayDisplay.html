@@ -21,7 +21,7 @@
             console.log("rwy meta is: ", data.meta)
         }
         if(data.type == 'rwyUpdate'){
-            console.log("runway field is: ", data.runway)
+            console.log("runway datafield is: ", data.runway)
         }
     }
 
@@ -40,7 +40,9 @@
 </script>
 
 {% include 'AutoRecorder/Tables.html' %}
-<script> load(chatSocket, csrf_token, '{{field.lat}}', '{{field.lon}}', '{{field.FAAcode}}', '{{runway}}', '{{displayedRunwayObject.patternName}}') </script>
+<script> 
+load(chatSocket, csrf_token, '{{field.lat}}', '{{field.lon}}', '{{field.FAAcode}}', '{{runway}}', '{{displayedRunwayObject.patternName}}') 
+</script>
 <script> rxNextTOMessage(chatSocket, '{{runway}}') </script>
 {% load static %}
 <script type="text/javascript">
@@ -59,6 +61,7 @@
     // omnivore.kml('{% static "AutoRecorder/kml/RoughPatternPoints.kml" %}').addTo(map)
     //omnivore.kml('{% static "AutoRecorder/kml/Vance GPS MOAs.kml" %}', null, myCustomGroup).addTo(map) 
     // omnivore.kml('{% static "AutoRecorder/kml/FOXTR Recoery.kml" %}').addTo(map)
+    console.log("{{displayedRunwayObject.kmlPatternFile.url}}")
     omnivore.kml("{{displayedRunwayObject.kmlPatternFile.url}}").addTo(map)
     map.invalidateSize() //?????????????????????????????????????????????????????????
     var myCustomGroup
