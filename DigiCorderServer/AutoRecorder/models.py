@@ -7,6 +7,9 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from django.core import serializers
+from django.core.validators import RegexValidator
+
+alphanumeric = RegexValidator(r'^[0-9a-zA-Z _]*$', 'Only alphanumeric characters are allowed.')
 
 
 class Message(models.Model):
@@ -55,9 +58,9 @@ class Tails(models.Model):
 
 
 class AircraftType(models.Model):
-    aircraftType = models.CharField('Type', max_length=20, primary_key=True)
+    aircraftType = models.CharField('Type', max_length=20, primary_key=True, help_text="Must be valid ICAO type designator - see https://www.icao.int/publications/doc8643/pages/search.aspx for more info.")
     formationDistThreshold = models.DecimalField('Form Threshold (mi)', decimal_places=3, max_digits=8, default=2.0)
-    formationLostSignalTimeThreshold = models.DecimalField('Lost Signal Time Threshold (sec)', decimal_places=3, max_digits=8, default=15)
+    formationLostSignalTimeThreshold = models.IntegerField('Lost Signal Time Threshold (sec)', default=15)
     fullStopThresholdSpeed = models.DecimalField('Full Stop Threshold (knots)', decimal_places=3, max_digits=8, default=70.0)
     rotateSpeed = models.DecimalField('Rotate Speed (knots)', decimal_places=3, max_digits=8, default=80.0)
     dualSortieTimeLimitHours = models.IntegerField(default=1)
@@ -65,7 +68,7 @@ class AircraftType(models.Model):
     soloSortieTimeLimitHours = models.IntegerField(default=1)
     soloSortieTimeLimitMinutes = models.IntegerField(default=0)
     mapIconFile = models.ImageField(default='images/UFO.png', upload_to='images')
-    lostSignalIconFile = models.ImageField(default='images/30-UFO.png', upload_to='images')
+    lostSignalIconFile = models.ImageField(default='images/30-UFO.png', upload_to='images', help_text="Try using the map icon with this tool: https://onlinepngtools.com/change-png-opacity")
     soloIconFile = models.ImageField(null=True, blank=True, upload_to='images')
     troubleIconFile = models.ImageField(null=True, blank=True, upload_to='images')
     iconSize = models.IntegerField(default=20)
@@ -84,7 +87,7 @@ class Callsign(models.Model):
 
 
 class Runway(models.Model):
-    name = models.CharField('Name', max_length=15, primary_key=True)
+    name = models.CharField('Name', max_length=15, primary_key=True, validators=[alphanumeric], help_text="Alphanumeric characters and _ only!")
     primaryAircraftType = models.ForeignKey(AircraftType, on_delete=models.CASCADE, related_name='+')
     displayedAircraftTypes = models.ManyToManyField(AircraftType)
     airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE)

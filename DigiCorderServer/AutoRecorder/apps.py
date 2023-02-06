@@ -45,11 +45,13 @@ class AutoRecorderConfig(AppConfig):
         logger.debug("ready() thread is: " + threadName)
         MessageThread = threading.Thread(target=messageThread, args=(.5, threadName,), name='MessageThread')
         StratuxThread = threading.Thread(target=adsbProcessing, args=(threadName,), name="StratuxThread")
-        AdsbExchangeCommsThread = threading.Thread(target=adsbExchangeCommsThread, args=(threadName, 36.3393, -97.9131, 250))
-        #StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
+        # AdsbExchangeCommsThread = threading.Thread(target=adsbExchangeCommsThread, args=(threadName, 36.3393, -97.9131, 250))
+        StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
+        # CommsTestThread = threading.Thread(target=commsTestThread, args=(threadName,), name="CommsTestThread")
         MessageThread.start()
-        #StratuxCommsThread.start()
-        AdsbExchangeCommsThread.start()
+        # CommsTestThread.start()
+        StratuxCommsThread.start()
+        # AdsbExchangeCommsThread.start()
         StratuxThread.start()
 
 
@@ -98,7 +100,7 @@ def adsbProcessing(parentThreadName):
     patternDict = {}
     for runway in Runway.objects.all():
         patternPolygon = getKMLplacemark("./AutoRecorder" + runway.kmlPatternFile.url, runway.patternName)
-        patternDict[runway.patternName] = (patternPolygon, runway.patternAltitudeCeiling, runway.airfield.fieldElevation)        
+        patternDict[runway.patternName] = (patternPolygon, runway.patternAltitudeCeiling, runway.airfield.fieldElevation, runway.patternName)        
 
     soloCallsignList = []
     for callsign in Callsign.objects.filter(type='solo'):
@@ -118,6 +120,8 @@ def adsbProcessing(parentThreadName):
         # logfile.write(json.dumps(jsondata))
         # logfile.close
         # i+=1
+
+        print(jsondata)
 
         updatedAircraftList = []
         updatedAircraftObjects = [] 
@@ -278,7 +282,7 @@ def adsbProcessing(parentThreadName):
                     updatedAircraftObjects.append(Acft)
 
             except KeyError as e:
-                logger.error('KeyError in aircraft ' + str(e) + "; however, this is probably okay...")
+                logger.error('KeyError in aircraft ' + str(e) + str(aircraft) + "; however, this is probably okay...")
 
         aircraftNotUpdated = ActiveAircraft.objects.exclude(tailNumber__in=updatedAircraftList) # getAircraftNotUpdated(updatedAircraftList)
         # logger.info('aircraft not updated: ' + str(aircraftNotUpdated))
@@ -362,7 +366,7 @@ def adsbProcessing(parentThreadName):
         
         if killSignal is False:
             logger.info("ADSB Thread sleeping...")
-            time.sleep(1)
+            time.sleep(.2)
             logger.info("ADSB Thread waking up...")
 
             continue
@@ -371,55 +375,46 @@ def adsbProcessing(parentThreadName):
             os.environ['ENABLE_ADSB'] = 'True'
             return
 
+
+
+def commsTestThread(parentThreadName):
+    import websocket
+    import json
+    import time
+    dummyWebSocket = websocket.WebSocket()
+
+    with open(r"./AutoRecorder/testFiles/Stratux/ADSBsnapshots.json") as logfile:
+        data = json.load(logfile)
+
+        for message in data["testData"]:
+            on_message(dummyWebSocket, json.dumps(message))
+
+            killSignal = True
+            threads_list = threading.enumerate()
+            
+            for thread in threads_list:
+                if thread.name is parentThreadName and thread.is_alive() is True:
+                    killSignal = False
+            
+            if killSignal is False:
+                # logger.info("Comms Test Thread sleeping...")
+                time.sleep(0.01)
+                # logger.info("Comms Test Thread waking up...")
+
+                continue
+            else:
+                logger.debug("Stopping Comms Test Thread")
+                os.environ['ENABLE_ADSB'] = 'True'
+                return
+
+
+
 def stratuxCommsThread():
     import websocket
     wsapp = websocket.WebSocketApp("ws://192.168.10.1/traffic", on_message=on_message,)
     wsapp.run_forever()
 
-def adsbExchangeCommsThread(parentThreadName, lat, lon, radius):
-    import http.client
-    import json
-    import time
-
-    conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
-
-    headers = {
-        'X-RapidAPI-Key': "e7a36b9597msh0954cc7e057677dp160f6fjsn5e333eceedc4",
-        'X-RapidAPI-Host': "adsbexchange-com1.p.rapidapi.com"
-        }
-
-    while True:
-
-        request = "/v2/lat/" + str(lat) + "/lon/" + str(lon) + "/dist/" + str(radius) + "/"
-        conn.request("GET", request, headers=headers)
-        print(request)
-        
-        res = conn.getresponse()
-        data = res.read()
-
-        with mutex:
-            jsondata = json.loads(data)
-            print(jsondata)
-
-        killSignal = True
-        threads_list = threading.enumerate()
-        
-        for thread in threads_list:
-            if thread.name is parentThreadName and thread.is_alive() is True:
-                killSignal = False
-        
-        if killSignal is False:
-            logger.info("ADSB Exchange Comms Thread sleeping...")
-            time.sleep(1)
-            logger.info("ADSB Exchange Comms Thread waking up...")
-
-            continue
-        else:
-            logger.debug("Stopping ADSB Exchange Comms Thread")
-            os.environ['ENABLE_ADSB'] = 'True'
-            return
-
-        
+   
 
 
  
@@ -634,6 +629,52 @@ def Stratux_to_ADSBExchangeFormat(inputMessage):
     outputJSON = json.dumps(JSONmessage)
     return outputJSON
 
+
+def adsbExchangeCommsThread(parentThreadName, lat, lon, radius):
+    import http.client
+    import json
+    import time
+
+    conn = http.client.HTTPSConnection("adsbexchange-com1.p.rapidapi.com")
+
+    headers = {
+        'X-RapidAPI-Key': "e7a36b9597msh0954cc7e057677dp160f6fjsn5e333eceedc4",
+        'X-RapidAPI-Host': "adsbexchange-com1.p.rapidapi.com"
+        }
+
+    while True:
+
+        request = "/v2/lat/" + str(lat) + "/lon/" + str(lon) + "/dist/" + str(radius) + "/"
+        conn.request("GET", request, headers=headers)
+        print(request)
+        
+        res = conn.getresponse()
+        data = res.read()
+
+        with mutex:
+            jsondata["ac"] = json.loads(data["ac"])
+            # print(jsondata)
+
+        killSignal = True
+        threads_list = threading.enumerate()
+        
+        for thread in threads_list:
+            if thread.name is parentThreadName and thread.is_alive() is True:
+                killSignal = False
+        
+        if killSignal is False:
+            logger.info("ADSB Exchange Comms Thread sleeping...")
+            time.sleep(1)
+            logger.info("ADSB Exchange Comms Thread waking up...")
+
+            continue
+        else:
+            logger.debug("Stopping ADSB Exchange Comms Thread")
+            os.environ['ENABLE_ADSB'] = 'True'
+            return
+
+
+
 def inPattern(position, patternDict):
     alt = position.z
     position2d = geometry.Point(position.x, position.y)  
@@ -694,10 +735,13 @@ def getPosition(aircraft):
 
 
 def setSubstate(position, state, patternDict):
-    for pattern in patternDict and state=="in pattern":
-        if position.within(patternDict[pattern][0]):
-            return patternDict[pattern][1]
-    return "null"
+
+    if state=="in pattern":
+
+        for pattern in patternDict:
+            if position.within(patternDict[pattern][0]):
+                return patternDict[pattern][3]
+        return "null"
 
 
 def resetNextTakeoffData(nextTOData):

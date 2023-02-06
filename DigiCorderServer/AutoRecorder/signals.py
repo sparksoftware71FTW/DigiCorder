@@ -187,7 +187,7 @@ def createRunwayDependencies(sender, instance, created, **kwargs):
         nextTOdata.save()
 
         airfieldUserGroup = Group.objects.get(name=instance.airfield.FAAcode)
-        for user in airfieldUserGroup:
+        for user in airfieldUserGroup.user_set.all():
             userDisplayExtras = UserDisplayExtra.objects.create(user=user, runway=instance)
             userDisplayExtras.save()
 

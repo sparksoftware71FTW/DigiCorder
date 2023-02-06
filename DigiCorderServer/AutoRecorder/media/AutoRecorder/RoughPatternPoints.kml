@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document id="1s-PvZHkhe9x6cB0uB0v7uZC_GC1PnXLh">
+	<name>RoughPatternPoints</name>
+	<gx:CascadingStyle kml:id="__managed_style_5D171EF4EF25BBCC231E">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2f2fd3</color>
+				<width>6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_42E939CFDE25BBCC231E">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2f2fd3</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_35E4C739A625BBCC231E">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_42E939CFDE25BBCC231E</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_5D171EF4EF25BBCC231E</styleUrl>
+		</Pair>
+	</StyleMap>
+	<gx:CascadingStyle kml:id="__managed_style_228458C42C25BBCC231D">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_18445A387D25BBCC231D">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_0F8CF7B07925BBCC231D">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_18445A387D25BBCC231D</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_228458C42C25BBCC231D</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="05044D4CF824B63C6A54">
+		<name>eastside</name>
+		<LookAt>
+			<longitude>-97.95432177146063</longitude>
+			<latitude>36.38399499906387</latitude>
+			<altitude>420.9593728082128</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>110367.7141618542</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F8CF7B07925BBCC231D</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-97.83647092014193,36.34383202826359,356.5965643368178 -97.83506402502636,36.42195219395408,386.7798542217082 -97.83627490372218,36.44176724150356,386.7433724200206 -97.83633953294891,36.48218361797303,405.2495714293286 -97.83514377362621,36.5077809300989,409.1386344084325 -97.86394104773193,36.50767903154728,413.0276973875364 -97.91335157228077,36.51186834011497,427.3829198543955 -97.91286914105842,36.34007214464977,413.7861677624667 -97.91460416074568,36.1923152013583,372.9853171169215 -97.87972273686923,36.19306182263365,380.2149233334992 -97.83472032886992,36.1942038714412,387.4445295500769 -97.83575607742232,36.27399177051993,386.9419600520378 -97.83647092014193,36.34383202826359,356.5965643368178 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0605BF819024FD717411">
+		<name>shoehorn</name>
+		<LookAt>
+			<longitude>-97.2611112941071</longitude>
+			<latitude>36.37855904592259</latitude>
+			<altitude>308.5779224052141</altitude>
+			<heading>1.231601157032993</heading>
+			<tilt>2.300609743650289</tilt>
+			<gx:fovy>34.99999999999996</gx:fovy>
+			<range>95844.00293905288</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_35E4C739A625BBCC231E</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-97.91327537634196,36.33963382311001,382.1733832322652 -97.90007671805652,36.54840691261381,379.162827613934 -98.17110141530904,36.55469381026241,427.0088705027123 -98.18521880935371,36.14624599402779,325.5333241872766 -97.89978901291018,36.14631050409296,371.7164815749745 -97.91327537634196,36.33963382311001,382.1733832322652 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>
