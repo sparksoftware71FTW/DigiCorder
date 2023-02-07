@@ -88,11 +88,10 @@ class Callsign(models.Model):
 
 class Runway(models.Model):
     name = models.CharField('Name', max_length=15, primary_key=True, validators=[alphanumeric], help_text="Alphanumeric characters and _ only!")
-    primaryAircraftType = models.ForeignKey(AircraftType, on_delete=models.CASCADE, related_name='+')
+    # primaryAircraftType = models.ForeignKey(AircraftType, on_delete=models.CASCADE, related_name='+')
     displayedAircraftTypes = models.ManyToManyField(AircraftType)
     airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE)
     kmlPatternFile = models.FileField(null=True)
-    # additionalKML = models.ManyToManyField(AdditionalKML)
     patternAltitudeCeiling = models.IntegerField(null=True, blank=True)
     patternName = models.CharField("""Pattern Name """, max_length=30, null=True, help_text="""(e.g. "shoehorn"); this value must match the pattern placemark's 'name' tag value in the pattern file exactly (case sensitive!).""")
     class Meta:

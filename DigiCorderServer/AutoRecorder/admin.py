@@ -24,8 +24,8 @@ class AdditionalKMLAdmin(admin.ModelAdmin):
 admin.site.register(AdditionalKML, AdditionalKMLAdmin)
 
 class RunwayAdmin(admin.ModelAdmin):
-    list_display = ('name', 'primaryAircraftType', 'airfield')
-    list_filter = ['name', 'primaryAircraftType', 'airfield']
+    list_display = ('name', 'airfield')
+    list_filter = ['name', 'airfield']
 admin.site.register(Runway, RunwayAdmin)
 
 class RsuCrewAdmin(admin.ModelAdmin):

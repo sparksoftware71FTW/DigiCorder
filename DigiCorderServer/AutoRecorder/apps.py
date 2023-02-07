@@ -43,7 +43,7 @@ class AutoRecorderConfig(AppConfig):
         os.environ['ENABLE_ADSB'] = 'False'
         threadName = threading.current_thread().name
         logger.debug("ready() thread is: " + threadName)
-        MessageThread = threading.Thread(target=messageThread, args=(.5, threadName,), name='MessageThread')
+        MessageThread = threading.Thread(target=messageThread, args=(.2, threadName,), name='MessageThread')
         ADSBProcessingThread = threading.Thread(target=adsbProcessing, args=(threadName,), name="ADSBProcessingThread")
         # AdsbExchangeCommsThread = threading.Thread(target=adsbExchangeCommsThread, args=(threadName, 36.3393, -97.9131, 250))
         # StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
@@ -398,7 +398,7 @@ def commsTestThread(parentThreadName):
             
             if killSignal is False:
                 # logger.info("Comms Test Thread sleeping...")
-                time.sleep(0.01)
+                time.sleep(0.02)
                 # logger.info("Comms Test Thread waking up...")
 
                 continue
