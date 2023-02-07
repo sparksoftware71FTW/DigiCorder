@@ -736,7 +736,7 @@ def getPosition(aircraft):
 
 def setSubstate(position, state, patternDict):
 
-    if state=="in pattern" or state=="taxiing":
+    if state=="in pattern" or state=="taxiing" or state=="completed sortie":
 
         for pattern in patternDict:
             if position.within(patternDict[pattern][0]):

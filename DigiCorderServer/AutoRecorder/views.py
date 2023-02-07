@@ -136,8 +136,8 @@ def form355(request):
         if newest_entry is None or acft.timestamp is not None and acft.timestamp > newest_entry:
             newest_entry = acft.timestamp
 
-        if (acft.aircraftType, acft.aircraftType) not in acft_types:
-            acft_types.append((acft.aircraftType, acft.aircraftType))
+        if (acft.aircraftType.aircraftType, acft.aircraftType.aircraftType) not in acft_types:
+            acft_types.append((acft.aircraftType.aircraftType, acft.aircraftType.aircraftType))
     
     if oldest_entry == None:
         oldest_entry = timezone.now()
@@ -147,6 +147,7 @@ def form355(request):
     for rwy in runways:
         if (rwy.name, rwy.name) not in rwys:
             rwys.append((rwy.name, rwy.name))
+    rwys.append(('',''))
 
     form355FilterFormset = formset_factory(Form355Filters)
     helper = Form355FiltersFormsetHelper()
@@ -160,32 +161,40 @@ def form355(request):
             form.fields['runway'].choices = rwys
             form = render_crispy_form(form)
         if formset.is_valid():
-            print(formset.cleaned_data[0]['acftType'])
+            print(formset.cleaned_data[0])
             data = formset.cleaned_data[0]
 
             qAcftFilter = Q()
             qAcftExclude = Q()
             qRSUCrewSearch = Q()
+            qRunwayFilter = Q()
+            qPatternNameFilter = Q()
             if data['gotNailed']:
                 qAcftExclude &= Q(three55Code="none")
-                print(qAcftExclude)
+            print(qAcftExclude)
             if data['callSign'] is not None:
                 qAcftFilter &= Q(callSign__contains=data['callSign'])
-                print(qAcftFilter)
+            print(qAcftFilter)
             if data['search'] != '':
                 print(data['search'])
                 qRSUCrewSearch |= Q(controller__contains=data['search'])
                 qRSUCrewSearch |= Q(observer__contains=data['search'])
                 qRSUCrewSearch |= Q(spotter__contains=data['search'])
                 qRSUCrewSearch |= Q(recorder__contains=data['search'])
-                print(qRSUCrewSearch)
+            print(qRSUCrewSearch)
 
+            if data['runway'] != '':
+                runway = Runway.objects.get(name=data['runway'])
+                qRunwayFilter &= Q(runway__name__exact=runway.name)
+                qAcftFilter &= Q(substate__exact=runway.patternName)
+            print(qAcftFilter)
+            
             return render(request, 'AutoRecorder/form355.html', 
-            {"landedAircraft": landedAircraft.filter(aircraftType=data['acftType']).filter(qAcftFilter).exclude(
+            {"landedAircraft": landedAircraft.filter(aircraftType__aircraftType__exact=data['acftType']).filter(qAcftFilter).exclude(
                 qAcftExclude).exclude(timestamp__lt=data['fromDate']).exclude(timestamp__gt=data['toDate']),
              "formset": formset, 
              "RSUcrews": RSUcrews.filter(qRSUCrewSearch).exclude(
-                timestamp__lt=data['fromDate']).exclude(timestamp__gt=data['toDate'])})
+                timestamp__lt=data['fromDate']).exclude(timestamp__gt=data['toDate']).filter(qRunwayFilter)})
         else:
             return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews})
     
@@ -196,6 +205,7 @@ def form355(request):
             form.fields['fromDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
             print(range(oldest_entry.year, newest_entry.year))
             form.fields['toDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
+            form.fields['runway'].choices = rwys
             form = render_crispy_form(form)
         
         return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews})

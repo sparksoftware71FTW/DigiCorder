@@ -29,6 +29,8 @@ class Form355Filters(forms.Form):
     callSign = forms.CharField(required=False)
     runway = forms.ChoiceField(required=False, choices=())
 
+#     runway = forms.ModelChoiceField(required=False, queryset=Runway.objects.all())
+
 
 class Form355FiltersFormsetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
