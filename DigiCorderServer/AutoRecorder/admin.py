@@ -57,3 +57,7 @@ class ADSBSourceAdmin(admin.ModelAdmin):
     list_display = ('address','lat','lon','alt')
     list_filter = ['sourceStatus', ]
 admin.site.register(ADSBSource, ADSBSourceAdmin)
+
+class CommsControlAdmin(admin.ModelAdmin):
+    list_display = ('MessageThreadStatus','CommsManagementThreadStatus','ADSBProcessingThreadStatus','CommsControlKey')
+admin.site.register(CommsControl, CommsControlAdmin)

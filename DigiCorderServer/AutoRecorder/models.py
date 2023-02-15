@@ -278,3 +278,11 @@ class ADSBSource (models.Model):
     # activeUpdateFreq
     updateFreq=models.DecimalField(max_digits=10, default=1.0,decimal_places=3)#measured in seconds
     
+class CommsControl(models.Model):
+    MessageThreadStatus = models.BooleanField(default=False)
+    CommsManagementThreadStatus = models.BooleanField(default=False)
+    ADSBProcessingThreadStatus = models.BooleanField(default=False)
+    CommsControlKey = models.BooleanField(help_text="DO NOT CHANGE THIS VALUE UNLESS YOU KNOW WHAT YOU ARE DOING.", default=True, primary_key=True)
+
+    def __str__(self):
+        return "Comms Control"
