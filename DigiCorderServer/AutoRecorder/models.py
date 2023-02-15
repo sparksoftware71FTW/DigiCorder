@@ -9,6 +9,7 @@ from django.utils.timezone import timedelta
 from django.core import serializers
 from django.core.validators import RegexValidator
 
+
 alphanumeric = RegexValidator(r'^[0-9a-zA-Z _]*$', 'Only alphanumeric characters are allowed.')
 
 
@@ -27,7 +28,7 @@ class Airfield(models.Model):
     userGroup = models.OneToOneField(Group, on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name="User Group (note: this will automatically set itself to a group with an identical name to 'FAA Code')")
     lat = models.DecimalField('Latitude', blank=True, null=True, decimal_places=7, max_digits=10)
     lon = models.DecimalField('Longitude', blank=True, null=True, decimal_places=7, max_digits=10)
-    fieldElevation = models.DecimalField('Field Elevation', decimal_places=3, max_digits=8, blank=True)
+    fieldElevation = models.DecimalField('Field Elevation', decimal_places=3, max_digits=8, blank=True, null=True)
 
 
 WEIGHTS = ((1, 'Low'), (3, 'Medium'), (5, 'High'))
@@ -242,3 +243,38 @@ class NextTakeoffData(models.Model):
 
     def __str__(self):
         return "id " + str(self.id)
+
+
+
+STATUS = [ ('Good', 'Good'), ('Medium', 'Medium'), ('Weak', 'Weak'), ('Inactive', 'Inactive')]
+TRANSPORT = [ ('UDP', 'UDP'), ('TCP', 'TCP')]
+PROTOCOL = [ ('GDL90', 'GDL90'), ('ASTERIX', 'ASTERIX')]
+U_TYPE= [ ('Active', 'Active'), ('Passive', 'Passive')]
+S_TYPE= [ ('Internet', 'Internet'), ('Local', 'Local'), ('Historical', 'Historical')]
+class ADSBSource (models.Model):
+    # Links to local reviever
+    # IP port to initiate connection
+    address = models.CharField(max_length=200, default='ws://192.168.10.1/traffic')
+        # Request headers
+    rapidAPIKet = models.CharField(max_length=257, blank=True, null=True)#PLACE ADSB EXCHANGE KEY HERE
+    rapidAPIHost = models.CharField(max_length=257, default='adsbexchange-com1.p.rapidapi.com')
+    miscURLValues = models.CharField(max_length=100, blank=True, null=True)#add extra info onto port and address
+    # Connection info
+        #Transport Layer and Protocol, Data parsing function (GDL90 or ASTRIX)  
+    sourceStatus = models.CharField(max_length=50, choices=STATUS,  default="Inactive")
+    transportLayer = models.CharField(max_length=50, choices=TRANSPORT,  default="Not selected")
+    dataProtocol = models.CharField(max_length=50, choices=PROTOCOL,  default="Not selected")
+    # confidenceScore in data source 1-ADSB Exchange 10-Eyeball of God. Weithgt fuction to determine how well its working -- manually adjusted for now, but will be adjusted with testing
+    confidenceScore = models.IntegerField (default=0)
+    lat = models.DecimalField('Latitude', blank=True, null=True, decimal_places=7, max_digits=10)
+    lon = models.DecimalField('Longitude', blank=True, null=True, decimal_places=7, max_digits=10)
+    alt = models.DecimalField('Field Elevation', decimal_places=3, max_digits=8, blank=True, null=True)
+    radius = models.IntegerField (default=250)
+    threadSwitch = models.BooleanField(default=False)
+    # Passive(Constant data dump) or active(must be regularly requested)
+    updateType=models.CharField(max_length=50, choices=U_TYPE,  default="Not selected")
+    # sourceType (Interernet, Local)
+    sourceType=models.CharField(max_length=50, choices=S_TYPE,  default="Not selected")
+    # activeUpdateFreq
+    updateFreq=models.DecimalField(max_digits=10, default=1.0,decimal_places=3)#measured in seconds
+    

@@ -52,3 +52,8 @@ class UserDisplayExtraAdmin(admin.ModelAdmin):
     list_display = ('user','runway')
     # list_filter = ['user', ]
 admin.site.register(UserDisplayExtra, UserDisplayExtraAdmin)
+
+class ADSBSourceAdmin(admin.ModelAdmin):
+    list_display = ('address','lat','lon','alt')
+    list_filter = ['sourceStatus', ]
+admin.site.register(ADSBSource, ADSBSourceAdmin)

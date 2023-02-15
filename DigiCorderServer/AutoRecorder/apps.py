@@ -18,9 +18,11 @@ logger = logging.getLogger(__name__)
 LOST_SIGNAL_TIME_THRESHOLD_SECONDS = 5
 LOST_SIGNAL_TO_COMPLETED_SORTIE_TIME_THRESHOLD_HOURS = 4
 
+global jsondata 
 jsondata = {
     "ac": [] #add/remove aircraft to list here
 } # dictionary...
+global mutex 
 mutex = threading.Lock()
 
 USAircraft = {}
@@ -49,10 +51,13 @@ class AutoRecorderConfig(AppConfig):
         # StratuxCommsThread = threading.Thread(target=stratuxCommsThread, name='StratuxCommsThread')
         CommsTestThread = threading.Thread(target=commsTestThread, args=(threadName,), name="CommsTestThread")
         MessageThread.start()
-        CommsTestThread.start()
+        #CommsTestThread.start()
         # StratuxCommsThread.start()
         # AdsbExchangeCommsThread.start()
         ADSBProcessingThread.start()
+        CommsManagment = threading.Thread(target=commsManagment, args=(threadName,), name="CommsManagment")
+        CommsManagment.start()
+        print(threading.enumerate())
 
 
 def messageThread(freq, parentThreadName):
@@ -400,7 +405,7 @@ def commsTestThread(parentThreadName):
                 # logger.info("Comms Test Thread sleeping...")
                 time.sleep(0.02)
                 # logger.info("Comms Test Thread waking up...")
-
+ 
                 continue
             else:
                 logger.debug("Stopping Comms Test Thread")
@@ -409,11 +414,11 @@ def commsTestThread(parentThreadName):
 
 
 
-def stratuxCommsThread():
+def stratuxCommsThread(address):
     import websocket
-    wsapp = websocket.WebSocketApp("ws://192.168.10.1/traffic", on_message=on_message,)
+    wsapp = websocket.WebSocketApp(address, on_message=on_message,)
     wsapp.run_forever()
-
+    
    
 
 
@@ -434,6 +439,7 @@ def on_message(ws, message):
     reformattedMessage = Stratux_to_ADSBExchangeFormat(message)
     with mutex:
         aggregate(reformattedMessage)
+        print(str(jsondata) + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     # with mutex:
         deleteOldAircraft()
         # print(jsondata)
@@ -478,128 +484,6 @@ def deleteOldAircraft():
 
 def Stratux_to_ADSBExchangeFormat(inputMessage):
 
-# for reference:
-# {
-#     "Icao_addr": 11408330, // dec -> hex, then use hex as key for dict lookup to get 'r' and 't' tags
-#     "Reg": "",
-#     "Tail": "FURY04", //maps to 'flight'
-#     "Emitter_category": 1,
-#     "SurfaceVehicleType": 0,
-#     "OnGround": false, //combine with Alt to get 'alt_baro' 
-#     "Addr_type": 0, //
-#     "TargetType": 1, //'dbFlags'
-#     "SignalLevel": -20.357875270301804, //'rssi'
-#     "SignalLevelHist": [
-#         -24.55188088242224,
-#         -22.256290401500834,
-#         -20.497812333581365,
-#         -20.357875270301804,
-#         -20.743270060787594,
-#         -24.96754228534887,
-#         -24.591701858889202,
-#         -26.332036167132703
-#     ],
-#     "Squawk": 4301, //'squawk'
-#     "Position_valid": true,
-#     "Lat": 36.353348, //'lat'
-#     "Lng": -97.89047, //'lon'
-#     "Alt": 2575, //combine with OnGround above to get 'alt_baro'
-#     "GnssDiffFromBaroAlt": -350, 
-#     "AltIsGNSS": false,
-#     "NIC": 10, //'nic'
-#     "NACp": 10, //'nac_p'
-#     "Track": 360, //'track'
-#     "TurnRate": 0, 
-#     "Speed": 138, //'gs'
-#     "Speed_valid": true,
-#     "Vvel": -512, //'baro_rate'
-#     "Timestamp": "2022-04-04T17:27:12.721Z",
-#     "PriorityStatus": 0,
-#     "Age": 0.35, //'seen'
-#     "AgeLastAlt": 0.35,
-#     "Last_seen": "0001-01-01T02:39:51.93Z",
-#     "Last_alt": "0001-01-01T02:39:51.93Z",
-#     "Last_GnssDiff": "0001-01-01T02:39:51.93Z",
-#     "Last_GnssDiffAlt": 2575,
-#     "Last_speed": "0001-01-01T02:39:51.93Z",
-#     "Last_source": 1,
-#     "ExtrapolatedPosition": false,
-#     "Last_extrapolation": "0001-01-01T02:39:07.85Z",
-#     "AgeExtrapolation": 43.17,
-#     "Lat_fix": 36.33551,
-#     "Lng_fix": -97.91074,
-#     "Alt_fix": 1775,
-#     "BearingDist_valid": false,
-#     "Bearing": 0,
-#     "Distance": 0,
-#     "DistanceEstimated": 26273.559990842597,
-#     "DistanceEstimatedLastTs": "2022-04-04T17:27:12.721Z",
-#     "ReceivedMsgs": 1013,
-#     "IsStratux": false
-# }
-
-
-# This cannot have comments to be properly formatted json (sadly).
-#     inputMessage = """ 
-# {
-#     "Icao_addr": 11408330,
-#     "Reg": "",
-#     "Tail": "FURY04", 
-#     "Emitter_category": 1,
-#     "SurfaceVehicleType": 0,
-#     "OnGround": false, 
-#     "Addr_type": 0, 
-#     "TargetType": 1,
-#     "SignalLevel": -20.357875270301804,
-#     "SignalLevelHist": [
-#         -24.55188088242224,
-#         -22.256290401500834,
-#         -20.497812333581365,
-#         -20.357875270301804,
-#         -20.743270060787594,
-#         -24.96754228534887,
-#         -24.591701858889202,
-#         -26.332036167132703
-#     ],
-#     "Squawk": 4301, 
-#     "Position_valid": true,
-#     "Lat": 36.353348, 
-#     "Lng": -97.89047, 
-#     "Alt": 2575, 
-#     "GnssDiffFromBaroAlt": -350, 
-#     "AltIsGNSS": false,
-#     "NIC": 10, 
-#     "NACp": 10, 
-#     "Track": 360, 
-#     "TurnRate": 0, 
-#     "Speed": 138, 
-#     "Speed_valid": true,
-#     "Vvel": -512,
-#     "Timestamp": "2022-04-04T17:27:12.721Z",
-#     "PriorityStatus": 0,
-#     "Age": 0.35, 
-#     "AgeLastAlt": 0.35,
-#     "Last_seen": "0001-01-01T02:39:51.93Z",
-#     "Last_alt": "0001-01-01T02:39:51.93Z",
-#     "Last_GnssDiff": "0001-01-01T02:39:51.93Z",
-#     "Last_GnssDiffAlt": 2575,
-#     "Last_speed": "0001-01-01T02:39:51.93Z",
-#     "Last_source": 1,
-#     "ExtrapolatedPosition": false,
-#     "Last_extrapolation": "0001-01-01T02:39:07.85Z",
-#     "AgeExtrapolation": 43.17,
-#     "Lat_fix": 36.33551,
-#     "Lng_fix": -97.91074,
-#     "Alt_fix": 1775,
-#     "BearingDist_valid": false,
-#     "Bearing": 0,
-#     "Distance": 0,
-#     "DistanceEstimated": 26273.559990842597,
-#     "DistanceEstimatedLastTs": "2022-04-04T17:27:12.721Z",
-#     "ReceivedMsgs": 1013,
-#     "IsStratux": false
-# }
-#     """
     JSONmessage = json.loads(inputMessage) 
 
     hexKey = hex(JSONmessage['Icao_addr'])[2:].upper()
@@ -750,3 +634,110 @@ def resetNextTakeoffData(nextTOData):
     nextTOData.formationX4 = False 
     nextTOData.save()
         
+global killSignals
+killSignals = {}
+# commsManagment
+def commsManagment(parentThreadName):
+    """Loop to ADSB sources and make sure status is not inactive
+    Every second Monitor and make sure"""
+
+    from AutoRecorder.models import ADSBSource
+
+    while True:
+
+        # Get a list of all active ADSB sources
+        adsbSources=ADSBSource.objects.all() 
+
+        # List of all running threads
+        threads_list = threading.enumerate()
+
+        for source in adsbSources:
+            # Kill any threads if the source is declared inactive
+            if source.threadSwitch is False:
+                for thread in threads_list:
+                    
+                    # Check if the thread name matches the source
+                    if thread.name == "adsbSourceThread" + str(source.id):
+                        
+                        # Set the killSignal to false
+                        killSignals[thread.name] = False                     
+                
+            else:
+                # Convience variable to not be adding the strings together
+                threadName = "adsbSourceThread" + str(source.id)
+
+                # Check if the thread with the source ID exists
+                continueSignal = None 
+                for thread in threads_list:
+                    if thread.name == threadName: 
+                        continueSignal = True               
+
+                # If the thread doesn't exist create and start a new thread
+                if continueSignal is True:
+                    continue
+                else:
+                    CommsThread = threading.Thread(target=adsbSource, args=(parentThreadName, source,), name="adsbSourceThread" + str(source.id))
+                    # Set the killSignal to true
+                    killSignals[threadName] = True
+                    CommsThread.start()
+                    print("Starting thread..." + str(CommsThread))
+                    print("threads_list is: " + str(threads_list))
+
+                    print(killSignals)
+
+
+        killSignal = True
+        threads_list = threading.enumerate()
+        
+        for thread in threads_list:
+            if thread.name is parentThreadName and thread.is_alive() is True:
+                killSignal = False
+        
+        if killSignal is False:
+            # logger.info("ADSB Exchange Comms Thread sleeping...")
+            time.sleep(1)
+            # logger.info("ADSB Exchange Comms Thread waking up...")
+
+            continue
+        else:
+            # logger.debug("Stopping ADSB Exchange Comms Thread")
+            os.environ['ENABLE_ADSB'] = 'True'
+            return
+
+
+def adsbSource(parentThreadName, source): #takes new source of ADSB data that was created and put it info on a new thread, make connection, process data, get permission to edit mutex json and insert data.
+   
+    threadName = "adsbSourceThread" + str(source.id)
+
+    while killSignals[threadName] == True:
+       
+        #-> call stratuxCommThread
+        if source.sourceType == 'Local' :
+            logger.info("Starting stratuxComms..................")
+            stratuxCommsThread(source.address)
+        elif source.sourceType == 'Historical':
+            commsTestThread(parentThreadName)
+        else :
+            adsbExchangeCommsThread(parentThreadName,source.lat,source.lon, source.radius)#partent thread name,lat,long,source radius
+
+        killSignal = True
+        threads_list = threading.enumerate()
+        
+        for thread in threads_list:
+            if thread.name is parentThreadName and thread.is_alive() is True:
+                killSignal = False
+        
+        if killSignal is False:
+            # logger.info("ADSB Exchange Comms Thread sleeping...")
+            time.sleep(1)
+            # logger.info("ADSB Exchange Comms Thread waking up...")
+
+            continue
+        else:
+            # logger.debug("Stopping ADSB Exchange Comms Thread")
+            os.environ['ENABLE_ADSB'] = 'True'
+            return
+
+    return
+
+#[<_MainThread(MainThread, started 310004)>, <Thread(MessageThread, started 279932)>, <Thread(CommsTestThread, started 307460)>, <Thread(ADSBProcessingThread, started 301936)>]
