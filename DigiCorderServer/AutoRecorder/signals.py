@@ -9,7 +9,7 @@ from channels import layers
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from asgiref.sync import async_to_sync
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.db.models import Q
 from django.dispatch import receiver
 from django.core import serializers
@@ -125,10 +125,15 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
 
 
 
-@receiver(post_save, sender=User, dispatch_uid="createUserExtras")
-def createUserDisplayExtras(sender, instance, created, **kwargs):
+@receiver(m2m_changed, sender=User.groups.through, dispatch_uid="createUserExtras")
+def createUserDisplayExtras(sender, instance, action, reverse, **kwargs):
+
+    print("!!!!!!" + str(instance))
+    print("!!!!!!" + str(action))
+    print("!!!!!!" + str(action))
 
     userGroups = instance.groups.all()
+    print(str(userGroups) + "!!!!!!!!!!!!!!!!")
     airfields = []
     for group in userGroups:
         if hasattr(group, 'airfield'):
