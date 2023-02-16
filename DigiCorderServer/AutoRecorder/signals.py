@@ -626,7 +626,7 @@ def adsbProcessing(parentThreadName):
 
 
 
-def commsTestThread(parentThreadName):
+def commsTestThread(parentThreadName, sourceName):
     import websocket
     import json
     import time
@@ -652,7 +652,7 @@ def commsTestThread(parentThreadName):
             else:
                 keyboardKillSignal = False
             
-            if killSignals['CommsTestThread'] is False or keyboardKillSignal is False:
+            if killSignals[sourceName] is False or keyboardKillSignal is False:
                 logger.debug("Stopping Comms Test Thread")
                 os.environ['ENABLE_ADSB'] = 'True'
                 return
@@ -1015,7 +1015,7 @@ def adsbSource(parentThreadName, source): #takes new source of ADSB data that wa
             logger.info("Starting stratuxComms...")
             stratuxCommsThread(source.address, threadName)
         elif source.sourceType == 'Historical':
-            commsTestThread(parentThreadName)
+            commsTestThread(parentThreadName, threadName)
         else :
             adsbExchangeCommsThread(parentThreadName,source.lat,source.lon, source.radius)#partent thread name,lat,long,source radius
 

@@ -271,6 +271,19 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                             )
 
                 }
+
+                // Display aircraft in other patterns
+                if (rwyUpdate[i].fields.state == "in pattern" && rwyUpdate[i].fields.substate != patternName) {
+                    if (!MapAcft[rwyUpdate[i].pk]) {
+                        // If there is no marker with this id yet, instantiate a new one.;
+                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);          
+                      } else {
+                        // If there is already a marker with this id, simply modify its position.
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign);
+                        MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType]);
+                      }
+                }
+
                 if (rwyUpdate[i].fields.state == "taxiing") {
                     if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
