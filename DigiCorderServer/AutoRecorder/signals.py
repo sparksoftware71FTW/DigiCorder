@@ -313,17 +313,13 @@ def messageThread(freq, parentThreadName):
 
         else:
             keyboardKillSignal = False
-
-        logger.info("threads_list: " + str(threads_list))
-        logger.info("killSignals: " + str(killSignals))
-        logger.info("keyboardKillSignal: " + str(keyboardKillSignal))
         
         if killSignals['MessageThread'] is False or keyboardKillSignal is False:
             logger.info("Message Thread about to die...")
             os.environ['ENABLE_ADSB'] = 'True'
             return
         else:
-            logger.info("Message Thread sleeping...")
+            # logger.info("Message Thread sleeping...")
             time.sleep(freq)
             logger.info("Message Thread waking up...")
             continue
