@@ -221,7 +221,7 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                 if (rwyUpdate[i].fields.formationX2) {formX2Checkmark = "checked"}
                 if (rwyUpdate[i].fields.formationX4) {formX4Checkmark = "checked"}
                 
-                if (rwyUpdate[i].fields.substate == patternName) {
+                if (rwyUpdate[i].fields.substate == patternName && rwyUpdate[i].fields.state == "in pattern") {
                     if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
                         MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign);          

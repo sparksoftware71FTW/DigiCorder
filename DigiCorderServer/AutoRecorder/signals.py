@@ -438,7 +438,7 @@ def adsbProcessing(parentThreadName):
                             except:
                                 logger.error("Error processing next T/O data for acft with substate: " + Acft.substate)
                         
-                    elif inPattern(position, patternDict) and Acft.groundSpeed < Acft.aircraftType.fullStopThresholdSpeed and Acft.state != "taxiing" and (Acft.alt_baro == "ground" and int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 150)):
+                    elif inPattern(position, patternDict) and Acft.groundSpeed < Acft.aircraftType.fullStopThresholdSpeed and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 150)):
                         Acft.lastState = Acft.state
                         Acft.state="taxiing"
                         Acft.substate=setSubstate(position, Acft.state, patternDict)
@@ -712,9 +712,9 @@ def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
     dictMessage = json.loads(message)
 
-    # logfile = open(r"./AutoRecorder/testFiles/Stratux/ADSBsnapshots" + ".json", "a+")
-    # logfile.write(json.dumps(dictMessage))
-    # logfile.close
+    logfile = open(r"./AutoRecorder/testFiles/Stratux/ADSBsnapshotsLARGE" + ".json", "a+")
+    logfile.write(json.dumps(dictMessage))
+    logfile.close
     
     # Do nothing with signals that don't have a valid position
     if dictMessage['Lat'] == 0 or dictMessage["Lng"] == 0:
