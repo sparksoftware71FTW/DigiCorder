@@ -6,6 +6,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, HTML, Field
 from crispy_forms.bootstrap import InlineField
 
+"""
+DOC STRING BLANK
+
+"""
 
 class ActiveAircraft355(ModelForm):
     class Meta:

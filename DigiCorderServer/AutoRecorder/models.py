@@ -9,6 +9,16 @@ from django.utils.timezone import timedelta
 from django.core import serializers
 from django.core.validators import RegexValidator
 
+"""
+models.py is the location in which we define our database models.
+
+The classes currently defiened are Messages, Triggers, Airfield, 
+AdditionalKML, GroupExtras, Tails, AircraftType, RunwayManager, Callsign, Runway, UserDisplayExtra, 
+RsuCrew, ActiveAircraftManager, ActiveAircraft, CompletedSortie, NextTakeoffData, ADSBSource, and CommsControl
+
+These models can be expaned upon depending on the needs of the project.
+
+"""
 
 alphanumeric = RegexValidator(r'^[0-9a-zA-Z _]*$', 'Only alphanumeric characters are allowed.')
 
@@ -195,6 +205,7 @@ class ActiveAircraft(models.Model):
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
     formTimestamp = models.DateTimeField('Form Timestamp', blank=True, null=True)
+    wingman = models.CharField('Wingman', max_length=12, blank=True, null=True) # tail number of wingman
 
     def __str__(self):
         return "Tail " + str(self.tailNumber)

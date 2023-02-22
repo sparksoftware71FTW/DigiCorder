@@ -19,6 +19,9 @@ from .models import ActiveAircraft, CompletedSortie, Airfield, RsuCrew, Runway
 
 # Create your views here.
 
+# The views.py files are the main files that handle the logic for the web application. They take in the user's input and generate the appropriate output based on a given input.
+# The index function is the main function for the home page. It takes in the user's input from the database and generates the information for the home page.
+
 def index(request):
     return render(request, 'AutoRecorder/bootbase.html')
 
@@ -118,7 +121,7 @@ def dashboard(request):
     return render(request, 'AutoRecorder/dashboardNew.html', {"runways": runways, "host": request.get_host()})
     #return render(request, 'AutoRecorder/dashboard.html')
 
-
+# The form355 function is the main function for the Form 355 report. It takes in the user's input from the frontend, hits the database, and generates the information for the report.
 @staff_member_required(login_url='/AutoRecorder')
 def form355(request):
     landedAircraft = CompletedSortie.objects.all().order_by('timestamp')
@@ -210,7 +213,7 @@ def form355(request):
         
         return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews})
 
-
+#the violation355View function is called when the user clicks the "355" button on the dashboard page. It takes the tail number of the aircraft as a parameter and returns a form to edit the 355 code and comments for that aircraft.
 @staff_member_required(login_url='/AutoRecorder')
 def violation355View(request, tailNumber):
     acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
@@ -226,7 +229,7 @@ def violation355View(request, tailNumber):
         acft355formset = Acft355FormFactory(instance=acft)
         return render(request, 'AutoRecorder/edit355.html', {"acft355formset": acft355formset})
 
-
+# The editView function is called when the user clicks the "edit" button on the dashboard page, and gives the user a form to edit the data associated with a particular active aircraft.
 @staff_member_required(login_url='/AutoRecorder')
 def editView(request, tailNumber):
     acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
@@ -243,18 +246,18 @@ def editView(request, tailNumber):
         runways = Runway.objects.all()           
         return render(request, 'AutoRecorder/edit.html', {"acfteditformset": acfteditformset, "runways": runways})
 
+#the formSolo function is called when the user clicks the "Solo" button on the dashboard. It takes the tail number of the aircraft as a parameter and returns a form to edit the solo status for that aircraft.
+# @staff_member_required(login_url='/AutoRecorder')
+# def formSolo(request, tailNumber):
 
-@staff_member_required(login_url='/AutoRecorder')
-def formSolo(request, tailNumber):
+#     if request.method == 'POST':
+#         acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
+#         toggleFormSolo(acft)
+#         return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
+#     else:
+#         return render(request, 'AutoRecorder/dashboard.html')
 
-    if request.method == 'POST':
-        acft = get_object_or_404(ActiveAircraft, pk=tailNumber)
-        toggleFormSolo(acft)
-        return HttpResponseRedirect(reverse('AutoRecorder:dashboard'))
-    else:
-        return render(request, 'AutoRecorder/dashboard.html')
-
-
+#the formX2 function is called when the user clicks the "2-Ship" checkbox on the dashboard. It takes the tail number of the aircraft as a parameter and toggles their 2-ship formation state.
 @staff_member_required(login_url='/AutoRecorder')
 def formX2(request, airfield, runway, tailNumber):
 
@@ -265,7 +268,7 @@ def formX2(request, airfield, runway, tailNumber):
     else:
         return render(request, 'AutoRecorder/dashboard.html')
 
-
+#the formX2 function is called when the user clicks the "4-Ship" checkbox on the dashboard. It takes the tail number of the aircraft as a parameter and toggles their 4-ship formation state.
 @staff_member_required(login_url='/AutoRecorder')
 def formX4(request, airfield, runway, tailNumber):
 
@@ -276,7 +279,7 @@ def formX4(request, airfield, runway, tailNumber):
     else:
         return render(request, 'AutoRecorder/dashboard.html')
 
-
+#the solo function is called when the user clicks the "Solo" button on the runway dashboard page. It takes the tail number of the aircraft as a parameter and marks that aircraft as a solo in the database.
 @staff_member_required(login_url='/AutoRecorder')
 def solo(request, airfield, runway, tailNumber):
 
@@ -287,7 +290,7 @@ def solo(request, airfield, runway, tailNumber):
     else:
         return render(request, 'AutoRecorder/dashboard.html')
 
-
+#the following functions change the state of the solo, 2-ship, and 4-ship attributes of active aircraft as a result of clicking the buttons on the runway dashboard pages.
 def toggleFormSolo(acft):
     if acft.formationX2 == False:
         acft.formationX2 = True

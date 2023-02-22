@@ -14,14 +14,61 @@ from .models import ActiveAircraft, ActiveAircraftManager, CompletedSortie, Mess
 import logging
 logger = logging.getLogger(__name__)
 
+# This is the implementation of the DashboardConsumer class, which is a Channels 
+# consumer for the dashboard of the application. The consumer handles the 
+# WebSocket connection between the server and the client.
+#
+# The consumer listens for incoming WebSocket messages from the client, and based 
+# on the message type, it performs the necessary actions such as saving the message 
+# data to the database or sending updates to the client. The consumer also sends 
+# initial updates to the client when the WebSocket connection is established, 
+# including the list of active aircraft and the Next Takeoff Data.
+#
+# The consumer makes use of Channels' asynchronous programming capabilities and 
+# uses Django's database_sync_to_async decorator to ensure that database queries 
+# are executed in a synchronous manner. The consumer also uses Django's serialization 
+# framework to serialize querysets to JSON so that they can be easily sent over 
+# the WebSocket connection.
+#
+# The consumer has methods for handling different types of messages, such as 
+# nextTOMessage and rwyUpdate. These methods send updates to the client using 
+# the send method, which sends a text message over the WebSocket connection.
+#
+# The consumer also has methods for saving data to the database, such as saveMessage 
+# and saveNextTOMessage, which use Django's ORM to create new objects in the database.
+#
+# Overall, the DashboardConsumer is an important part of the application, 
+# responsible for handling the WebSocket connection and sending updates 
+# between the server and the client.
+
+# See https://channels.readthedocs.io/en/stable/ for more information on Channels.
+
 class DashboardConsumer(AsyncWebsocketConsumer):
+    """
+    This class is a Channels consumer for the dashboard of the application. It handles the WebSocket connection
+    between the server and the client. The consumer listens for incoming WebSocket messages from the client and 
+    performs necessary actions such as saving data regarding the next takeoff on a particular runway to the database or sending updates to the client. 
+    It makes use of Channels' asynchronous programming capabilities and Django's database_sync_to_async decorator 
+    and serialization framework to ensure seamless communication over the WebSocket connection.
+    """
+
+
     async def connect(self):
+        """
+        This function is called when the WebSocket is handshaking, 
+        i.e. when the WebSocket is being established between the client and the server.
+        
+        It sends initial updates to the client, including the list of active aircrafts 
+        and the Next Takeoff Data. It also sets up the WebSocket connection 
+        so that the consumer can listen for incoming messages from the client.
+        """
 
         self.user = self.scope["user"]
         if self.user.is_staff is True:
             pass
         else:
-            logger.warn("Non-staff user tried to access the data feed... " + str(self.user))
+            logger.warn(
+                "Non-staff user tried to access the data feed... " + str(self.user))
             self.close()
             return
 
@@ -35,47 +82,49 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
         channel_layer = layers.get_channel_layer()
-        nextTOMessages = await database_sync_to_async(self.get_next_takeoff_update_messages)()
+        nextTOMessages = await database_sync_to_async(get_next_takeoff_update_messages)()
 
         # runways = await database_sync_to_async(RunwayManager.getAllRunways)()
 
         async for runway in Runway.objects.all():
             rwyMessage, rwyMetaData = await database_sync_to_async(ActiveAircraftManager.get_Acft_queryset_update_message)(runway)
-            rwy = 't6Update' if runway.name == 'KEND 17L/35R' else 't38Update'   #TODO make this the runway name, and rework the frontend to accept that........
             await channel_layer.group_send(
-            'test',
-                {
-                    'type': rwy,
-                    'message': rwyMessage,
-                    'meta': rwyMetaData
-                }
-            )
-            await channel_layer.group_send(
-            'test',
+                'test',
                 {
                     'type': 'rwyUpdate',
-                    'runway': runway.name, 
+                    'runway': runway.name,
                     'message': rwyMessage,
                     'meta': rwyMetaData
                 }
             )
-        
+
         for msg in nextTOMessages:
             await channel_layer.group_send(
                 'test',
                 {
-                    'type':'nextTOMessage',
-                    'runway':msg['runway'],
-                    'data':msg
+                    'type': 'nextTOMessage',
+                    'runway': msg['runway'],
+                    'data': msg
                 }
             )
-        #logger.debug("Sending initial ActiveAircraft list. Message value is: " + str(t38message))
-        
+        # logger.debug("Sending initial ActiveAircraft list. Message value is: " + str(t38message))
 
-    # def disconnect(self, code):
-    #     return super().disconnect(code)
+    def disconnect(self, code):
+        return super().disconnect(code)
 
     async def receive(self, text_data):
+        """
+        This function is called when a message is received from the WebSocket. 
+        The function processes the message based on its type (currently only messages pertaining to the next takeoff for a particular runway)
+        and performs the necessary actions, such as sending updates to all relevant clients and saving data to the database.
+
+        Args:
+            text_data (str): The incoming message in the form of a json formatted string.
+
+        Returns:
+            None
+        """
+
         text_data_json = json.loads(text_data)
         msgType = text_data_json['type']
         data = text_data_json['data']
@@ -85,7 +134,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
 
         if msgType == 'nextTOMessage':
             flags, created = await NextTakeoffData.objects.aget_or_create(runway=await Runway.objects.aget(name=text_data_json['runway']))
-            
+
             flags.solo = data['solo']
             flags.formationX2 = data['formationX2']
             flags.formationX4 = data['formationX4']
@@ -93,166 +142,101 @@ class DashboardConsumer(AsyncWebsocketConsumer):
             await database_sync_to_async(self.saveNextTOMessage)(flags)
             logger.info("we did the thing...")
 
-    #     async_to_sync(self.channel_layer.group_send)(
-    #         self.room_group_name,
-    #         {
-    #             'type': 'chat_message',
-    #             'message':txmessage
-    #         }
-    #     )
-    
+
+
     async def nextTOMessage(self, event):
+        """
+        Handle the incoming nextTOMessage event.
+        Extract the runway and data information from the event and send it back to the client.
+
+        Parameters:
+        event (dict): The incoming event data from the client. It contains the runway and data information.
+
+        Returns:
+        None
+        """
         runway = event['runway']
         data = event['data']
         logger.debug(str(data))
         await self.send(text_data=json.dumps({
-            'type':'nextTOMessage',
+            'type': 'nextTOMessage',
             'runway': runway,
-            'data':data
-        })) 
-
-    async def lolmessage(self, event):
-        txmessage = event['message']
-        
-        await self.send(text_data=json.dumps({
-            'type':'lolmessage',
-            'message':txmessage
+            'data': data
         }))
 
-
     async def rwyUpdate(self, event):
+        """
+        Handle a rwyUpdate event - normally triggered by the messageThread functionality in signals.py.
+        Used in the consumer to send info to the client upon initial connection.
+        Extracts the message, meta, and runway information from the event and sends it to relevant clients.
+
+        Parameters:
+        event (dict): The incoming event data from the client. It contains the message, meta, and runway information.
+
+        Returns:
+        None
+        """
         txmessage = event['message']
         txmetadata = event['meta']
         runway = event['runway']
         logger.debug(str(txmessage))
         await self.send(text_data=json.dumps({
-            'type':'rwyUpdate',
+            'type': 'rwyUpdate',
             'runway': runway,
-            'message':txmessage,
-            'meta':txmetadata
+            'message': txmessage,
+            'meta': txmetadata
         }))
-
-
-    async def t6Update(self, event):
-        txmessage = event['message']
-        txmetadata = event['meta']
-        logger.debug(str(txmessage))
-        await self.send(text_data=json.dumps({
-            'type':'t6Update',
-            'message':txmessage,
-            'meta':txmetadata
-        }))
-
-
-    async def t38Update(self, event):
-        txmessage = event['message']
-        txmetadata = event['meta']
-        await self.send(text_data=json.dumps({
-            'type':'t38Update',
-            'message':txmessage,
-            'meta':txmetadata
-        }))
-        #logger.debug('!!!!!!! t38Update' + str(txmessage))
-
 
     def saveMessage(self, txmessage):
+        """
+        Save the incoming message to the database.
+
+        Parameters:
+        txmessage (str): The incoming message to be saved.
+
+        Returns:
+        None
+        """
         newMessage = Message.objects.create(message=txmessage)
 
     def saveNextTOMessage(self, nextTOFlags):
+        """
+        Save the incoming nextTOFlags to the database.
+
+        Parameters:
+        nextTOFlags (NextTakeoffData object): The incoming nextTOFlags to be saved.
+
+        Returns:
+        None
+        """
         nextTOFlags.save()
 
-
-    def toggle(self, target):
-        if target:
-            return False
-        else:
-            return True
-
-    def get_next_takeoff_update_messages(self):
-        nextTOquery = NextTakeoffData.objects.all()
-        nextTOMessages = []
-        for entry in json.loads(serializers.serialize('json', nextTOquery)):
-            nextTOMessages.append(
-                entry['fields']
-            )
-        return nextTOMessages
-
-    def get_T6_queryset_update_message(self):
-        """
-        Return all active T-6s serialized
-        """
-        activeT6query = ActiveAircraft.objects.filter(Q(aircraftType='TEX2') | Q(substate='eastside')).order_by('tailNumber')
-
-        activeT6Metadata = {}
-        activeT6Metadata['In_Pattern'] = activeT6query.filter(state="in pattern").count() + activeT6query.filter(formationX2=True).filter(state="in pattern").count() + activeT6query.filter(formationX4=True).filter(state="in pattern").count()*3
-        activeT6Metadata['Taxiing'] = activeT6query.filter(state="taxiing").count() + activeT6query.filter(formationX2=True).filter(state="taxiing").count() + activeT6query.filter(formationX4=True).filter(state="taxiing").count()*3
-        activeT6Metadata['Off_Station'] = activeT6query.filter(state="off station").count() + activeT6query.filter(formationX2=True).filter(state="off station").count() + activeT6query.filter(formationX4=True).filter(state="off station").count()*3
-        activeT6Metadata['Lost_Signal'] = activeT6query.filter(state="lost signal").count() + activeT6query.filter(formationX2=True).filter(state="lost signal").count() + activeT6query.filter(formationX4=True).filter(state="lost signal").count()*3
-
-        activeT6Metadata['dual145'] = []
-        for T6 in activeT6query.filter(
-            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=45)).exclude(
-                solo=True).exclude(state='taxiing'):
-            activeT6Metadata['dual145'].append(T6.callSign)
-
-        activeT6Metadata['solo120'] = []
-        for T6 in activeT6query.filter(
-            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).filter(
-                solo=True).exclude(state='taxiing'):
-                activeT6Metadata['solo120'].append(T6.callSign)
-
-        activeT6Metadata['solosOffStation'] = []
-        for T6 in activeT6query.filter(solo=True).exclude(state='in pattern').exclude(state='taxiing'):
-            activeT6Metadata['solosOffStation'].append(T6.callSign)
-
-        activeT6Metadata['solosInPattern'] = []
-        for T6 in activeT6query.filter(solo=True).filter(state='in pattern'):
-            activeT6Metadata['solosInPattern'].append(T6.callSign)
-
-        activeT6s = serializers.serialize('json', activeT6query)
-
-        #logger.debug(json.dumps(activeT6Metadata))
-        return activeT6s, json.dumps(activeT6Metadata)
-    
-
-    def get_T38_queryset_update_message(self):
-        """
-        Return all active T-6s serialized
-        """
-        activeT38query = ActiveAircraft.objects.filter(Q(aircraftType='T38') | Q(substate='shoehorn')).order_by('tailNumber')
-
-        activeT38Metadata = {}
-        activeT38Metadata['In_Pattern'] = activeT38query.filter(state="in pattern").count() + activeT38query.filter(formationX2=True).filter(state="in pattern").count() + activeT38query.filter(formationX4=True).filter(state="in pattern").count()*3
-        activeT38Metadata['Taxiing'] = activeT38query.filter(state="taxiing").count() + activeT38query.filter(formationX2=True).filter(state="taxiing").count() + activeT38query.filter(formationX4=True).filter(state="taxiing").count()*3
-        activeT38Metadata['Off_Station'] = activeT38query.filter(state="off station").count() + activeT38query.filter(formationX2=True).filter(state="off station").count() + activeT38query.filter(formationX4=True).filter(state="off station").count()*3
-        activeT38Metadata['Lost_Signal'] = activeT38query.filter(state="lost signal").count() + activeT38query.filter(formationX2=True).filter(state="lost signal").count() + activeT38query.filter(formationX4=True).filter(state="lost signal").count()*3
-
-        activeT38Metadata['dual120'] = []
-        for T38 in activeT38query.filter(
-            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=20)).exclude(solo=True).exclude(state='taxiing'):
-            activeT38Metadata['dual120'].append(T38.callSign)
-
-        activeT38Metadata['solo100'] = []
-        for T38 in activeT38query.filter(
-            takeoffTime__lt=timezone.now() - timedelta(hours=1, minutes=0)).filter(solo=True).exclude(state='taxiing'):
-            activeT38Metadata['solo100'].append(T38.callSign)
-
-        activeT38Metadata['solosOffStation'] = []
-        for T38 in activeT38query.filter(solo=True).exclude(state='in pattern').exclude(state='taxiing'):
-            activeT38Metadata['solosOffStation'].append(T38.callSign)
-
-        activeT38Metadata['solosInPattern'] = []
-        for T38 in activeT38query.filter(solo=True).filter(state='in pattern'):
-            activeT38Metadata['solosInPattern'].append(T38.callSign)
-
-        activeT38s = serializers.serialize('json', activeT38query)
-
-        #logger.debug(json.dumps(activeT38Metadata))
-        return activeT38s, json.dumps(activeT38Metadata)
- 
-
 def toggle(target):
-        if target:
-            return False
-        else:
-            return True
+    """
+    Toggle the target value.
+
+    Parameters:
+    target (bool): The target value to be toggled.
+
+    Returns:
+    bool: The toggled value.
+    """
+    if target:
+        return False
+    else:
+        return True
+
+def get_next_takeoff_update_messages():
+    """
+    Retrieve all next takeoff data from the database and convert it to a list of dictionaries.
+
+    Returns:
+    list: A list of dictionaries containing the next takeoff data.
+    """
+    nextTOquery = NextTakeoffData.objects.all()
+    nextTOMessages = []
+    for entry in json.loads(serializers.serialize('json', nextTOquery)):
+        nextTOMessages.append(
+            entry['fields']
+        )
+    return nextTOMessages

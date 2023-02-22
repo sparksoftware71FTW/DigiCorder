@@ -1,6 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+"""
+Regester the models to the admin site
+
+"""
 from .models import *
 
 class ActiveAircraftAdmin(admin.ModelAdmin):

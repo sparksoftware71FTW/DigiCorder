@@ -41,6 +41,14 @@ function nextTOMessage(chatSocket, id, runway) {
 
 
 
+// This JavaScript code is related to a web-based mapping application. It uses the Leaflet library to display a map and markers on the map. 
+// The markers are aircrafts, and their position and some metadata, such as their callsign, altitude, and aircraft type, are updated in 
+// real-time through a WebSocket connection.
+// The code sets up a custom icon for each aircraft type defined in the displayedAcftTypes array, and stores them in the iconDict object. 
+// When a new message is received from the WebSocket connection, the code updates the position and metadata of the aircraft markers, 
+// as well as the state information of the aircrafts on the runway, such as the number of aircrafts in pattern, taxiing, off station, 
+// or lost signal. The updated information is then displayed on the page.
+
 function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
 
     // var map = L.map('map').setView([lat, lon], 10);
@@ -53,10 +61,13 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
         .bindPopup(FAAcode)
         .openPopup();
 
+    // Initialize two dictionaries to store aircraft information
     var MapAcft = {}
     var MapAcftNotUpdated = []
+    // Initialize a dictionary to store icons for aircraft types
     var iconDict = {}
 
+    // This loop iterates through each aircraft type in the displayedAcftTypes list, and defines a custom icon for each aircraft type.
     for (let i = 0; i < displayedAcftTypes.length; i++) {
 
         let size = displayedAcftTypes[i].fields.iconSize
@@ -82,13 +93,9 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
         })
 
     }
-    console.log(displayedAcftTypes)
-    console.log(iconDict)
     
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
-
-
         
         if(data.type == 'rwyUpdate' && data.runway == runway){
             console.log(data.runway + " matched: " + runway)
@@ -97,7 +104,8 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
             let rwyUpdate = JSON.parse(data.message)
             let rwyMeta = JSON.parse(data.meta)
 
-
+            // Assign local variables to html elements that will be updated, and clear the html elements in preparation for new data
+            //These pertain to the major categories of aircraft state
             let Pattern = document.getElementById(' In Pattern')
             removeAllChildNodes(Pattern)
             let Taxiing = document.getElementById(' Taxiing')
@@ -115,7 +123,7 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
             let numLostSignal = document.getElementById('num Lost Signal')
             removeAllChildNodes(numLostSignal)
 
-
+            //These pertain to the 'Recorder Summary' section - particularly where callsigns are listed for aircraft in each category
             let dualLimit = document.getElementById(' Dual Aircraft Outside the Pattern Beyond Limits')
             removeAllChildNodes(dualLimit)
             let soloLimit = document.getElementById(' Solo Aircraft Outside the Pattern Beyond Limits')
@@ -125,6 +133,7 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
             let solosInPattern = document.getElementById(' Solos in the Pattern')
             removeAllChildNodes(solosInPattern)
 
+            //These also pertain to the 'Recorder Summary' section - particularly the pills for the total number of aircraft in each category
             let numdualLimit = document.getElementById('num Dual Aircraft Outside the Pattern Beyond Limits')
             removeAllChildNodes(numdualLimit)
             let numsoloLimit = document.getElementById('num Solo Aircraft Outside the Pattern Beyond Limits')
@@ -424,7 +433,7 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                         MapAcft[rwyUpdate[i].pk].openPopup(); 
                       } else {
                         // If there is already a marker with this id, simply modify its position.
-                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false});
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false});
                         MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType + "_translucent"]);
                       }
 
@@ -468,7 +477,7 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                     )
                 }
             }
-                        //remove all aircraft on the map that were not in the update message
+            //remove all aircraft on the map that were not in the update message
             for (const[tailNumber, data] of Object.entries(MapAcftNotUpdated)) {
                 map.removeLayer(MapAcft[tailNumber])
                 delete MapAcft[tailNumber]
@@ -479,8 +488,3 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
     )
 }
 
-// function removeAllChildNodes(parent) {
-// while (parent.firstChild) {
-//     parent.removeChild(parent.firstChild);
-// }
-// }

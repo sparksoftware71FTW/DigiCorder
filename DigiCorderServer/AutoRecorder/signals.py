@@ -104,15 +104,6 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
 
     for runway in Runway.objects.all():
         rwyMessage, rwyMetaData = ActiveAircraftManager.get_Acft_queryset_update_message(runway)
-        rwy = 't6Update' if runway.name == 'KEND 17L/35R' else 't38Update'   #TODO make this the runway name, and rework the frontend to accept that........
-        async_to_sync(channel_layer.group_send)(
-        'test',
-            {
-                'type': rwy,
-                'message': rwyMessage,
-                'meta': rwyMetaData
-            }
-        )
         async_to_sync(channel_layer.group_send)(
         'test',
             {
@@ -128,12 +119,7 @@ def displayActiveAircraft(sender, instance, created, **kwargs):
 @receiver(m2m_changed, sender=User.groups.through, dispatch_uid="createUserExtras")
 def createUserDisplayExtras(sender, instance, action, reverse, **kwargs):
 
-    print("!!!!!!" + str(instance))
-    print("!!!!!!" + str(action))
-    print("!!!!!!" + str(action))
-
     userGroups = instance.groups.all()
-    print(str(userGroups) + "!!!!!!!!!!!!!!!!")
     airfields = []
     for group in userGroups:
         if hasattr(group, 'airfield'):
@@ -402,7 +388,7 @@ def adsbProcessing(parentThreadName):
                         logger.info('KeyError in aircraft ' + str(e) + "; however, this is ok. We just need to create a new aircraft TYPE")
 
 
-                    Acft.callSign=aircraft["flight"]
+                    Acft.callSign = aircraft["flight"] if aircraft["flight"] != "" else "N/A"
 
                     for callsign in soloCallsignList:
                         if fuzz.ratio(Acft.callSign, callsign) >= 80:
@@ -469,9 +455,16 @@ def adsbProcessing(parentThreadName):
                             break
                         if formAcft.callSign == '':
                             continue
-                        if  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX2 is False:
+                        if Acft.tailNumber == formAcft.wingman:
+                            logger.info('Wingman started sqwuaking')
+                            formAcft.formationX2 = False 
+                            formAcft.formTimestamp = timezone.now()
+                            Acft.formTimestamp = timezone.now()
+                            formAcft.save()
+                            Acft.save()                            
+                        elif  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX2 is False:
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
-                                distance = position.distance(formAcftPosition) * 69 #approx lat/lon -> miles conversion factor for CONUS
+                                distance = position.distance(formAcftPosition) * 69 #approx lat/lon -> miles conversion factor for CONUS WRONG
                                 if (distance <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and formAcft.groundSpeed > formAcft.aircraftType.fullStopThresholdSpeed:
                                     if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold)):
                                         if closestFormation is None or distance < closestFormationDistance:
@@ -545,8 +538,19 @@ def adsbProcessing(parentThreadName):
                     # Four ships
                     # Robust splits and rejoins
 
+# from geopy.distance import distance
+# from shapely.geometry import Point
 
-                position1 = geometry.Point(0, 0) 
+# # Define two points
+# point1 = Point(40.748817, -73.985428)  # New York City
+# point2 = Point(51.507351, -0.127758)  # London
+
+# # Calculate the distance between the two points
+# distance_km = distance((point1.y, point1.x), (point2.y, point2.x)).km
+
+# print(distance_km)  # Output: 5571.047657186649
+
+                position1 = geometry.Point(0, 0) #initialize position1 and position2 to 0,0 
                 position2 = geometry.Point(0, 0)
 
                 for freshAcft in updatedAircraftObjects:        #start form logic 
@@ -556,12 +560,14 @@ def adsbProcessing(parentThreadName):
                         position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
                         position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
                         
-                        if (position2.distance(position1) * 69 <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and freshAcft.groundSpeed > freshAcft.aircraftType.fullStopThresholdSpeed:           # :)  degrees of lat & long to miles
+                        if (position2.distance(position1) * 69 <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and freshAcft.groundSpeed > freshAcft.aircraftType.fullStopThresholdSpeed:           # :)  degrees of lat & long to miles Recalc with function above
                             if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold):
                                 if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1:
                                     freshAcft.formationX2 = True
                                     freshAcft.formTimestamp = timezone.now()
                                     Acft.formTimestamp = timezone.now()
+                                    Acft.wingman= freshAcft.tailNumber
+                                    freshAcft.wingman = Acft.tailNumber
                                     freshAcft.save()
                                     Acft.save()
 
@@ -632,7 +638,7 @@ def commsTestThread(parentThreadName, sourceName):
     import time
     dummyWebSocket = websocket.WebSocket()
 
-    with open(r"./AutoRecorder/testFiles/Stratux/ADSBsnapshots.json") as logfile:
+    with open(r"./AutoRecorder/testFiles/Stratux/ADSBsnapshotsLARGE2.json") as logfile:
         data = json.load(logfile)
 
         for message in data["testData"]:
@@ -659,7 +665,7 @@ def commsTestThread(parentThreadName, sourceName):
             else:
                 # logger.info("Comms Test Thread sleeping...")
                 # sleep for 20ms in order to approximate real-time messages
-                time.sleep(0.02)
+                time.sleep(0.01)
                 # logger.info("Comms Test Thread waking up...")
                 continue
 
