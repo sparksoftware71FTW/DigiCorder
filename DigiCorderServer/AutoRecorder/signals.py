@@ -4,6 +4,7 @@ import threading
 import asyncio
 import time
 import json
+import math 
 import websocket
 from channels import layers
 from django.utils import timezone
@@ -464,7 +465,8 @@ def adsbProcessing(parentThreadName):
                             Acft.save()                            
                         elif  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX2 is False:
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
-                                distance = position.distance(formAcftPosition) * 69 #approx lat/lon -> miles conversion factor for CONUS WRONG
+                                distance = distance(formAcftPosition[0],formAcftPosition[1],formAcftPosition[2],position[0],position[1],position[2]) #distance calculated by Haversine formula
+                                
                                 if (distance <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and formAcft.groundSpeed > formAcft.aircraftType.fullStopThresholdSpeed:
                                     if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold)):
                                         if closestFormation is None or distance < closestFormationDistance:
@@ -1050,7 +1052,25 @@ def adsbSource(parentThreadName, source): #takes new source of ADSB data that wa
             time.sleep(1)
             # logger.info("Comms Management Thread waking up...")
             continue
-
     return
+
+
+def distance(lat1, lon1, alt1, lat2, lon2, alt2): #Calculates the straing line distance beween 2 points in space. (Lat, Lon, Feet, Lat, Lon, Feet)
+    R = 20925721.784777 # radius of the earth in feet
+        # convert latitude and longitude from degrees to radians
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+
+    # calculate the differences between the latitudes and longitudes
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    dalt = alt2 - alt1
+
+    # apply the Haversine formula
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    d = R * c
+    
+    # calculate the distance in 3D space
+    return (math.sqrt(d ** 2 + dalt ** 2)/5280)
 
 #[<_MainThread(MainThread, started 310004)>, <Thread(MessageThread, started 279932)>, <Thread(CommsTestThread, started 307460)>, <Thread(ADSBProcessingThread, started 301936)>]
