@@ -42,6 +42,9 @@ with open("./AutoRecorder/static/AutoRecorder/USAaircraft.json") as acftFile:
     USAircraft = json.load(acftFile)
 
 
+global numUnknownAcft
+numUnknownAcft = 0 # global variable to keep track of how many unknown aircraft we've seen that are not in USAircraft.json
+
 
 @receiver(post_save, sender=ActiveAircraft, dispatch_uid="log_completed_flight")
 def log_completed_flight(sender, instance, created, **kwargs):
@@ -268,17 +271,6 @@ def get_next_takeoff_update_messages():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 ###############################OLD apps.py Functions:#################################
 
 
@@ -389,7 +381,14 @@ def adsbProcessing(parentThreadName):
                         logger.info('KeyError in aircraft ' + str(e) + "; however, this is ok. We just need to create a new aircraft TYPE")
 
 
-                    Acft.callSign = aircraft["flight"] if aircraft["flight"] != "" else "N/A"
+                    if Acft.callSign is None and aircraft["flight"] == "":
+                        Acft.callSign = ''
+
+                    elif Acft.callSign is not None and Acft.callSign != '' and aircraft['flight'] == "":
+                        Acft.callSign = Acft.callSign
+
+                    else:
+                        Acft.callSign = aircraft["flight"]
 
                     for callsign in soloCallsignList:
                         if fuzz.ratio(Acft.callSign, callsign) >= 80:
@@ -667,7 +666,7 @@ def commsTestThread(parentThreadName, sourceName):
             else:
                 # logger.info("Comms Test Thread sleeping...")
                 # sleep for 20ms in order to approximate real-time messages
-                time.sleep(0.01)
+                # time.sleep(0.01)
                 # logger.info("Comms Test Thread waking up...")
                 continue
 
@@ -711,10 +710,6 @@ def stratuxCommsThread(address, threadName):
     ws_thread.join()
 
 
-    
-   
-
-
  
 def on_message(ws, message):
     # Manipulate message from Stratux format to ADSB Exchange format. See stratux.json in testFiles for comments
@@ -735,6 +730,9 @@ def on_message(ws, message):
     # with mutex:
         deleteOldAircraft()
         # print(jsondata)
+
+def on_error(ws, error):
+    logger.warning(error)
 
 # create an aggregate .json file with all traffic every second infinitely
 def aggregate(reformattedMessage):
@@ -780,7 +778,18 @@ def Stratux_to_ADSBExchangeFormat(inputMessage):
 
     hexKey = hex(JSONmessage['Icao_addr'])[2:].upper()
 
-    acft = USAircraft[hexKey] # successfully got this: {'r': '04-3756', 't': 'TEX2', 'f': '10', 'd': 'Raytheon T-6A Texan II'}
+    acft = {}
+
+    global numUnknownAcft
+
+    try:
+        acft = USAircraft[hexKey]
+
+    except KeyError:
+        logger.warning("KeyError: Icao_addr not found in USAircraft.json")
+        acft = {'r': f"{numUnknownAcft:07d}", 't': 'UNKN', 'f': '00', 'd': 'Unknown Aircraft Type'}
+        numUnknownAcft += 1
+        USAircraft[hexKey] = acft
 
     #grab r & t from    USAircraft[hexKey] 
     JSONmessage['r'] = acft["r"]
