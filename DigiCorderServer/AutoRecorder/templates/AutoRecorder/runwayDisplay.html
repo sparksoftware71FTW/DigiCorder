@@ -70,6 +70,7 @@ load(chatSocket, csrf_token, '{{field.lat}}', '{{field.lon}}', '{{field.FAAcode}
 </script>
 {% for file in additionalKML %}
     <script> 
+    // DO NOT CORRECT THE ERRORS IN THIS SCRIPT! THE DJANGO TEMPLATE LANGUAGE WILL REPLACE BRACKETED ITEMS WITH VALID CODE!
         let myCustomGroup{{file.pk}} = L.geoJSON(null, {
             style: {
                         color: '{{file.color}}',

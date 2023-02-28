@@ -57,10 +57,11 @@ class UserDisplayExtraAdmin(admin.ModelAdmin):
 admin.site.register(UserDisplayExtra, UserDisplayExtraAdmin)
 
 class ADSBSourceAdmin(admin.ModelAdmin):
-    list_display = ('address','lat','lon','alt')
+    list_display = ('name','address','lat','lon','alt')
     list_filter = ['sourceStatus', ]
 admin.site.register(ADSBSource, ADSBSourceAdmin)
 
 class CommsControlAdmin(admin.ModelAdmin):
-    list_display = ('MessageThreadStatus','CommsManagementThreadStatus','ADSBProcessingThreadStatus','CommsControlKey')
+    list_display = ('Name','MessageThreadStatus','CommsManagementThreadStatus','ADSBProcessingThreadStatus')
+    exclude = ('CommsControlKey',)
 admin.site.register(CommsControl, CommsControlAdmin)

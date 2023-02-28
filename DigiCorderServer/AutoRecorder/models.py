@@ -263,11 +263,18 @@ PROTOCOL = [ ('GDL90', 'GDL90'), ('ASTERIX', 'ASTERIX')]
 U_TYPE= [ ('Active', 'Active'), ('Passive', 'Passive')]
 S_TYPE= [ ('Internet', 'Internet'), ('Local', 'Local'), ('Historical', 'Historical')]
 class ADSBSource (models.Model):
+
+    # User defined name for source
+    name = models.CharField(max_length=50, default='ADS-B Source')
+
+    # sourceType (Interernet, Local, Historical)
+    sourceType=models.CharField(max_length=50, choices=S_TYPE,  default="Not selected")
+
     # Links to local reviever
     # IP port to initiate connection
     address = models.CharField(max_length=200, default='ws://192.168.10.1/traffic')
         # Request headers
-    rapidAPIKet = models.CharField(max_length=257, blank=True, null=True)#PLACE ADSB EXCHANGE KEY HERE
+    rapidAPIKey = models.CharField(max_length=257, blank=True, null=True)#PLACE ADSB EXCHANGE KEY HERE
     rapidAPIHost = models.CharField(max_length=257, default='adsbexchange-com1.p.rapidapi.com')
     miscURLValues = models.CharField(max_length=100, blank=True, null=True)#add extra info onto port and address
     # Connection info
@@ -284,12 +291,11 @@ class ADSBSource (models.Model):
     threadSwitch = models.BooleanField(default=False)
     # Passive(Constant data dump) or active(must be regularly requested)
     updateType=models.CharField(max_length=50, choices=U_TYPE,  default="Not selected")
-    # sourceType (Interernet, Local)
-    sourceType=models.CharField(max_length=50, choices=S_TYPE,  default="Not selected")
-    # activeUpdateFreq
+    # activeUpdateFreq for active sources
     updateFreq=models.DecimalField(max_digits=10, default=1.0,decimal_places=3)#measured in seconds
     
 class CommsControl(models.Model):
+    Name = models.CharField(max_length=50, default="Comms Control")
     MessageThreadStatus = models.BooleanField(default=False)
     CommsManagementThreadStatus = models.BooleanField(default=False)
     ADSBProcessingThreadStatus = models.BooleanField(default=False)

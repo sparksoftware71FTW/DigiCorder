@@ -342,8 +342,6 @@ def adsbProcessing(parentThreadName):
         # logfile.close
         # i+=1
 
-        #print(jsondata)
-
         updatedAircraftList = []
         updatedAircraftObjects = [] 
 
@@ -356,7 +354,7 @@ def adsbProcessing(parentThreadName):
         activeFormationX2 = list(activeAircraftObjects.filter(formationX2=True))
         activeFormationX4 = list(activeAircraftObjects.filter(formationX4=True))
 
-        # logger.info(newData)
+        logger.debug(newData)
         for aircraft in newData['ac']: #ac is aircraft in the database 
             try:
                 position = getPosition(aircraft)
