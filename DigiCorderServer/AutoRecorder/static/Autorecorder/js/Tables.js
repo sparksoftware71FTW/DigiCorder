@@ -49,9 +49,41 @@ function nextTOMessage(chatSocket, id, runway) {
 // as well as the state information of the aircrafts on the runway, such as the number of aircrafts in pattern, taxiing, off station, 
 // or lost signal. The updated information is then displayed on the page.
 
+
 function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
 
     // var map = L.map('map').setView([lat, lon], 10);
+    map.options.zoomSnap = 0;
+
+
+
+    // Define a custom CSS class for the popup
+    var popupClass = 'custom-popup';    
+    var popupStyle = '.' + popupClass + ' .leaflet-popup-content-wrapper { background-color: rgba(255, 255, 255, 0.0); }' +
+                    '.' + popupClass + ' .leaflet-popup-tip { border-width: 0; background: white; color: #00000010; box-shadow: 0 0px 0px rgba(0,0,0,0.0); padding: 0px; }' + 
+                    '.leaflet-popup-content { padding: -20px; margin: 5px 20px 0px 20px}' 
+
+                    // .leaflet-popup-tip {
+                    //     background: white;
+                    //     color: #333;
+                    //     box-shadow: 0 3px 14px rgba(0,0,0,0.0);
+                    //     }
+
+    var popup = L.popup({
+        className: popupClass,
+        autoClose: false,
+        autoPan: false});
+    // Create a style element and add the CSS style to it
+    var popupStyleEl = document.createElement('style');
+    popupStyleEl.type = 'text/css';
+    popupStyleEl.appendChild(document.createTextNode(popupStyle));
+    
+    // Add the style element to the document's head
+    document.head.appendChild(popupStyleEl);
+    
+    // var style = document.createElement('style');
+    // style.innerHTML = '.leaflet-popup-tip { border-width: 0; }';
+    // document.head.appendChild(style);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -219,34 +251,6 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
             MapAcftNotUpdated = {...MapAcft}
             console.log(MapAcftNotUpdated)  
 
-            // Define a custom CSS class for the popup
-            var popupClass = 'custom-popup';    
-            var popupStyle = '.' + popupClass + ' .leaflet-popup-content-wrapper { background-color: rgba(255, 255, 255, 0.0); }' +
-                            '.' + popupClass + ' .leaflet-popup-tip { border-width: 0; background: white; color: #00000010; box-shadow: 0 0px 0px rgba(0,0,0,0.0); padding: 0px; }' + 
-                            '.leaflet-popup-content { padding: -20px; margin: 5px 20px 0px 20px}' 
-
-                            // .leaflet-popup-tip {
-                            //     background: white;
-                            //     color: #333;
-                            //     box-shadow: 0 3px 14px rgba(0,0,0,0.0);
-                            //     }
-
-            var popup = L.popup({
-                className: popupClass,
-                autoClose: false,
-                autoPan: false});
-                            // Create a style element and add the CSS style to it
-            var popupStyleEl = document.createElement('style');
-            popupStyleEl.type = 'text/css';
-            popupStyleEl.appendChild(document.createTextNode(popupStyle));
-
-            // Add the style element to the document's head
-            document.head.appendChild(popupStyleEl);
-
-            var style = document.createElement('style');
-            style.innerHTML = '.leaflet-popup-tip { border-width: 0; }';
-            document.head.appendChild(style);
-
 
             for (let i = 0; i < rwyUpdate.length; i++) {
 
@@ -262,12 +266,15 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                 if (rwyUpdate[i].fields.substate == patternName && rwyUpdate[i].fields.state == "in pattern") {
                     if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
-                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false}); 
+                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup('<div id="' + rwyUpdate[i].pk + '_popup"> <div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div></div>', {autoClose: false, closeOnClick: false, keepInView: false, className: popupClass, autoPan: false}); 
                         MapAcft[rwyUpdate[i].pk].openPopup();
                         
                       } else {
                         // If there is already a marker with this id, simply modify its position.
-                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false});
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track)
+                        let popupContent = document.getElementById(rwyUpdate[i].pk + '_popup')
+                        removeAllChildNodes(popupContent)
+                        popupContent.insertAdjacentHTML('beforeend', '<div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div>')
                         MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType]);
                       }
 
@@ -316,12 +323,15 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                 if (rwyUpdate[i].fields.state == "in pattern" && rwyUpdate[i].fields.substate != patternName) {
                     if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
-                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false}); 
+                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup('<div id="' + rwyUpdate[i].pk + '_popup"> <div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div></div>', {autoClose: false, closeOnClick: false, keepInView: false, className: popupClass, autoPan: false}); 
                         MapAcft[rwyUpdate[i].pk].openPopup(); 
                          
                       } else {
                         // If there is already a marker with this id, simply modify its position.
-                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false});
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track)
+                        let popupContent = document.getElementById(rwyUpdate[i].pk + '_popup')
+                        removeAllChildNodes(popupContent)
+                        popupContent.insertAdjacentHTML('beforeend', '<div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div>')
                         MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType]);
                       }
                 }
@@ -329,11 +339,14 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                 if (rwyUpdate[i].fields.state == "taxiing") {
                     if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
-                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType + "_translucent"]}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false}); 
+                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup('<div id="' + rwyUpdate[i].pk + '_popup"> <div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div></div>', {autoClose: false, closeOnClick: false, keepInView: false, className: popupClass, autoPan: false}); 
                         MapAcft[rwyUpdate[i].pk].openPopup();          
                       } else {
                         // If there is already a marker with this id, simply modify its position.
-                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false});
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track)
+                        let popupContent = document.getElementById(rwyUpdate[i].pk + '_popup')
+                        removeAllChildNodes(popupContent)
+                        popupContent.insertAdjacentHTML('beforeend', '<div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div>')
                         MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType + "_translucent"]);
                       }
 
@@ -379,11 +392,15 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                 if (rwyUpdate[i].fields.state == "off station") {
                     if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
-                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false}); 
+                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup('<div id="' + rwyUpdate[i].pk + '_popup"> <div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div></div>', {autoClose: false, closeOnClick: false, keepInView: false, className: popupClass, autoPan: false}); 
                         MapAcft[rwyUpdate[i].pk].openPopup();          
                       } else {
                         // If there is already a marker with this id, simply modify its position.
-                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false}); 
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track)
+                        let popupContent = document.getElementById(rwyUpdate[i].pk + '_popup')
+                        console.log(popupContent)
+                        removeAllChildNodes(popupContent)
+                        popupContent.insertAdjacentHTML('beforeend', '<div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div>')
                         MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType]);
                       }
 
@@ -429,11 +446,14 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                 if (rwyUpdate[i].fields.state == "lost signal") {
                     if (!MapAcft[rwyUpdate[i].pk]) {
                         // If there is no marker with this id yet, instantiate a new one.;
-                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType + "_translucent"]}).addTo(map).bindPopup(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false}); 
+                        MapAcft[rwyUpdate[i].pk] = L.marker([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude], {rotationAngle: rwyUpdate[i].fields.track, icon: iconDict[acftType]}).addTo(map).bindPopup('<div id="' + rwyUpdate[i].pk + '_popup"> <div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div></div>', {autoClose: false, closeOnClick: false, keepInView: false, className: popupClass, autoPan: false}); 
                         MapAcft[rwyUpdate[i].pk].openPopup(); 
                       } else {
                         // If there is already a marker with this id, simply modify its position.
-                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track).setPopupContent(rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '</br>', {autoClose: false, closeOnClick: false, keepInView: false , className: popupClass, autoPan: false});
+                        MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track)
+                        let popupContent = document.getElementById(rwyUpdate[i].pk + '_popup')
+                        removeAllChildNodes(popupContent)
+                        popupContent.insertAdjacentHTML('beforeend', '<div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div>')
                         MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType + "_translucent"]);
                       }
 

@@ -175,15 +175,15 @@ def adsbCommsControl(sender, instance, created, **kwargs):
         threadNameList.append(thread.name)
         if thread.name == 'CommsTestThread' and instance.commsManagementThreadStatus is False:
             killSignals['CommsTestThread'] = False
-            logger.info("Comms Management Thread is dead")
+            logger.info("Comms Management Thread is about to die")
 
         if thread.name == 'ADSBProcessingThread' and instance.ADSBProcessingThreadStatus is False:
             killSignals['ADSBProcessingThread'] = False
-            logger.info("ADSB Processing Thread is dead")      
+            logger.info("ADSB Processing Thread is about to die")      
 
         if thread.name == 'MessageThread' and instance.MessageThreadStatus is False:
             killSignals['MessageThread'] = False
-            logger.info("Message Thread Thread is dead")
+            logger.info("Message Thread is about to die")
 
 #spawn one and only one of the specificed thread
 #if in the comms controls model, any of the boolians are true, we want to spawn each of the specified threads. If the thread is already running, we don't want to spawn another one.
@@ -209,7 +209,7 @@ def adsbCommsControl(sender, instance, created, **kwargs):
         logger.info("Message Thread is alive")
                
     
-
+    #
     enable_adsb = os.environ.get('ENABLE_ADSB') 
     if enable_adsb == 'False' or enable_adsb == None:
             return
@@ -233,9 +233,7 @@ def adsbCommsControl(sender, instance, created, **kwargs):
     # CommsManagementThread.start()
     print(threading.enumerate())
 
-
-
-
+ 
 
 
 #@receiver(post_save, sender=Runway, dispatch_uid="createUserGroupForEachRunway")
