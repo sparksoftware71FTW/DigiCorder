@@ -6,6 +6,7 @@ import time
 import json
 import math 
 import websocket
+import traceback
 from channels import layers
 from django.utils import timezone
 from django.utils.timezone import timedelta
@@ -203,7 +204,7 @@ def adsbCommsControl(sender, instance, created, **kwargs):
         logger.info("ADSB Processing Thread is alive")
 
     if instance.MessageThreadStatus is True and threadNameList is not None and 'MessageThread' not in threadNameList:
-        MessageThread = threading.Thread(target=messageThread, args=(.2, threading.current_thread().name,), name='MessageThread')
+        MessageThread = threading.Thread(target=messageThread, args=(.01, threading.current_thread().name,), name='MessageThread')
         killSignals['MessageThread'] = True
         MessageThread.start()
         logger.info("Message Thread is alive")
@@ -413,7 +414,7 @@ def adsbProcessing(parentThreadName):
                         Acft.state="in pattern"
                         Acft.substate=setSubstate(position, Acft.state, patternDict)
 
-                        # the takeoff criteria is that the aircraft is in a pattern and has a groundspeed greater than the full stop threshold speed
+                        # the takeoff criteria is as follows: the aircraft either transitioned from taxiing to airborne in a pattern, or has a groundspeed greater than the full stop threshold speed and is airborne in a pattern and this is the first we've seen it
                         if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 200)): # field elevation is the [2]nd element in each tuple within patternDict - this hard-codes a 200 ft threshold to deal with low-altitude adsb signal loss
                             Acft.takeoffTime = timezone.now()
                             try:
@@ -425,6 +426,7 @@ def adsbProcessing(parentThreadName):
                                 logger.info("Next T/O Data applied!")
                             except:
                                 logger.error("Error processing next T/O data for acft with substate: " + Acft.substate)
+                                logger.error(traceback.format_exc())
                     # otherwise, if the aircraft is in the pattern, is below 150 ft, and is also below the full stop threshold speed, it is taxiing
                     elif inPattern(position, patternDict) and Acft.groundSpeed < Acft.aircraftType.fullStopThresholdSpeed and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 150)):
                         Acft.lastState = Acft.state
@@ -534,92 +536,99 @@ def adsbProcessing(parentThreadName):
 
             except KeyError as e:
                 logger.error('KeyError in aircraft ' + str(e) + str(aircraft) + "; however, this is probably okay...")
+                logger.error(traceback.format_exc())
+            except Exception as e:
+                logger.error('Error in aircraft ' + str(e) + str(aircraft))
+                logger.error(traceback.format_exc())
 
-        aircraftNotUpdated = ActiveAircraft.objects.exclude(tailNumber__in=updatedAircraftList) # getAircraftNotUpdated(updatedAircraftList)
+        try:
+            aircraftNotUpdated = ActiveAircraft.objects.exclude(tailNumber__in=updatedAircraftList) # getAircraftNotUpdated(updatedAircraftList)
         # logger.info('aircraft not updated: ' + str(aircraftNotUpdated))
 
 # TODO NEED TO THOROUGHLY TEST THE LOGIC ABOVE AND BELOW THIS LINE. STATE TRANSITIONS ARE CRITICAL TO GET RIGHT. 
+        
+            if aircraftNotUpdated is not None:
+                for Acft in aircraftNotUpdated:
+                    # if Acft.timestamp or Acft.landTime or Acft.state or Acft.lastState is None:
+                    #     continue
 
-        if aircraftNotUpdated is not None:
-            for Acft in aircraftNotUpdated:
-                # if Acft.timestamp or Acft.landTime or Acft.state or Acft.lastState is None:
-                #     continue
+                        # Formation logic:
+                        # Departure 
+                        # Flying Around
+                        # Recovery
+                        # Four ships
+                        # Robust splits and rejoins
 
-                    # Formation logic:
-                    # Departure 
-                    # Flying Around
-                    # Recovery
-                    # Four ships
-                    # Robust splits and rejoins
+    # from geopy.distance import distance
+    # from shapely.geometry import Point
 
-# from geopy.distance import distance
-# from shapely.geometry import Point
+    # # Define two points
+    # point1 = Point(40.748817, -73.985428)  # New York City
+    # point2 = Point(51.507351, -0.127758)  # London
 
-# # Define two points
-# point1 = Point(40.748817, -73.985428)  # New York City
-# point2 = Point(51.507351, -0.127758)  # London
+    # # Calculate the distance between the two points
+    # distance_km = distance((point1.y, point1.x), (point2.y, point2.x)).km
 
-# # Calculate the distance between the two points
-# distance_km = distance((point1.y, point1.x), (point2.y, point2.x)).km
+    # print(distance_km)  # Output: 5571.047657186649
 
-# print(distance_km)  # Output: 5571.047657186649
+                    position1 = geometry.Point(0, 0) #initialize position1 and position2 to 0,0 
+                    position2 = geometry.Point(0, 0)
 
-                position1 = geometry.Point(0, 0) #initialize position1 and position2 to 0,0 
-                position2 = geometry.Point(0, 0)
+                    for freshAcft in updatedAircraftObjects:        #start form logic 
+                        # 1ship to 2ship logic )
 
-                for freshAcft in updatedAircraftObjects:        #start form logic 
-                    # 1ship to 2ship logic )
+                        if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2: 
+                            position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
+                            position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
+                            
+                            if (position2.distance(position1) * 69 <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and freshAcft.groundSpeed > freshAcft.aircraftType.fullStopThresholdSpeed:           # :)  degrees of lat & long to miles Recalc with function above
+                                if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold):
+                                    if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1:
+                                        freshAcft.formationX2 = True
+                                        freshAcft.formTimestamp = timezone.now()
+                                        Acft.formTimestamp = timezone.now()
+                                        Acft.wingman= freshAcft.tailNumber
+                                        freshAcft.wingman = Acft.tailNumber
+                                        freshAcft.save()
+                                        Acft.save()
 
-                    if freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and not freshAcft.formationX2 and not Acft.formationX2: 
-                        position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
-                        position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
-                        
-                        if (position2.distance(position1) * 69 <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and freshAcft.groundSpeed > freshAcft.aircraftType.fullStopThresholdSpeed:           # :)  degrees of lat & long to miles Recalc with function above
-                            if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold):
-                                if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 1:
-                                    freshAcft.formationX2 = True
-                                    freshAcft.formTimestamp = timezone.now()
-                                    Acft.formTimestamp = timezone.now()
-                                    Acft.wingman= freshAcft.tailNumber
-                                    freshAcft.wingman = Acft.tailNumber
-                                    freshAcft.save()
-                                    Acft.save()
+                        # 2 -> 4-ship logic
 
-                    # 2 -> 4-ship logic
+                        elif freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and freshAcft.formationX2 and Acft.formationX2: 
+                            position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
+                            position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
+                            
+                            if (position2.distance(position1) * 69 <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and freshAcft.groundSpeed > freshAcft.aircraftType.fullStopThresholdSpeed:           # :)  degrees of lat & long to miles
+                                if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold):
+                                    if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 3:
+                                        freshAcft.formationX4 = True
+                                        freshAcft.formTimestamp = timezone.now()
+                                        Acft.formTimestamp = timezone.now()
+                                        freshAcft.save()
+                                        Acft.save()
 
-                    elif freshAcft.callSign is not None and Acft.callSign is not None and freshAcft.callSign[:-1] == Acft.callSign[:-1]  and freshAcft.formationX2 and Acft.formationX2: 
-                        position1 = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)    #find position of 1st jet
-                        position2 = geometry.Point(freshAcft.latitude, freshAcft.longitude) if freshAcft.latitude is not None else geometry.Point(0, 0)  #find position of 2nd jet 
-                        
-                        if (position2.distance(position1) * 69 <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and freshAcft.groundSpeed > freshAcft.aircraftType.fullStopThresholdSpeed:           # :)  degrees of lat & long to miles
-                            if abs(Acft.timestamp - timezone.now()) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold):
-                                if int(Acft.callSign[-1:]) >=  int(freshAcft.callSign[-1:]) - 3 or int(Acft.callSign[-1:]) <=  int(freshAcft.callSign[-1:]) + 3:
-                                    freshAcft.formationX4 = True
-                                    freshAcft.formTimestamp = timezone.now()
-                                    Acft.formTimestamp = timezone.now()
-                                    freshAcft.save()
-                                    Acft.save()
-
-                position = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)
-                if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > LOST_SIGNAL_TIME_THRESHOLD_SECONDS: # 5 sec
-                    if Acft.landTime == None and Acft.state != "lost signal":
-                        Acft.lastState = Acft.state
-                        Acft.state = "lost signal"
-                        Acft.substate=Acft.substate=setSubstate(position, Acft.state, patternDict)
-                        Acft.save()
-                        logger.info("lost signal")
-                    elif Acft.landTime != None and Acft.state != "completed sortie":
+                    position = geometry.Point(Acft.latitude, Acft.longitude) if Acft.latitude is not None else geometry.Point(0, 0)
+                    if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > LOST_SIGNAL_TIME_THRESHOLD_SECONDS: # 5 sec
+                        if Acft.landTime == None and Acft.state != "lost signal":
+                            Acft.lastState = Acft.state
+                            Acft.state = "lost signal"
+                            Acft.substate=Acft.substate=setSubstate(position, Acft.state, patternDict)
+                            Acft.save()
+                            logger.info("lost signal")
+                        elif Acft.landTime != None and Acft.state != "completed sortie":
+                            Acft.lastState = Acft.state
+                            Acft.state = "completed sortie"
+                            Acft.substate=Acft.substate=setSubstate(position, Acft.state, patternDict)
+                            Acft.save()
+                            logger.info("completed sortie")
+                    if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > LOST_SIGNAL_TO_COMPLETED_SORTIE_TIME_THRESHOLD_HOURS*3600: #4 hrs
                         Acft.lastState = Acft.state
                         Acft.state = "completed sortie"
                         Acft.substate=Acft.substate=setSubstate(position, Acft.state, patternDict)
                         Acft.save()
                         logger.info("completed sortie")
-                if Acft.timestamp is not None and (timezone.now() - Acft.timestamp).total_seconds() > LOST_SIGNAL_TO_COMPLETED_SORTIE_TIME_THRESHOLD_HOURS*3600: #4 hrs
-                    Acft.lastState = Acft.state
-                    Acft.state = "completed sortie"
-                    Acft.substate=Acft.substate=setSubstate(position, Acft.state, patternDict)
-                    Acft.save()
-                    logger.info("completed sortie")
+        except Exception as e:
+            logger.error(traceback.format_exc())
 
         keyboardKillSignal = True
         threadNameList = []
@@ -639,7 +648,7 @@ def adsbProcessing(parentThreadName):
             return
         else:
             # logger.info("ADSBProcessingThread sleeping...")
-            time.sleep(0.3)
+            # time.sleep(0.3)
             # logger.info("ADSBProcessingThread waking up...")
             continue
 

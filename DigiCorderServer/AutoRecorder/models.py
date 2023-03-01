@@ -49,7 +49,8 @@ class AdditionalKML(models.Model):
     color = models.CharField(max_length=9, choices=COLORS,  default="#00ffff")
     weight = models.IntegerField(default=3, choices=WEIGHTS)
 
-
+    def __str__(self):
+        return str(self.file)
 
 
 class GroupExtras(models.Model):
@@ -84,6 +85,9 @@ class AircraftType(models.Model):
     troubleIconFile = models.ImageField(null=True, blank=True, upload_to='images')
     iconSize = models.IntegerField(default=20)
 
+    def __str__(self):
+        return str(self.aircraftType)
+
 
 class RunwayManager(models.Manager):
     def getAllRunways():
@@ -95,6 +99,9 @@ class Callsign(models.Model):
     callsign = models.CharField('Callsign', max_length=20, primary_key=True)
     aircraftType = models.ForeignKey(AircraftType, null=True, blank=True, on_delete=models.CASCADE)
     type = models.CharField('Type', max_length=20, choices=CALLSIGN_TYPES, default="solo")
+
+    def __str__(self):
+        return str(self.callsign)
 
 
 class Runway(models.Model):
@@ -115,8 +122,13 @@ class UserDisplayExtra(models.Model):
     runway = models.ForeignKey(Runway, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     additionalKML = models.ManyToManyField(AdditionalKML)
+
+    def __str__(self):
+        return str(self.user) + "display settings for " + str(self.runway)
+
     class Meta:
         constraints = [ models.UniqueConstraint(fields=["runway", "user"], name="One runway per user")]
+
 
 
 class RsuCrew(models.Model):
@@ -126,12 +138,11 @@ class RsuCrew(models.Model):
     spotter = models.CharField('Spotter', max_length=25, blank=True, null=True)
     recorder = models.CharField('Recorder', max_length=25, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
-
-    # def __str__(self):
-    #     return "RSU Crew"
+    trafficCount = models.IntegerField('Traffic Count', blank=True, null=True)
 
     def __str__(self):
-        return "pattern point (lat,lon,alt): " + str(self.lat) + ", " + str(self.lon) + "," + str(self.alt)
+        return str(self.runway) + " crew for " + str(self.timestamp)
+
 
 
 class ActiveAircraftManager(models.Manager):
@@ -243,7 +254,7 @@ class CompletedSortie(models.Model):
 
 
     def __str__(self):
-        return "id " + str(self.id)
+        return "Completed Sortie #" + str(self.id)
 
 
 class NextTakeoffData(models.Model):
@@ -253,7 +264,7 @@ class NextTakeoffData(models.Model):
     formationX4 = models.BooleanField('4-Ship Form', default=False)
 
     def __str__(self):
-        return "id " + str(self.id)
+        return "Next Takeoff Data for " + str(self.runway)
 
 
 
@@ -293,6 +304,9 @@ class ADSBSource (models.Model):
     updateType=models.CharField(max_length=50, choices=U_TYPE,  default="Not selected")
     # activeUpdateFreq for active sources
     updateFreq=models.DecimalField(max_digits=10, default=1.0,decimal_places=3)#measured in seconds
+
+    def __str__(self):
+        return self.name
     
 class CommsControl(models.Model):
     Name = models.CharField(max_length=50, default="Comms Control")
