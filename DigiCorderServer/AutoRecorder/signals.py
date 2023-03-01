@@ -404,10 +404,13 @@ def adsbProcessing(parentThreadName):
                         position = geometry.Point(Acft.latitude, Acft.longitude, 0)
                     else:
                         position = geometry.Point(Acft.latitude, Acft.longitude, int(Acft.alt_baro))
+                    # the in pattern criteria is that the aircraft is in a pattern, has a groundspeed greater than the full stop threshold speed, and is not on the ground or already in a pattern
                     if inPattern(position, patternDict) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and Acft.alt_baro != "ground" and Acft.state != "in pattern": 
                         Acft.lastState = Acft.state
                         Acft.state="in pattern"
                         Acft.substate=setSubstate(position, Acft.state, patternDict)
+
+                        # the takeoff criteria is that the aircraft is in a pattern and has a groundspeed greater than the full stop threshold speed
                         if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 200)): # field elevation is the [2]nd element in each tuple within patternDict - this hard-codes a 200 ft threshold to deal with low-altitude adsb signal loss
                             Acft.takeoffTime = timezone.now()
                             try:
@@ -419,13 +422,14 @@ def adsbProcessing(parentThreadName):
                                 logger.info("Next T/O Data applied!")
                             except:
                                 logger.error("Error processing next T/O data for acft with substate: " + Acft.substate)
-                        
+                    # otherwise, if the aircraft is in the pattern, is below 150 ft, and is also below the full stop threshold speed, it is taxiing
                     elif inPattern(position, patternDict) and Acft.groundSpeed < Acft.aircraftType.fullStopThresholdSpeed and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 150)):
                         Acft.lastState = Acft.state
                         Acft.state="taxiing"
                         Acft.substate=setSubstate(position, Acft.state, patternDict)
                         if Acft.lastState == "in pattern":
                             Acft.landTime = timezone.now()
+                    # finally, the off station criteria is that the aircraft is not in a pattern and is not on the ground
                     elif inPattern(position, patternDict) == False and Acft.state != "off station":
                         Acft.lastState = Acft.state
                         Acft.state="off station"
@@ -439,7 +443,7 @@ def adsbProcessing(parentThreadName):
                     closestFormation = None
                     closestFormationDistance = None
 
-                    for formAcft in activeFormationX2:
+                    for formAcft in activeFormationX2: # iterate through each aircraft in the active formation list
 
                         formAcftPosition = geometry.Point(0,0,0)
                         if formAcft.alt_baro == "ground":
@@ -449,25 +453,35 @@ def adsbProcessing(parentThreadName):
 
                         if Acft.callSign == '':
                             break
-                        if formAcft.callSign == '':
+                        if formAcft.callSign == '': # deal with blank callsigns
                             continue
-                        if Acft.tailNumber == formAcft.wingman:
+
+                        # if this aircraft was marked as the wingman of the formation, and it is now transmitting ADSB, then the formation is over
+                        if Acft.tailNumber == formAcft.wingman: 
                             logger.info('Wingman started sqwuaking')
                             formAcft.formationX2 = False 
                             formAcft.formTimestamp = timezone.now()
                             Acft.formTimestamp = timezone.now()
                             formAcft.save()
-                            Acft.save()                            
+                            Acft.save()  
+
+                        # check callsigns (excluding the last character) to see if they match
                         elif  Acft.callSign[:-1] == formAcft.callSign[:-1] and Acft.formationX2 is False:
+
+                            # check if the last digit is plus or minus 1 of the other aircraft
                             if int(Acft.callSign[-1:]) >=  int(formAcft.callSign[-1:]) - 1 or int(Acft.callSign[-1:]) <=  int(formAcft.callSign[-1:]) + 1:
                                 distance = distance(formAcftPosition[0],formAcftPosition[1],formAcftPosition[2],position[0],position[1],position[2]) #distance calculated by Haversine formula
                                 
+                                # check if the distance between the two aircraft is less than the threshold, and both aircraft are moving faster than the full stop threshold speed (to ensure they are not on the ground)
                                 if (distance <= Acft.aircraftType.formationDistThreshold) and Acft.groundSpeed > Acft.aircraftType.fullStopThresholdSpeed and formAcft.groundSpeed > formAcft.aircraftType.fullStopThresholdSpeed:
+
+                                    # if the last state of either aircraft is None (meaning they are just starting to transmit ADSB for the first time on this flight), or if the last state of both aircraft is "lost signal" and the time difference between the two aircraft is less than the threshold, then they are a splitting formation
                                     if (Acft.lastState is None and Acft.takeoffTime is None) or (Acft.lastState is not None and Acft.formTimestamp is not None and formAcft.formTimestamp is not None) and (Acft.lastState == "lost signal" and abs(Acft.formTimestamp - formAcft.formTimestamp) <= timedelta(seconds=Acft.aircraftType.formationLostSignalTimeThreshold)):
                                         if closestFormation is None or distance < closestFormationDistance:
-                                            closestFormation = formAcft
-                                            closestFormationDistance = distance
+                                            closestFormation = formAcft # track the closest formation to the current formation aircraft - in the context of the loop, this will be the closest eligible formation to the current splitting aircraft
+                                            closestFormationDistance = distance 
 
+                    # if the closest formation is not None, then the current aircraft is splitting from that formation
                     if closestFormation is not None:
                         #     if form.tailNumber == closestFormation.tailNumber:
                         activeFormationX2.remove(closestFormation)
