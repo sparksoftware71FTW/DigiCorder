@@ -305,6 +305,7 @@ def messageThread(freq, parentThreadName):
 
 
 def adsbProcessing(parentThreadName):
+
     logger.info("Starting ADSB Processing Thread")
     import http.client
     import json
@@ -346,16 +347,18 @@ def adsbProcessing(parentThreadName):
         updatedAircraftObjects = [] 
 
         activeAircraftObjects = ActiveAircraft.objects.all()
-        activeAircraftDict = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in activeAircraftObjects}
+        activeAircraftDict = {ActiveAircraft.tailNumber: ActiveAircraft for ActiveAircraft in activeAircraftObjects} #load a dictionary of active aircraft objects; this is MUCH faster than querying the database for each aircraft
 
         aircraftTypes = AircraftType.objects.all()
-        aircraftTypeDict = {AircraftType.aircraftType: AircraftType for AircraftType in aircraftTypes}
+        aircraftTypeDict = {AircraftType.aircraftType: AircraftType for AircraftType in aircraftTypes} #load a dictionary of aircraft types; this is faster than querying the database for each aircraft type
 
-        activeFormationX2 = list(activeAircraftObjects.filter(formationX2=True))
-        activeFormationX4 = list(activeAircraftObjects.filter(formationX4=True))
+        activeFormationX2 = list(activeAircraftObjects.filter(formationX2=True)) #list of active aircraft that are 2-ships
+        activeFormationX4 = list(activeAircraftObjects.filter(formationX4=True)) #list of active aircraft that are 4-ships
 
         logger.debug(newData)
-        for aircraft in newData['ac']: #ac is aircraft in the database 
+        for aircraft in newData['ac']: #iterate through all aircraft in the latest ADSB data
+
+
             try:
                 position = getPosition(aircraft)
                 if str(aircraft["t"]) in aircraftTypeDict or inPattern(position, patternDict):
