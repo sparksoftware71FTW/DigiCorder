@@ -124,6 +124,7 @@ def dashboard(request):
 # The form355 function is the main function for the Form 355 report. It takes in the user's input from the frontend, hits the database, and generates the information for the report.
 @staff_member_required(login_url='/AutoRecorder')
 def form355(request):
+    # Load necessary objects and empty lists
     landedAircraft = CompletedSortie.objects.all().order_by('timestamp')
     RSUcrews = RsuCrew.objects.all().order_by('timestamp')
     runways = Runway.objects.all()
@@ -131,6 +132,8 @@ def form355(request):
     acft_types = []
     oldest_entry = None
     newest_entry = None
+    
+    # Get the oldest and newest timestamp from the completedSortie objects
     for acft in landedAircraft:
 
         if oldest_entry is None or acft.timestamp is not None and acft.timestamp < oldest_entry:
@@ -142,31 +145,39 @@ def form355(request):
         if (acft.aircraftType.aircraftType, acft.aircraftType.aircraftType) not in acft_types:
             acft_types.append((acft.aircraftType.aircraftType, acft.aircraftType.aircraftType))
     
+    # If there are no entries in the database, set the oldest and newest entries to the current time
     if oldest_entry == None:
         oldest_entry = timezone.now()
     if newest_entry == None:
         newest_entry = timezone.now()
 
+    # Build a list of runways from the runway objects
     for rwy in runways:
         if (rwy.name, rwy.name) not in rwys:
             rwys.append((rwy.name, rwy.name))
     rwys.append(('',''))
 
+    # Create formset factory and helper
     form355FilterFormset = formset_factory(Form355Filters)
     helper = Form355FiltersFormsetHelper()
 
+    # Check if the request method is POST and process the submitted form data
     if request.method == 'POST':
         formset = form355FilterFormset(request.POST)
+        # Set field choices from the form data fields
         for form in formset:
             form.fields['acftType'].choices = acft_types
             form.fields['fromDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
             form.fields['toDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
             form.fields['runway'].choices = rwys
             form = render_crispy_form(form)
+
+        # Filter the querysets and render the template with the filtered data
         if formset.is_valid():
             print(formset.cleaned_data[0])
             data = formset.cleaned_data[0]
 
+            # Create query set filters based on filtered fields
             qAcftFilter = Q()
             qAcftExclude = Q()
             qRSUCrewSearch = Q()
@@ -186,6 +197,7 @@ def form355(request):
                 qRSUCrewSearch |= Q(recorder__contains=data['search'])
             print(qRSUCrewSearch)
 
+            # Create cases for runway name filtering
             if data['runway'] != '':
                 runway = Runway.objects.get(name=data['runway'])
                 qRunwayFilter &= Q(runway__name__exact=runway.name)
@@ -203,15 +215,15 @@ def form355(request):
     
     else:
         formset = form355FilterFormset()
-        for form in formset:
-            form.fields['acftType'].choices = acft_types
-            form.fields['fromDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
-            print(range(oldest_entry.year, newest_entry.year))
-            form.fields['toDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day"))
-            form.fields['runway'].choices = rwys
-            form = render_crispy_form(form)
+        for form in formset: # loop over each form in the formset
+            form.fields['acftType'].choices = acft_types # sets choices based on the AircraftTypes currently in the database
+            form.fields['fromDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day")) # creates widget for the FromDate field to pick dates between the oldest and newest entry in the database
+            print(range(oldest_entry.year, newest_entry.year)) # prints the range of years to the console
+            form.fields['toDate'].widget = SelectDateWidget(years=range(oldest_entry.year, newest_entry.year + 1), empty_label=("Year", "Month", "Day")) # creates widget for the ToDate field to pick dates between the oldest and newest entry in the database
+            form.fields['runway'].choices = rwys # sets the choices for the runway field to be the available runways
+            form = render_crispy_form(form) # renders the form in crispy format
         
-        return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews})
+        return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews}) # renders the template with the formset and the querysets
 
 #the violation355View function is called when the user clicks the "355" button on the dashboard page. It takes the tail number of the aircraft as a parameter and returns a form to edit the 355 code and comments for that aircraft.
 @staff_member_required(login_url='/AutoRecorder')

@@ -391,7 +391,7 @@ def adsbProcessing(parentThreadName):
                         Acft.callSign = aircraft["flight"]
 
                     for callsign in soloCallsignList:
-                        if fuzz.ratio(Acft.callSign, callsign) >= 80:
+                        if fuzz.ratio(Acft.callSign[:-2], callsign) >= 80: #if the callsign matches a solo callsign more than 80%, set solo to true
                             Acft.solo = True
                     #formation=aircraft[""],                need form callsign db?
                     # Acft.emergency=False if aircraft["emergency"] == "none" else True
@@ -682,8 +682,14 @@ def commsTestThread(parentThreadName, sourceName):
                 keyboardKillSignal = False
             
             if killSignals[sourceName] is False or keyboardKillSignal is False:
-                logger.debug("Stopping Comms Test Thread")
+                logger.info("Stopping Comms Test Thread")
                 os.environ['ENABLE_ADSB'] = 'True'
+
+
+                with mutex:
+                    jsondata = {
+                        "ac": [] #add/remove aircraft to list here
+                    } # dictionary... 
                 return
             else:
                 # logger.info("Comms Test Thread sleeping...")
