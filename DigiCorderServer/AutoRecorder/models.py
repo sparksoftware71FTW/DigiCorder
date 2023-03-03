@@ -138,6 +138,7 @@ class RsuCrew(models.Model):
     spotter = models.CharField('Spotter', max_length=25, blank=True, null=True)
     recorder = models.CharField('Recorder', max_length=25, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
+    endTime = models.DateTimeField('End Time', blank=True, null=True)
     trafficCount = models.IntegerField('Traffic Count', blank=True, null=True)
 
     def __str__(self):
@@ -216,7 +217,10 @@ class ActiveAircraft(models.Model):
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
     formTimestamp = models.DateTimeField('Form Timestamp', blank=True, null=True)
+    groundProximityHigh = models.BooleanField('Ground Proximity High', default=False) # used to determine traffic count for RSU crews based on state and proximity to field elevation
+    groundProximityLow = models.BooleanField('Ground Proximity Low', default=False)
     wingman = models.CharField('Wingman', max_length=12, blank=True, null=True) # tail number of wingman
+
 
     def __str__(self):
         return "Tail " + str(self.tailNumber)
@@ -251,6 +255,9 @@ class CompletedSortie(models.Model):
     homeField = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
     formTimestamp = models.DateTimeField('Form Timestamp', blank=True, null=True)
+    groundProximityHigh = models.BooleanField('Ground Proximity High', default=False) # used to determine traffic count for RSU crews based on state and proximity to field elevation
+    groundProximityLow = models.BooleanField('Ground Proximity Low', default=False)
+    wingman = models.CharField('Wingman', max_length=12, blank=True, null=True) # tail number of wingman
 
 
     def __str__(self):

@@ -249,7 +249,7 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
             }
 
             MapAcftNotUpdated = {...MapAcft}
-            console.log(MapAcftNotUpdated)  
+            // console.log(MapAcftNotUpdated)  
 
 
             for (let i = 0; i < rwyUpdate.length; i++) {
@@ -398,7 +398,7 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                         // If there is already a marker with this id, simply modify its position.
                         MapAcft[rwyUpdate[i].pk].setLatLng([rwyUpdate[i].fields.latitude, rwyUpdate[i].fields.longitude]).setRotationAngle(rwyUpdate[i].fields.track)
                         let popupContent = document.getElementById(rwyUpdate[i].pk + '_popup')
-                        console.log(popupContent)
+                        // console.log(popupContent)
                         removeAllChildNodes(popupContent)
                         popupContent.insertAdjacentHTML('beforeend', '<div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div>')
                         MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType]);

@@ -20,13 +20,14 @@ from shapely import geometry
 from fastkml import kml
 
 
-from .models import CommsControl, ActiveAircraft, ActiveAircraftManager, CompletedSortie, Message, Trigger, NextTakeoffData, Runway, RunwayManager, Airfield, UserDisplayExtra
+from .models import CommsControl, ActiveAircraft, ActiveAircraftManager, CompletedSortie, Message, Trigger, NextTakeoffData, Runway, RunwayManager, Airfield, UserDisplayExtra, RsuCrew
 
 import logging
 logger = logging.getLogger(__name__)
 
 
-
+GROUND_PROXIMITY_LOW = 151 # ft (Note: this should not be divisible by 10; prevents extremely rare corner case error in traffic counting for RSU crews)
+GROUND_PROXIMITY_HIGH = 251 # ft (Note: this should not be divisible by 10; prevents extremely rare corner case error in counting traffic for RSU crews)
 LOST_SIGNAL_TIME_THRESHOLD_SECONDS = 5
 LOST_SIGNAL_TO_COMPLETED_SORTIE_TIME_THRESHOLD_HOURS = 4
 
@@ -77,7 +78,10 @@ def log_completed_flight(sender, instance, created, **kwargs):
         lastState = instance.lastState,
         timestamp = instance.timestamp,
         formTimestamp = instance.formTimestamp,
-        substate = instance.substate
+        substate = instance.substate,
+        groundProximityHigh = instance.groundProximityHigh,
+        groundProximityLow = instance.groundProximityLow,
+        wingman = instance.wingman,
         )
         justLandedAcft.save()
         instance.delete()
@@ -395,7 +399,6 @@ def adsbProcessing(parentThreadName):
                             Acft.solo = True
                     #formation=aircraft[""],                need form callsign db?
                     # Acft.emergency=False if aircraft["emergency"] == "none" else True
-                    Acft.alt_baro=aircraft['alt_baro']
                     Acft.groundSpeed=aircraft['gs']
                     Acft.latitude=aircraft['lat']
                     Acft.longitude=aircraft['lon']
@@ -404,6 +407,8 @@ def adsbProcessing(parentThreadName):
                     Acft.emergency = True if Acft.squawk == "7700" or Acft.squawk == "7600" or Acft.squawk == "7500" else False
                     Acft.seen=aircraft['seen']
                     Acft.rssi=aircraft['rssi']
+                    lastAltitude = Acft.alt_baro if Acft.alt_baro is not None and Acft.alt_baro != "ground" else None
+                    Acft.alt_baro=aircraft['alt_baro']
                     if Acft.alt_baro == "ground":
                         position = geometry.Point(Acft.latitude, Acft.longitude, 0)
                     else:
@@ -415,7 +420,7 @@ def adsbProcessing(parentThreadName):
                         Acft.substate=setSubstate(position, Acft.state, patternDict)
 
                         # the takeoff criteria is as follows: the aircraft either transitioned from taxiing to airborne in a pattern, or has a groundspeed greater than the full stop threshold speed and is airborne in a pattern and this is the first we've seen it
-                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 200)): # field elevation is the [2]nd element in each tuple within patternDict - this hard-codes a 200 ft threshold to deal with low-altitude adsb signal loss
+                        if Acft.lastState == "taxiing" or (Acft.lastState == None and int(Acft.alt_baro) <= int(patternDict[Acft.substate][2] + GROUND_PROXIMITY_HIGH)): # field elevation is the [2]nd element in each tuple within patternDict - this hard-codes a GROUND_PROXIMITY_HIGH threshold to deal with low-altitude adsb signal loss
                             Acft.takeoffTime = timezone.now()
                             try:
                                 nextTOData = NextTakeoffData.objects.get(runway__patternName = Acft.substate)
@@ -427,8 +432,8 @@ def adsbProcessing(parentThreadName):
                             except:
                                 logger.error("Error processing next T/O data for acft with substate: " + Acft.substate)
                                 logger.error(traceback.format_exc())
-                    # otherwise, if the aircraft is in the pattern, is below 150 ft, and is also below the full stop threshold speed, it is taxiing
-                    elif inPattern(position, patternDict) and Acft.groundSpeed < Acft.aircraftType.fullStopThresholdSpeed and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + 150)):
+                    # otherwise, if the aircraft is in the pattern, is below GROUND_PROXIMITY_LOW ft, and is also below the full stop threshold speed, it is taxiing
+                    elif inPattern(position, patternDict) and Acft.groundSpeed < Acft.aircraftType.fullStopThresholdSpeed and Acft.state != "taxiing" and (Acft.alt_baro == "ground" or int(Acft.alt_baro) < int(patternDict[Acft.substate][2] + GROUND_PROXIMITY_LOW)):
                         Acft.lastState = Acft.state
                         Acft.state="taxiing"
                         Acft.substate=setSubstate(position, Acft.state, patternDict)
@@ -439,6 +444,32 @@ def adsbProcessing(parentThreadName):
                         Acft.lastState = Acft.state
                         Acft.state="off station"
                         Acft.substate=setSubstate(position, Acft.state, patternDict) 
+
+
+                    # These two logical blocks serve as altitude "tripwires" or "shelves" to count the number of takeoffs (including touch-and-goes as well as low approaches) that the current RSU crew was responsible for.
+                    # An aircraft must pass through both altitude shelves to be counted as a takeoff. The first shelf is GROUND_PROXIMITY_LOW ft above the pattern altitude, and the second shelf is GROUND_PROXIMITY_HIGH ft above the pattern altitude.
+                    if Acft.state == "in pattern" and Acft.alt_baro != "ground" and Acft.groundProximityLow is False and Acft.groundProximityHigh is False and int(Acft.alt_baro) <= int(patternDict[Acft.substate][2] + GROUND_PROXIMITY_LOW):
+                        Acft.groundProximityLow = True
+                    elif Acft.state == "in pattern" and Acft.alt_baro != "ground" and Acft.groundProximityLow is True and Acft.groundProximityHigh is False and int(Acft.alt_baro) >= int(patternDict[Acft.substate][2] + GROUND_PROXIMITY_HIGH):
+                        Acft.groundProximityHigh = True
+                        Acft.groundProximityLow = False # reset the low shelf to prevent double-counting
+                        logger.info("lastAltitude: " + str(lastAltitude) + " currentAltitude: " + str(Acft.alt_baro) + " takeoff counter shelf altitude: " + str(patternDict[Acft.substate][2] + 201))
+                        crew = RsuCrew.objects.filter(runway__patternName=Acft.substate).latest('timestamp') # get the most recent RSU crew for the current pattern
+                        crew.trafficCount += 1 # increment the traffic count for the current RSU crew
+                        crew.save()
+
+                    # These two logical blocks serve as altitude "tripwires" or "shelves" to count the number of landings (including touch-and-goes as well as low approaches) that the current RSU crew was responsible for.
+                    # An aircraft must pass through both altitude shelves to be counted as a landing. The first shelf is GROUND_PROXIMITY_HIGH ft above the pattern altitude, and the second shelf is GROUND_PROXIMITY_LOW ft above the pattern altitude.
+                    elif Acft.state == "in pattern" and Acft.alt_baro != "ground" and Acft.groundProximityLow is False and Acft.groundProximityHigh is False and int(Acft.alt_baro) <= int(patternDict[Acft.substate][2] + GROUND_PROXIMITY_HIGH):
+                        Acft.groundProximityHigh = True
+                    elif Acft.state == "in pattern" and Acft.alt_baro != "ground" and Acft.groundProximityLow is False and Acft.groundProximityHigh is True and int(Acft.alt_baro) <= int(patternDict[Acft.substate][2] + GROUND_PROXIMITY_LOW):
+                        Acft.groundProximityLow = True
+                        Acft.groundProximityHigh = False
+                        logger.info("lastAltitude: " + str(lastAltitude) + " currentAltitude: " + str(Acft.alt_baro) + " landing counter shelf altitude: " + str(patternDict[Acft.substate][2] + 201))
+                        crew = RsuCrew.objects.filter(runway__patternName=Acft.substate).latest('timestamp') # get the most recent RSU crew for the current pattern
+                        crew.trafficCount += 1 # increment the traffic count for the current RSU crew
+                        crew.save()
+
                     Acft.timestamp=timezone.now()
                     
                    #form logic 
@@ -685,6 +716,8 @@ def commsTestThread(parentThreadName, sourceName):
                 logger.info("Stopping Comms Test Thread")
                 os.environ['ENABLE_ADSB'] = 'True'
 
+                global jsondata
+                global mutex
 
                 with mutex:
                     jsondata = {

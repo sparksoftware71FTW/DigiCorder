@@ -73,7 +73,7 @@ def runway(request, airfield, runway):
             for rwy in Runway.objects.filter(airfield=field):
                 runways.append(rwy)
         print(runways)
-        RsuCrewFormFactory = modelform_factory(model=RsuCrew, exclude=('timestamp',))
+        RsuCrewFormFactory = modelform_factory(model=RsuCrew, exclude=('timestamp','endTime', 'trafficCount'))
 
         try:
             field = Airfield.objects.get(FAAcode=airfield)
@@ -206,12 +206,12 @@ def form355(request):
             
             return render(request, 'AutoRecorder/form355.html', 
             {"landedAircraft": landedAircraft.filter(aircraftType__aircraftType__exact=data['acftType']).filter(qAcftFilter).exclude(
-                qAcftExclude).exclude(timestamp__lt=data['fromDate']).exclude(timestamp__gt=data['toDate']),
+                qAcftExclude).exclude(timestamp__lt=data['fromDate']).exclude(timestamp__gt=data['toDate']),  # excludes entries before the FromDate and after the ToDate
              "formset": formset, 
              "RSUcrews": RSUcrews.filter(qRSUCrewSearch).exclude(
                 timestamp__lt=data['fromDate']).exclude(timestamp__gt=data['toDate']).filter(qRunwayFilter)})
         else:
-            return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews})
+            return render(request, 'AutoRecorder/form355.html', {"landedAircraft": landedAircraft, "formset": formset, "RSUcrews": RSUcrews}) # render the response without the filter values
     
     else:
         formset = form355FilterFormset()
