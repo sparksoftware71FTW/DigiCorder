@@ -727,7 +727,7 @@ def commsTestThread(parentThreadName, sourceName):
             else:
                 # logger.info("Comms Test Thread sleeping...")
                 # sleep for 20ms in order to approximate real-time messages
-                # time.sleep(0.01)
+                time.sleep(0.01)
                 # logger.info("Comms Test Thread waking up...")
                 continue
 

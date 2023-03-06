@@ -139,7 +139,7 @@ class RsuCrew(models.Model):
     recorder = models.CharField('Recorder', max_length=25, blank=True, null=True)
     timestamp = models.DateTimeField('Timestamp', blank=True, null=True)
     endTime = models.DateTimeField('End Time', blank=True, null=True)
-    trafficCount = models.IntegerField('Traffic Count', blank=True, null=True)
+    trafficCount = models.IntegerField('Traffic Count', default=0)
 
     def __str__(self):
         return str(self.runway) + " crew for " + str(self.timestamp)
