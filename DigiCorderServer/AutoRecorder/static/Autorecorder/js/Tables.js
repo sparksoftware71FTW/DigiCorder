@@ -275,7 +275,7 @@ function load(chatSocket, csrf_token, lat, lon, FAAcode, runway, patternName) {
                         let popupContent = document.getElementById(rwyUpdate[i].pk + '_popup')
                         removeAllChildNodes(popupContent)
                         popupContent.insertAdjacentHTML('beforeend', '<div>' + rwyUpdate[i].fields.callSign + '<br>&nbsp;&nbsp;&nbsp;&nbsp;' + rwyUpdate[i].fields.alt_baro + '&nbsp;&nbsp;&nbsp</br></div>')
-                        MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType]);
+                        MapAcft[rwyUpdate[i].pk].setIcon(iconDict[acftType]) ;
                       }
 
                     Pattern.insertAdjacentHTML('beforeend',       

@@ -106,6 +106,7 @@ def runway(request, airfield, runway):
             "displayedAcftTypes": displayedAcftTypes, "displayedRunwayObject": displayedRunwayObject,
             "additionalKML": additionalKML})
 
+
 @staff_member_required(login_url='/AutoRecorder')
 def dashboard(request):
     airfields = []

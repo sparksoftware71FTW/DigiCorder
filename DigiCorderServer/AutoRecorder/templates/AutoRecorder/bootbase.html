@@ -39,7 +39,7 @@
         <header class="p-3 mb-3 border-bottom">
             <div class="container-fluid">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+                <a href="/AutoRecorder/dashboard" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
                     <img src= {% static "AutoRecorder/images/SparkCellPatch.PNG" %} alt="mdo" width="100" height="62" >
                 </a>
         
@@ -61,8 +61,8 @@
                     <img src= {% static "AutoRecorder/images/blank-profile-picture-973460_1280.webp" %} alt="mdo" width="32" height="32" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu text-small">
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="/admin/AutoRecorder/userdisplayextra/">Settings</a></li>
+                    <li><a class="dropdown-item" href="/admin/auth/user/{{user.id}}">Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         {% if user.is_authenticated%}

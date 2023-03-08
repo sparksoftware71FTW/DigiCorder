@@ -124,7 +124,7 @@ class UserDisplayExtra(models.Model):
     additionalKML = models.ManyToManyField(AdditionalKML)
 
     def __str__(self):
-        return str(self.user) + "display settings for " + str(self.runway)
+        return str(self.user) + "'s display settings for " + str(self.runway)
 
     class Meta:
         constraints = [ models.UniqueConstraint(fields=["runway", "user"], name="One runway per user")]

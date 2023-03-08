@@ -167,7 +167,7 @@ DATABASES = {
         'USER': 'AutoRecorder',
         'PASSWORD': 'AutoRecorder',
         'HOST': 'localhost',
-        'PORT': '5433',
+        'PORT': '5432',
         # 'OPTIONS': {
         #     'service': 'postgres',
         #     'passfile': '.my_pgpass',
