@@ -8,6 +8,10 @@ from django.utils import timezone
 from django.utils.timezone import timedelta
 from django.core import serializers
 from django.core.validators import RegexValidator
+import traceback
+import logging
+
+logger = logging.getLogger(__name__)
 
 """
 models.py is the location in which we define our database models.
@@ -27,7 +31,12 @@ class Message(models.Model):
     message = models.CharField('message', max_length=150, blank=True, null=True)
 
     def __str__(self):
-        return "id " + str(self.id)
+        try:
+            return "id " + str(self.id)
+        except:
+            logger.error("Error in Message Models Function")
+            logger.error(traceback.format_exc())
+
 
 class Trigger(models.Model):
     sendAllMessages = models.BooleanField('Send Message', default=False)
@@ -50,7 +59,11 @@ class AdditionalKML(models.Model):
     weight = models.IntegerField(default=3, choices=WEIGHTS)
 
     def __str__(self):
-        return str(self.file)
+        try:
+            return str(self.file)
+        except:
+            logger.error("Error in AdditionalKML Models Function")
+            logger.error(traceback.format_exc())
 
 
 class GroupExtras(models.Model):
@@ -58,7 +71,11 @@ class GroupExtras(models.Model):
     airfield = models.OneToOneField(Airfield, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.FAAcode)
+        try:
+            return str(self.FAAcode)
+        except:
+            logger.error("Error in GroupExtras Models Function")
+            logger.error(traceback.format_exc())
 
 
 class Tails(models.Model):
@@ -66,7 +83,11 @@ class Tails(models.Model):
     airfield = models.ForeignKey(Airfield, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return "callsign " + str(self.callsign) 
+        try:
+            return "callsign " + str(self.callsign) 
+        except:
+            logger.error("Error in Tails Models Function")
+            logger.error(traceback.format_exc())
 
 
 class AircraftType(models.Model):
@@ -86,12 +107,21 @@ class AircraftType(models.Model):
     iconSize = models.IntegerField(default=20)
 
     def __str__(self):
-        return str(self.aircraftType)
+        try:
+            return str(self.aircraftType)
+        except:
+            logger.error("Error in AircraftType Models Function")
+            logger.error(traceback.format_exc())
 
 
 class RunwayManager(models.Manager):
     def getAllRunways():
-        return list(Runway.objects.all())
+        try:
+            return list(Runway.objects.all())
+        except:
+            logger.error("Error in RunwayManager getAllRunways Models Function")
+            logger.error(traceback.format_exc())
+
 
 CALLSIGN_TYPES = [('solo', 'solo'), ('form', 'form')]
 
@@ -101,7 +131,11 @@ class Callsign(models.Model):
     type = models.CharField('Type', max_length=20, choices=CALLSIGN_TYPES, default="solo")
 
     def __str__(self):
-        return str(self.callsign)
+        try:
+            return str(self.callsign)
+        except:
+            logger.error("Error in Callsign Models Function")
+            logger.error(traceback.format_exc())
 
 
 class Runway(models.Model):
@@ -116,7 +150,12 @@ class Runway(models.Model):
         constraints = [models.UniqueConstraint(fields=["patternName"], name="patternName must be unique!")]
 
     def __str__(self):
-        return str(self.name) 
+        try:
+            return str(self.name) 
+        except:
+            logger.error("Error in Runway Models Function")
+            logger.error(traceback.format_exc())
+
 
 class UserDisplayExtra(models.Model):
     runway = models.ForeignKey(Runway, on_delete=models.CASCADE)
@@ -124,8 +163,12 @@ class UserDisplayExtra(models.Model):
     additionalKML = models.ManyToManyField(AdditionalKML)
 
     def __str__(self):
-        return str(self.user) + "'s display settings for " + str(self.runway)
-
+        try:
+            return str(self.user) + "'s display settings for " + str(self.runway)
+        except:
+            logger.error("Error in UserDisplayExtra Models Function")
+            logger.error(traceback.format_exc())
+    
     class Meta:
         constraints = [ models.UniqueConstraint(fields=["runway", "user"], name="One runway per user")]
 
@@ -142,50 +185,56 @@ class RsuCrew(models.Model):
     trafficCount = models.IntegerField('Traffic Count', default=0)
 
     def __str__(self):
-        return str(self.runway) + " crew for " + str(self.timestamp)
-
+        try:
+            return str(self.runway) + " crew for " + str(self.timestamp)
+        except:
+            logger.error("Error in RsuCrew Models Function")
+            logger.error(traceback.format_exc())
 
 
 class ActiveAircraftManager(models.Manager):
 
     def get_Acft_queryset_update_message(runway):
-        """
-        Return all active aircraft relevant to a particular runway crew, serialized
-        """
+        try:
+            """
+            Return all active aircraft relevant to a particular runway crew, serialized
+            """
 
-        activeAcftquery = ActiveAircraft.objects.filter(Q(aircraftType__in=list(runway.displayedAircraftTypes.all())) | Q(substate=runway.patternName)).order_by('tailNumber')
+            activeAcftquery = ActiveAircraft.objects.filter(Q(aircraftType__in=list(runway.displayedAircraftTypes.all())) | Q(substate=runway.patternName)).order_by('tailNumber')
 
-        activeAcftMetadata = {}
-        activeAcftMetadata['In_Pattern'] = activeAcftquery.filter(state='in pattern').filter(substate=runway.patternName).count() + activeAcftquery.filter(formationX2=True).filter(state='in pattern').filter(substate=runway.patternName).count() + activeAcftquery.filter(state='in pattern').filter(formationX4=True).filter(substate=runway.patternName).count()*3
-        activeAcftMetadata['Taxiing'] = activeAcftquery.filter(state="taxiing").filter(substate=runway.patternName).count() + activeAcftquery.filter(formationX2=True).filter(substate=runway.patternName).filter(state="taxiing").count() + activeAcftquery.filter(formationX4=True).filter(substate=runway.patternName).filter(state="taxiing").count()*3
-        activeAcftMetadata['Off_Station'] = activeAcftquery.filter(state="off station").count() + activeAcftquery.filter(formationX2=True).filter(state="off station").count() + activeAcftquery.filter(formationX4=True).filter(state="off station").count()*3
-        activeAcftMetadata['Lost_Signal'] = activeAcftquery.filter(state="lost signal").count() + activeAcftquery.filter(formationX2=True).filter(state="lost signal").count() + activeAcftquery.filter(formationX4=True).filter(state="lost signal").count()*3
+            activeAcftMetadata = {}
+            activeAcftMetadata['In_Pattern'] = activeAcftquery.filter(state='in pattern').filter(substate=runway.patternName).count() + activeAcftquery.filter(formationX2=True).filter(state='in pattern').filter(substate=runway.patternName).count() + activeAcftquery.filter(state='in pattern').filter(formationX4=True).filter(substate=runway.patternName).count()*3
+            activeAcftMetadata['Taxiing'] = activeAcftquery.filter(state="taxiing").filter(substate=runway.patternName).count() + activeAcftquery.filter(formationX2=True).filter(substate=runway.patternName).filter(state="taxiing").count() + activeAcftquery.filter(formationX4=True).filter(substate=runway.patternName).filter(state="taxiing").count()*3
+            activeAcftMetadata['Off_Station'] = activeAcftquery.filter(state="off station").count() + activeAcftquery.filter(formationX2=True).filter(state="off station").count() + activeAcftquery.filter(formationX4=True).filter(state="off station").count()*3
+            activeAcftMetadata['Lost_Signal'] = activeAcftquery.filter(state="lost signal").count() + activeAcftquery.filter(formationX2=True).filter(state="lost signal").count() + activeAcftquery.filter(formationX4=True).filter(state="lost signal").count()*3
 
-        activeAcftMetadata['dualLimit'] = []
-        for acft in activeAcftquery.exclude(solo=True).exclude(state='taxiing'):
-            if acft.takeoffTime is not None and acft.takeoffTime < timezone.now() - timedelta(hours=acft.aircraftType.dualSortieTimeLimitHours, minutes=acft.aircraftType.dualSortieTimeLimitMinutes):
-                flightTime = timezone.now() - acft.takeoffTime
-                activeAcftMetadata['dualLimit'].append(acft.callSign + "<br>" + str(flightTime)[:4])
+            activeAcftMetadata['dualLimit'] = []
+            for acft in activeAcftquery.exclude(solo=True).exclude(state='taxiing'):
+                if acft.takeoffTime is not None and acft.takeoffTime < timezone.now() - timedelta(hours=acft.aircraftType.dualSortieTimeLimitHours, minutes=acft.aircraftType.dualSortieTimeLimitMinutes):
+                    flightTime = timezone.now() - acft.takeoffTime
+                    activeAcftMetadata['dualLimit'].append(acft.callSign + "<br>" + str(flightTime)[:4])
 
-        activeAcftMetadata['soloLimit'] = []
-        for acft in activeAcftquery.filter(solo=True).exclude(state='taxiing'):
-            if acft.takeoffTime is not None and acft.takeoffTime < timezone.now() - timedelta(hours=acft.aircraftType.soloSortieTimeLimitHours, minutes=acft.aircraftType.soloSortieTimeLimitMinutes):
-                flightTime = timezone.now() - acft.takeoffTime
-                activeAcftMetadata['soloLimit'].append(acft.callSign + "<br>" + str(flightTime)[:4])
+            activeAcftMetadata['soloLimit'] = []
+            for acft in activeAcftquery.filter(solo=True).exclude(state='taxiing'):
+                if acft.takeoffTime is not None and acft.takeoffTime < timezone.now() - timedelta(hours=acft.aircraftType.soloSortieTimeLimitHours, minutes=acft.aircraftType.soloSortieTimeLimitMinutes):
+                    flightTime = timezone.now() - acft.takeoffTime
+                    activeAcftMetadata['soloLimit'].append(acft.callSign + "<br>" + str(flightTime)[:4])
 
-        activeAcftMetadata['solosOffStation'] = []
-        for acft in activeAcftquery.filter(solo=True).exclude(state='in pattern').exclude(state='taxiing'):
-            activeAcftMetadata['solosOffStation'].append(acft.callSign)
+            activeAcftMetadata['solosOffStation'] = []
+            for acft in activeAcftquery.filter(solo=True).exclude(state='in pattern').exclude(state='taxiing'):
+                activeAcftMetadata['solosOffStation'].append(acft.callSign)
 
-        activeAcftMetadata['solosInPattern'] = []
-        for acft in activeAcftquery.filter(solo=True).filter(state='in pattern'):
-            activeAcftMetadata['solosInPattern'].append(acft.callSign)
+            activeAcftMetadata['solosInPattern'] = []
+            for acft in activeAcftquery.filter(solo=True).filter(state='in pattern'):
+                activeAcftMetadata['solosInPattern'].append(acft.callSign)
 
-        activeAcft = serializers.serialize('json', activeAcftquery)
+            activeAcft = serializers.serialize('json', activeAcftquery)
 
-        #logger.debug(json.dumps(activeAcftMetadata))
-        return activeAcft, json.dumps(activeAcftMetadata)
-
+            #logger.debug(json.dumps(activeAcftMetadata))
+            return activeAcft, json.dumps(activeAcftMetadata)
+        except:
+            logger.error("Error in ActiveAircraftManager get_Acft_queryset_update_message Models Function")
+            logger.error(traceback.format_exc())
 
 
 class ActiveAircraft(models.Model):
@@ -223,8 +272,11 @@ class ActiveAircraft(models.Model):
 
 
     def __str__(self):
-        return "Tail " + str(self.tailNumber)
-
+        try:
+            return "Tail " + str(self.tailNumber)
+        except:
+            logger.error("Error in ActiveAircraft Models Function")
+            logger.error(traceback.format_exc())
     
 
 class CompletedSortie(models.Model):
@@ -261,7 +313,11 @@ class CompletedSortie(models.Model):
 
 
     def __str__(self):
-        return "Completed Sortie #" + str(self.id)
+        try:
+            return "Completed Sortie #" + str(self.id)
+        except:
+            logger.error("Error in CompletedSortie Models Function")
+            logger.error(traceback.format_exc())
 
 
 class NextTakeoffData(models.Model):
@@ -271,8 +327,11 @@ class NextTakeoffData(models.Model):
     formationX4 = models.BooleanField('4-Ship Form', default=False)
 
     def __str__(self):
-        return "Next Takeoff Data for " + str(self.runway)
-
+        try:
+            return "Next Takeoff Data for " + str(self.runway)
+        except:
+            logger.error("Error in NextTakeoffData Models Function")
+            logger.error(traceback.format_exc())
 
 
 STATUS = [ ('Good', 'Good'), ('Medium', 'Medium'), ('Weak', 'Weak'), ('Inactive', 'Inactive')]
@@ -313,8 +372,13 @@ class ADSBSource (models.Model):
     updateFreq=models.DecimalField(max_digits=10, default=1.0,decimal_places=3)#measured in seconds
 
     def __str__(self):
-        return self.name
-    
+        try:
+            return self.name
+        except:
+            logger.error("Error in ADSBSource Models Function")
+            logger.error(traceback.format_exc())
+
+
 class CommsControl(models.Model):
     Name = models.CharField(max_length=50, default="Comms Control")
     MessageThreadStatus = models.BooleanField(default=False)
@@ -323,4 +387,8 @@ class CommsControl(models.Model):
     CommsControlKey = models.BooleanField(help_text="DO NOT CHANGE THIS VALUE UNLESS YOU KNOW WHAT YOU ARE DOING.", default=True, primary_key=True)
 
     def __str__(self):
-        return "Comms Control"
+        try:
+            return "Comms Control"
+        except:
+            logger.error("Error in CommsControl Models Function")
+            logger.error(traceback.format_exc())

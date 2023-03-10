@@ -5,6 +5,8 @@
 {% block runway %}
 
 <script type="text/javascript">
+    var num_errors = 0
+
     var url = `ws://${window.location.host}/ws/socket-server/`
     console.log(url)
 
@@ -13,7 +15,7 @@
     var csrf_token = '{{ csrf_token }}'
 
     const chatSocket = new WebSocket(url)
-
+    try{
     chatSocket.addEventListener('message', function(e){
         let data = JSON.parse(e.data)
         
@@ -23,18 +25,50 @@
         if(data.type == 'rwyUpdate'){
             console.log("runway datafield is: ", data.runway)
         }
+    })
+    
+    } catch {
+        num_errors +=1
+        var num_errors_str = num_errors.toString()
+        
+        let error_msg = document.getElementById('error_message')
+
+        error_msg.insertAdjacentHTML('afterbegin', ` 
+        
+        <div id = ${num_errors_str}>
+            <div class="alert alert-danger" role="alert" onclick = "removeAllChildNodes(document.getElementById(${num_errors_str}))">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                Error in removeAllChildNodes Function
+            </div>
+        </div>
+        `)
     }
 
-    )
 
-    
     function removeAllChildNodes(parent) {
-        if(parent != null) {
-            if(parent.firstChild != null){
-                while (parent.firstChild) {
-                    parent.removeChild(parent.firstChild);
+        try{
+            if(parent != null) {
+                if(parent.firstChild != null){
+                    while (parent.firstChild) {
+                        parent.removeChild(parent.firstChild);
+                    }
                 }
             }
+        } catch {
+            num_errors +=1
+            var num_errors_str = num_errors.toString()
+            
+            let error_msg = document.getElementById('error_message')
+
+            error_msg.insertAdjacentHTML('afterbegin', ` 
+            
+            <div id = ${num_errors_str}>
+                <div class="alert alert-danger" role="alert" onclick = "removeAllChildNodes(document.getElementById(${num_errors_str}))">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    Error in removeAllChildNodes Function
+                </div>
+            </div>
+            `)
         }
     }
 
@@ -42,13 +76,49 @@
 
 {% include 'AutoRecorder/Tables.html' %}
 <script> 
-load(chatSocket, csrf_token, '{{field.lat}}', '{{field.lon}}', '{{field.FAAcode}}', '{{runway}}', '{{displayedRunwayObject.patternName}}') 
+try{
+    load(chatSocket, csrf_token, '{{field.lat}}', '{{field.lon}}', '{{field.FAAcode}}', '{{runway}}', '{{displayedRunwayObject.patternName}}') 
+} catch {
+    num_errors +=1
+    var num_errors_str = num_errors.toString()
+    
+    let error_msg = document.getElementById('error_message')
+
+    error_msg.insertAdjacentHTML('afterbegin', ` 
+    
+    <div id = ${num_errors_str}>
+        <div class="alert alert-danger" role="alert" onclick = "removeAllChildNodes(document.getElementById(${num_errors_str}))">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            Error in load Function
+        </div>
+    </div>
+    `)
+}
 </script>
-<script> rxNextTOMessage(chatSocket, '{{runway}}') </script>
+<script>
+try{
+rxNextTOMessage(chatSocket, '{{runway}}') 
+} catch {
+    num_errors +=1
+    var num_errors_str = num_errors.toString()
+    
+    let error_msg = document.getElementById('error_message')
+
+    error_msg.insertAdjacentHTML('afterbegin', ` 
+    
+    <div id = ${num_errors_str}>
+        <div class="alert alert-danger" role="alert" onclick = "removeAllChildNodes(document.getElementById(${num_errors_str}))">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            Error in rxNextTOMessage Function call from scripit
+        </div>
+    </div>
+    `)
+}
+
+</script>
 {% load static %}
 <script type="text/javascript">
-
-
+try{
 // if (feature.properties.styleUrl === '#PolyStyleOGreen') {
 //     if (feature.geometry.type === 'LineString') {
 //         return {
@@ -66,29 +136,87 @@ load(chatSocket, csrf_token, '{{field.lat}}', '{{field.lon}}', '{{field.FAAcode}
     omnivore.kml("{{displayedRunwayObject.kmlPatternFile.url}}").addTo(map)
     map.invalidateSize() //?????????????????????????????????????????????????????????
     var myCustomGroup
-     
+
+} catch {
+    num_errors +=1
+    var num_errors_str = num_errors.toString()
+    
+    let error_msg = document.getElementById('error_message')
+
+    error_msg.insertAdjacentHTML('afterbegin', ` 
+    
+    <div id = ${num_errors_str}>
+        <div class="alert alert-danger" role="alert" onclick = "removeAllChildNodes(document.getElementById(${num_errors_str}))">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            Error loading KML Files
+        </div>
+    </div>
+    `)
+}
+
 </script>
+
 {% for file in additionalKML %}
     <script> 
     // DO NOT CORRECT THE ERRORS IN THIS SCRIPT! THE DJANGO TEMPLATE LANGUAGE WILL REPLACE BRACKETED ITEMS WITH VALID CODE!
-        let myCustomGroup{{file.pk}} = L.geoJSON(null, {
-            style: {
-                        color: '{{file.color}}',
-                        weight: {{file.weight}}
-                    }
-        });
+        
+        try{
+            let myCustomGroup{{file.pk}} = L.geoJSON(null, {
+                style: {
+                            color: '{{file.color}}',
+                            weight: {{file.weight}}
+                        }
+            });
 
-        // function getStyle(feature) {
-        //     return {
-        //                 color: '#{{file.color}}',
-        //                 weight: {{file.transparency}}
-        //             }
-        // }
+            // function getStyle(feature) {
+            //     return {
+            //                 color: '#{{file.color}}',
+            //                 weight: {{file.transparency}}
+            //             }
+            // }
 
-        omnivore.kml('{{file.file.url}}', null, myCustomGroup{{file.pk}}).addTo(map)
+            omnivore.kml('{{file.file.url}}', null, myCustomGroup{{file.pk}}).addTo(map)
+
+        } catch {
+            num_errors +=1
+            var num_errors_str = num_errors.toString()
+            
+            let error_msg = document.getElementById('error_message')
+
+            error_msg.insertAdjacentHTML('afterbegin', ` 
+            
+            <div id = ${num_errors_str}>
+                <div class="alert alert-danger" role="alert" onclick = "removeAllChildNodes(document.getElementById(${num_errors_str}))">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    Error in loading additional KML files
+                </div>
+            </div>
+            `)
+        }
     </script>
 {% endfor %}
-<script>map.invalidateSize()</script>
+
+<script>
+try{
+map.invalidateSize()
+} catch {
+            num_errors +=1
+            var num_errors_str = num_errors.toString()
+            
+            let error_msg = document.getElementById('error_message')
+
+            error_msg.insertAdjacentHTML('afterbegin', ` 
+            
+            <div id = ${num_errors_str}>
+                <div class="alert alert-danger" role="alert" onclick = "removeAllChildNodes(document.getElementById(${num_errors_str}))">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    Error in Map Invalidate Size Script
+                </div>
+            </div>
+            `)
+        }
+
+</script>
 
 
 
