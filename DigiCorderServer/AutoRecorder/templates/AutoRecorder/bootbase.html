@@ -63,8 +63,8 @@
                     <img src= {% static "AutoRecorder/images/blank-profile-picture-973460_1280.webp" %} alt="mdo" width="32" height="32" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu text-small">
-                    <li><a class="dropdown-item" href="/admin/AutoRecorder/userdisplayextra/">Settings</a></li>
-                    <li><a class="dropdown-item" href="/admin/auth/user/{{user.id}}">Profile</a></li>
+                    <li><a class="dropdown-item" href="/admin/AutoRecorder/userdisplayextra/?user__id__exact={{user.id}}">Settings</a></li>
+                    <li><a class="dropdown-item" href="/admin/password_change/">Change password</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         {% if user.is_authenticated%}

@@ -53,7 +53,7 @@ admin.site.register(Callsign, CallsignAdmin)
 
 class UserDisplayExtraAdmin(admin.ModelAdmin):
     list_display = ('user','runway')
-    # list_filter = ['user', ]
+    list_filter = ['user', ]
 admin.site.register(UserDisplayExtra, UserDisplayExtraAdmin)
 
 class ADSBSourceAdmin(admin.ModelAdmin):
